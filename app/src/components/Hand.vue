@@ -4,8 +4,8 @@ import Card from "@/components/Card.vue";
 const props = defineProps({
   cards: {
     type: Array,
-    default: () => [],
-  },
+    default: () => []
+  }
 });
 </script>
 

@@ -9,23 +9,23 @@ const players = reactive({
       { title: "Card 1" },
       { title: "Card 2" },
       { title: "Card 3" },
-      { title: "Card 4" },
+      { title: "Card 4" }
     ],
     lifepoints: 30,
     mana: 0,
-    minions: [null, null, null, null, null, null, null],
+    minions: [null, null, null, null, null, null, null]
   },
   self: {
     hand: [
       { title: "Card 1" },
       { title: "Card 2" },
       { title: "Card 3" },
-      { title: "Card 4" },
+      { title: "Card 4" }
     ],
     lifepoints: 30,
     mana: 0,
-    minions: [null, null, null, null, null, null, null],
-  },
+    minions: [null, null, null, null, null, null, null]
+  }
 });
 
 const play = (card) => {

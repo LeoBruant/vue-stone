@@ -4,8 +4,8 @@ import Card from "@/components/Card.vue";
 const props = defineProps({
   players: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 });
 </script>
 
@@ -29,7 +29,6 @@ const props = defineProps({
 .minion-leave-to {
   @apply opacity-0 z-10;
 
-  transform: perspective(500px) rotate(30deg) translateY(15rem)
-    translateZ(15rem);
+  transform: perspective(500px) rotate(30deg) translateY(15rem) translateZ(15rem);
 }
 </style>
