@@ -2,12 +2,12 @@
 const props = defineProps({
   state: {
     type: String,
-    default: ""
+    default: "",
   },
   title: {
     type: String,
-    default: ""
-  }
+    default: "",
+  },
 });
 </script>
 
@@ -108,7 +108,8 @@ const props = defineProps({
 
       @apply col-span-full row-span-full;
 
-      transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(var(--rotateY));
+      transform: perspective(var(--perspective)) rotateX(var(--rotateX))
+        rotateY(var(--rotateY));
     }
   }
 }

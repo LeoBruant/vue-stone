@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/main.js",
-    "start": "node src/main.js"
+    "start": "node src/main.js",
+    "lint": "npx eslint ./src && prettier -c ./src"
   },
   "keywords": [],
   "author": "",
