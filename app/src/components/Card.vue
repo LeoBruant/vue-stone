@@ -2,12 +2,12 @@
 const props = defineProps({
   state: {
     type: String,
-    default: "",
+    default: ""
   },
   title: {
     type: String,
-    default: "",
-  },
+    default: ""
+  }
 });
 </script>
 
@@ -76,29 +76,29 @@ const props = defineProps({
 
   &__content {
     @apply aspect-[2/3]
-      bg-orange-200
-      border-4
-      border-orange-300
-      duration-300
-      ease-out
-      p-1
-      rounded
-      shadow
-      transition-transform
-      w-36;
+    bg-orange-200
+    border-4
+    border-orange-300
+    duration-300
+    ease-out
+    p-1
+    rounded
+    shadow
+    transition-transform
+    w-36;
   }
 
   &--hand {
     @apply cursor-pointer
-      grid
-      grid-cols-3
-      grid-rows-3
-      -mx-2
-      origin-bottom
-      transition-transform
-      hover:scale-[2]
-      hover:-translate-y-6
-      hover:z-20;
+    grid
+    grid-cols-3
+    grid-rows-3
+    -mx-2
+    origin-bottom
+    transition-transform
+    hover:scale-[2]
+    hover:-translate-y-6
+    hover:z-20;
 
     .card__content {
       --angle: 5deg;
@@ -108,8 +108,7 @@ const props = defineProps({
 
       @apply col-span-full row-span-full;
 
-      transform: perspective(var(--perspective)) rotateX(var(--rotateX))
-        rotateY(var(--rotateY));
+      transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(var(--rotateY));
     }
   }
 }
