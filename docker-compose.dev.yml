@@ -16,3 +16,17 @@ services:
     network_mode: "host"
     volumes:
       - "./api:/app"
+
+  postgres:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - "db:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: db
+
+volumes:
+  db:
