@@ -26,3 +26,9 @@ npm run dev -w app
 ```shell
 docker compose up --build -d
 ```
+
+#### Start Postgres
+
+```shell
+docker compose -f .\docker-compose.dev.yml up postgres
+```
