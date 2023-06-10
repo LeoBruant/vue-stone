@@ -3,6 +3,7 @@ import path from "path";
 import { Model, Sequelize } from "sequelize";
 import { fileURLToPath } from "url";
 
+
 const databaseUrl =
     process.env.DATABASE_URL ?? "postgres://user:password@localhost:5432/db";
 const connection = new Sequelize(databaseUrl);

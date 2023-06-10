@@ -1,28 +1,25 @@
-import {Sequelize, DataTypes} from "sequelize";
-const sequelize = new Sequelize('postgres://user:password@localhost:5432/db')
+import { DataTypes, Model } from "sequelize";
 
-// import db from "../model.mjs";
+export default function(connection) {
+    class Card extends Model {
 
-
-const Card = sequelize.define('Card', {
-    // Model attributes are defined here
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    cost: {
-        type: DataTypes.INTEGER,
-        allowNull: false
     }
-}, {
-    freezeTableName: true
-});
 
-// `sequelize.define` also returns the model
-console.log(Card === sequelize.models.Card); // true
+    Card.init({
+        title: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false,
+        },
+        cost: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+    },
+    {
+        sequelize: connection,
+        tableName: "cards",
+    });
 
-await sequelize.sync({ force: true });
-
-
-
-export default Card
+    return Card;
+}
