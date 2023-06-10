@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { Model, Sequelize } from "sequelize";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 
 
 const databaseUrl =
@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 const files = await fs.readdir(path.join(__dirname, "model"));
 
 const models = await Promise.all(
-    files.map((file) => import(path.join(__dirname, "model", file)))
+    files.map((file) => import(pathToFileURL(path.join(__dirname, "model", file))))
 );
 
 for (const model of models) {
