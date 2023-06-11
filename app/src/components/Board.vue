@@ -11,7 +11,10 @@ const props = defineProps({
 
 <template>
   <div class="flex flex-col gap-6 h-screen justify-center items-center">
-    <div v-for="player in players" class="flex flex-1 gap-3">
+    <div
+      v-for="(player, key) in players"
+      :class="`flex flex-1 gap-3 ${key === 'opponent' ? 'items-end' : ''}`"
+    >
       <transition v-for="minion in player.minions" name="minion">
         <Card v-show="minion" state="board" :title="minion?.title" />
       </transition>
