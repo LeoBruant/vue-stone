@@ -1,8 +1,7 @@
 import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
-// import {Sequelize} from "sequelize";
-// import Card from "./model/card.js";
+import cardController from "./controller/cardController.js";
 import db from "./model.mjs";
 
 
@@ -12,10 +11,10 @@ await db.connection.sync({ force: true });
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
+app.use(express.json())
 
-// const sequelize = new Sequelize('postgres://user:password@localhost:5432/db')
-
-await db.Card.create({ title: "titre test" , cost: 2});
+await db.Card.create({ title: "abc", cost: 2 });
+await db.Card.create({ title: "def", cost: 4 });
 
 
 
@@ -26,5 +25,7 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+app.use(cardController);
 
 

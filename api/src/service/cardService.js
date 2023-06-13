@@ -1,8 +1,18 @@
-import Card from "../model/Card"
-import {Sequelize, DataTypes} from "sequelize";
-const sequelize = new Sequelize('postgres://user:password@localhost:5432/db')
+import db from "../model.mjs";
 
-export function createCard(title, description) {
-    // Effectue des calculs...
-    Card.create({ title, description })
+export async function createCard(title, cost) {
+    await db.Card.create({ title, cost })
+    return { title, cost };
+}
+
+export async function findCards() {
+    return await db.Card.findAll()
+}
+
+export async function findCard(title) {
+    return await db.Card.findAll({
+        where: {
+            title: title
+        }
+    })
 }
