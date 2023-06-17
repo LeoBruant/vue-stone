@@ -7,11 +7,16 @@ import db from "./model.mjs";
 import { Server } from "socket.io";
 import { createServer } from "http";
 
+const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["*"],
+  },
+});
 
 config();
-export const app = express();
 await db.connection.sync({ force: true });
 
 const port = process.env.PORT ?? 8080;
@@ -22,17 +27,20 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+app.use(userController);
+app.use(authenticationController);
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+  socket.send("welcome");
+  socket.on("chat message", (msg) => {
+    console.log("message: " + msg);
+  });
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });
 
-server.listen(3000, () => {
-  console.log("listening on *:3000");
+server.listen(port, () => {
+  console.log(`listening on *:${port}`);
 });
-
-app.use(userController);
-app.use(authenticationController);
