@@ -1,8 +1,8 @@
+import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
-import cors from "cors";
-import userController from "./controller/user.js";
 import authenticationController from "./controller/authentication.js";
+import userController from "./controller/user.js";
 import db from "./model.mjs";
 
 config();
