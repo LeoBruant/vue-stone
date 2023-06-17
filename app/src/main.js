@@ -4,6 +4,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import App from "@/App.vue";
 import Play from "@/Play.vue";
 import Login from "@/components/Login.vue";
+import Matchmaking from "@/Matchmaking.vue";
 
 const Home = { template: "<div>Home</div>" };
 
@@ -11,6 +12,7 @@ const routes = [
   { path: "/", component: Home },
   { path: "/play", component: Play },
   { path: "/login", component: Login },
+  { path: "/matchmaking", component: Matchmaking },
 ];
 
 const router = createRouter({
