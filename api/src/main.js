@@ -6,6 +6,9 @@ import userController from "./controller/user.js";
 import db from "./model.mjs";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import matchmaking from "./socket/matchmaking.js";
+import { EventEmitter } from "node:events";
+import match from "./socket/match.js";
 
 const app = express();
 const server = createServer(app);
@@ -30,16 +33,11 @@ app.get("/", (req, res) => {
 app.use(userController);
 app.use(authenticationController);
 
-io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.send("welcome");
-  socket.on("chat message", (msg) => {
-    console.log("message: " + msg);
-  });
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
-});
+class MatchEmitter extends EventEmitter {}
+const emitter = new MatchEmitter();
+
+matchmaking(io, emitter);
+match(io, emitter);
 
 server.listen(port, () => {
   console.log(`listening on *:${port}`);
