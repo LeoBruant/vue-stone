@@ -45,23 +45,23 @@ export default function match(io, emitter) {
       member.emit("game", {
         turn,
         turnMaxMana,
-        players
+        players,
       });
+
+      member.on("endTurnEvent", () => {
+        players.forEach((player) => {
+          player.playing = !player.playing;
+        });
+      });
+
+      console.log("test");
     }
   };
-
-  emitter.on("endTurnEvent", () => {
-    players.forEach((player) => {
-      player.playing = !player.playing;
-    });
-    
-    console.log('test')
-  });
 
   emitter.on(
     "teamReadyEvent",
     /**
-     * @param {Socket[]} team
+     * @param {{team: Socket[]}} data
      */
     (data) => {
       team = data.team;
