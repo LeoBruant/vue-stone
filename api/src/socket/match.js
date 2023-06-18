@@ -5,10 +5,6 @@
 export default function match(io, emitter) {
   const maxMana = 10;
 
-  let turn = 1;
-
-  let turnMaxMana = 1;
-
   const players = [
     {
       hand: [
@@ -18,9 +14,10 @@ export default function match(io, emitter) {
         { cost: 4, title: "Card 4" },
       ],
       hp: 30,
-      mana: 0,
+      mana: 1,
       minions: [null, null, null, null, null, null, null],
       name: "Player1",
+      playing: true,
     },
     {
       hand: [
@@ -33,23 +30,42 @@ export default function match(io, emitter) {
       mana: 1,
       minions: [null, null, null, null, null, null, null],
       name: "Player2",
+      playing: false,
     },
-  ]
+  ];
+
+  let team = [];
+
+  let turn = 1;
+
+  let turnMaxMana = 1;
+
+  const update = () => {
+    for (const member of team) {
+      member.emit("game", {
+        turn,
+        turnMaxMana,
+        players
+      });
+    }
+  };
+
+  emitter.on("endTurnEvent", () => {
+    players.forEach((player) => {
+      player.playing = !player.playing;
+    });
+    
+    console.log('test')
+  });
 
   emitter.on(
     "teamReadyEvent",
     /**
      * @param {Socket[]} team
      */
-    ({ team }) => {
-      for (const member of team) {
-        console.log(member.id);
-        member.emit("game", {
-          turn,
-          turnMaxMana,
-          players
-        });
-      }
+    (data) => {
+      team = data.team;
+      update();
     }
   );
 }
