@@ -16,27 +16,22 @@ const players = ref();
 socket.on("game", (data) => {
   game.value = data;
 
+  // Define players
   players.value = {
     self: data.players.find(
-      ({ name }) => name === JSON.parse(localStorage.getItem("player")).name
+      ({ id }) => id === JSON.parse(localStorage.getItem("player")).id
     ),
     opponent: data.players.find(
-      ({ name }) => name !== JSON.parse(localStorage.getItem("player")).name
+      ({ id }) => id !== JSON.parse(localStorage.getItem("player")).id
     ),
   };
 });
 
-const endTurn = () => {
-  socket.emit("endTurnEvent");
-};
-
 const play = (card) => {
-  // const index = playerSelf.minions.indexOf(null);
-  // if (index === -1) {
-  //   return;
-  // }
-  // playerSelf.minions[index] = card;
-  // playerSelf.hand = playerSelf.hand.filter((c) => c !== card);
+  socket.emit("play", {
+    card,
+    player: JSON.parse(localStorage.getItem("player")),
+  });
 };
 </script>
 
@@ -48,7 +43,7 @@ const play = (card) => {
       position="top"
     />
     <Player :hp="players.self.hp" :name="players.self.name" position="bottom" />
-    <Hand :cards="players.self.hand" player="opponent" />
+    <Hand :cards="players.opponent.hand" player="opponent" />
     <Board :players="players" />
     <Hand
       @play="play"
@@ -68,7 +63,7 @@ const play = (card) => {
     />
     <button
       class="bg-yellow-300 border-2 border-yellow-700 fixed font-bold p-4 uppercase right-2 rounded top-1/2 transition-colors -translate-y-1/2 disabled:opacity-50 hover:bg-yellow-300/50 hover:border-yellow-700/50 hover:disabled:bg-opacity-100 hover:disabled:border-opacity-100"
-      @click="endTurn"
+      @click="socket.emit('endTurn')"
       :disabled="!players.self.playing"
     >
       end turn

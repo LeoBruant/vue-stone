@@ -21,19 +21,29 @@ const props = defineProps({
 
 <template>
   <div
-    :class="`card card--${side} card--${state} ${
-      outlined ? 'card--outline' : ''
-    }`"
+    :class="`
+      card
+      card--${animationDirection}
+      card--${side}
+      card--${state}
+      ${outlined ? 'card--outline' : ''}
+    `"
   >
+    <!-- Mouse tracker when card in hand -->
     <span
       v-if="side === 'front' && state === 'hand'"
       v-for="i in 9"
       class="card__tracker"
-    ></span>
+    >
+    </span>
+    <!-- Card -->
     <div class="card__content">
+      <!-- Front side -->
       <div v-if="side === 'front'">
         {{ title }}
       </div>
+
+      <!-- Back side -->
       <div v-else></div>
     </div>
   </div>
@@ -44,11 +54,11 @@ const props = defineProps({
   @apply relative select-none z-10;
 
   &__content {
-    @apply aspect-[2/3] bg-orange-200 border-4 border-orange-300 duration-300 ease-out p-1 rounded shadow transition-transform w-36;
+    @apply aspect-[2/3] bg-orange-200 border-4 border-orange-300 duration-300 ease-out p-1 rounded shadow transition-all w-32;
   }
 
   &--hand {
-    @apply -mx-2;
+    @apply -mx-0.5;
   }
 
   &--front {
@@ -105,7 +115,7 @@ const props = defineProps({
     }
 
     &.card--hand {
-      @apply cursor-pointer grid grid-cols-3 grid-rows-3 origin-bottom transition-transform hover:scale-[2] hover:-translate-y-6 hover:z-20;
+      @apply cursor-pointer grid grid-cols-3 grid-rows-3 origin-bottom transition-transform hover:scale-[2.5] hover:-translate-y-6 hover:z-20;
 
       .card__content {
         --angle: 5deg;
@@ -117,6 +127,12 @@ const props = defineProps({
 
         transform: perspective(var(--perspective)) rotateX(var(--rotateX))
           rotateY(var(--rotateY));
+      }
+
+      &:hover {
+        .card__content {
+          @apply shadow-2xl;
+        }
       }
     }
   }

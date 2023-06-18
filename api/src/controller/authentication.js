@@ -12,7 +12,7 @@ router.post("/login", async (req, res) => {
     return res.sendStatus(401);
   }
 
-  res.json({ token: user.generateToken() });
+  res.json({ id: user.id, token: user.generateToken() });
 });
 
 export default router;

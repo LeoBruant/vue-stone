@@ -41,14 +41,18 @@ export default {
           headers: {
             "content-type": "application/json",
           },
-          body: JSON.stringify({ email: this.email, password: this.password }),
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password,
+          }),
         });
         if (response.status === 200) {
-          const { token } = await response.json();
+          const { id, token } = await response.json();
           this.jwt = token;
           localStorage.setItem(
             "player",
             JSON.stringify({
+              id,
               name: this.name,
             })
           );
