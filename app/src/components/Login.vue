@@ -2,6 +2,7 @@
 export default {
   data() {
     return {
+      name: "",
       email: "",
       password: "",
       jwt: "",
@@ -17,6 +18,7 @@ export default {
             "content-type": "application/json",
           },
           body: JSON.stringify({
+            name: this.name,
             email: this.email,
             password: this.password,
           }),
@@ -44,6 +46,12 @@ export default {
         if (response.status === 200) {
           const { token } = await response.json();
           this.jwt = token;
+          localStorage.setItem(
+            "player",
+            JSON.stringify({
+              name: this.name,
+            })
+          );
           alert("Connecté!");
         } else {
           alert("Pas connecté! " + response.status);
@@ -59,6 +67,7 @@ export default {
 
 <template>
   <form>
+    <input type="text" v-model="name" placeholder="Nom d'utilisateur" />
     <input type="email" v-model="email" placeholder="Adresse email" />
     <input type="password" v-model="password" placeholder="Mot de passe" />
 

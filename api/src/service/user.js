@@ -2,17 +2,19 @@ import db from "../model.mjs";
 
 /**
  * Creates a new user with the given email and password.
+ * @param {string} name User's name
  * @param {string} email User's email address
  * @param {string} password Raw password
  * @returns {User} The newly created user
  */
-export async function createUser(email, password) {
+export async function createUser(name, email, password) {
   const { id } = await db.User.create({
+    name,
     email,
     password,
   });
 
-  return { id, email };
+  return { id, name, email };
 }
 
 /**
