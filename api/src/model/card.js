@@ -15,6 +15,24 @@ export default function(connection) {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        power: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        toughness: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        ability: {
+            type: DataTypes.ENUM('provocation', 'rale', 'rale soin', 'entree +1+1'),
+        },
+        img: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        description: {
+            type: DataTypes.STRING,
+        }
     },
     {
         sequelize: connection,
@@ -22,4 +40,4 @@ export default function(connection) {
     });
 
     return Card;
-}
+}//

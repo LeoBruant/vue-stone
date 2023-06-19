@@ -13,8 +13,8 @@ const port = process.env.PORT ?? 8080;
 app.use(cors());
 app.use(express.json())
 
-await db.Card.create({ title: "abc", cost: 2 });
-await db.Card.create({ title: "def", cost: 4 });
+await db.Card.create({ title: "abc", cost: 2, power: 5, toughness: 7, img: "a", ability: "provocation"});
+await db.Card.create({ title: "def", cost: 4, power: 2, toughness: 4, img: "a", ability: "rale"});
 
 
 

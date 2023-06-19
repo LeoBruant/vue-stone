@@ -1,18 +1,17 @@
 import db from "../model.mjs";
 
-export async function createCard(title, cost) {
-    await db.Card.create({ title, cost })
-    return { title, cost };
+export async function createCard(body) {
+    return await db.Card.create(body)
 }
 
-export async function findCards() {
-    return await db.Card.findAll()
+export async function findCards(filter) {
+    return await db.Card.findAll({ where: filter })
 }
 
-export async function findCard(title) {
+export async function findCardById(id) {
     return await db.Card.findAll({
         where: {
-            title: title
+            id: id
         }
     })
 }
