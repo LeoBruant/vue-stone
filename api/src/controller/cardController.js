@@ -1,8 +1,8 @@
-import {createCard, findCards, findCardById} from "../service/cardService.js";
+import express from "express";
+import {createCard, findCards, findCardById, createCardImage} from "../service/cardService.js";
 import { Router } from "express";
 import { join, resolve } from "path";
 import fs from "fs/promises";
-import bodyParser from "body-parser";
 
 const router = Router();
 
@@ -13,12 +13,17 @@ router.post("/card", async (req, res) => {
     res.send(card);
 });
 //
-router.post("/card/image/:cardId",
-bodyParser.raw({ type: ["image/jpeg", "image/png"], limit: "5mb" }),
-(req, res) => {
-    console.log(req.body);
-    res.sendStatus(200);
-});
+router.post(
+    "/card/image/:cardId", // ":cardId" est un "path param"
+    // Pas besoin de la lib `body-parser`, tu peux la désinstaller
+    express.raw({ type: "image/jpeg", limit: "10mb" }),
+    async (req, res) => {
+        const { cardId } = req.params;
+        const outputFolder = join(resolve(), "images");
+        const body = req.body
+        res.send(await createCardImage(cardId, outputFolder, body))
+    }
+);
 
 router.get("/card", async (req, res) => {
     const {...filter} = req.query; // récupère tous les critères dans le query
