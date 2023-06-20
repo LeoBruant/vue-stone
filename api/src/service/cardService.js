@@ -17,8 +17,7 @@ export async function createCardImage(id, outputFolder, body) {
 
   try {
     await fs.writeFile(outputPath, body);
-
-    (await db.Card.findByPk(1)).update({ img: outputPath });
+    (await db.Card.findByPk(id)).update({ image: outputPath });
 
     return "created";
   } catch (e) {

@@ -25,9 +25,8 @@ export default function (connection) {
       ability: {
         type: DataTypes.ENUM("provocation", "rale", "rale soin", "entree +1+1"),
       },
-      img: {
+      image: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       description: {
         type: DataTypes.STRING,
