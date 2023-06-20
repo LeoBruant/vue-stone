@@ -1,14 +1,14 @@
 import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
+import { createServer } from "http";
+import { EventEmitter } from "node:events";
+import { Server } from "socket.io";
 import authenticationController from "./controller/authentication.js";
 import userController from "./controller/user.js";
 import db from "./model.mjs";
-import { Server } from "socket.io";
-import { createServer } from "http";
-import matchmaking from "./socket/matchmaking.js";
-import { EventEmitter } from "node:events";
 import match from "./socket/match.js";
+import matchmaking from "./socket/matchmaking.js";
 
 const app = express();
 const server = createServer(app);

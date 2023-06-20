@@ -1,8 +1,18 @@
 <script setup>
+import { ref } from "vue";
+
 const props = defineProps({
+  cost: {
+    type: Number,
+    default: 0,
+  },
   outlined: {
     type: Boolean,
     default: false,
+  },
+  power: {
+    type: Number,
+    default: null,
   },
   side: {
     type: String,
@@ -16,131 +26,244 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  toughness: {
+    type: Number,
+    default: null,
+  },
 });
+
+const angle = 5;
+const card = ref(null);
+
+const reflect = (e) => {
+  if (props.side !== "front" || props.state !== "hand") {
+    return;
+  }
+
+  const x = e.layerX;
+  const y = e.layerY;
+
+  const height = e.target.clientHeight;
+  const width = e.target.clientWidth;
+
+  const closeToTop = y < height / 2;
+  const closeToLeft = x < width / 2;
+
+  const percentX = x / width;
+  const percentY = y / height;
+
+  card.value.style.setProperty("--mouse-x", `${x}px`);
+  card.value.style.setProperty("--mouse-y", `${y}px`);
+
+  card.value.style.setProperty(
+    "--rotateX",
+    `${closeToTop ? angle * (1 - percentY) : -angle * percentY}deg`
+  );
+
+  card.value.style.setProperty(
+    "--rotateY",
+    `${closeToLeft ? -angle * (1 - percentX) : angle * percentX}deg`
+  );
+};
 </script>
 
 <template>
   <div
+    @mousemove="reflect"
     :class="`
       card
-      card--${animationDirection}
       card--${side}
       card--${state}
       ${outlined ? 'card--outline' : ''}
     `"
+    ref="card"
   >
-    <!-- Mouse tracker when card in hand -->
-    <span
-      v-if="side === 'front' && state === 'hand'"
-      v-for="i in 9"
-      class="card__tracker"
-    >
-    </span>
-    <!-- Card -->
     <div class="card__content">
       <!-- Front side -->
-      <div v-if="side === 'front'">
-        {{ title }}
+      <div v-if="side === 'front'" class="contents">
+        <!-- Content -->
+        <div class="card__container">
+          <div class="card__image-container">
+            <div class="card__image"></div>
+          </div>
+          <div class="card__title">
+            <p class="card__title-content">
+              {{ title }}
+            </p>
+          </div>
+          <div class="card__description">
+            <p>Lorem, ipsum dolor.</p>
+          </div>
+        </div>
+
+        <!-- Cost -->
+        <div class="card__cost">
+          {{ cost }}
+        </div>
+
+        <!-- Power -->
+        <div v-if="power" class="card__power">
+          {{ power }}
+        </div>
+
+        <!-- Toughness -->
+        <div v-if="toughness" class="card__toughness">
+          {{ toughness }}
+        </div>
       </div>
 
       <!-- Back side -->
-      <div v-else></div>
+      <div v-else class="contents"></div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .card {
-  @apply relative select-none z-10;
+  @apply duration-300 transition-all z-10;
 
   &__content {
-    @apply aspect-[2/3] bg-orange-200 border-4 border-orange-300 duration-300 ease-out p-1 rounded shadow transition-all w-32;
+    @apply aspect-[5/7] bg-orange-200 border-4 border-neutral-700 ease-out p-1 relative rounded-lg select-none shadow w-36 z-10;
+  }
+
+  &__cost,
+  &__power,
+  &__toughness {
+    @apply absolute aspect-square border-2 border-neutral-700 flex font-black justify-center h-10 items-center pointer-events-none rounded-full shadow-xl text-white text-2xl z-10;
+
+    text-shadow: 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
+  }
+
+  &__cost {
+    @apply bg-sky-500 left-0 top-0 -translate-x-1/4 -translate-y-1/4;
+  }
+
+  &__power {
+    @apply bg-yellow-500 bottom-0 left-0 -translate-x-1/4 translate-y-1/4;
+  }
+
+  &__toughness {
+    @apply bg-red-500 bottom-0 right-0 translate-x-1/4 translate-y-1/4;
+  }
+
+  &__container {
+    @apply grid grid-rows-2 h-full;
+  }
+
+  &__image-container {
+    @apply aspect-[10/7] bg-neutral-700/50;
+  }
+
+  &__image {
+    @apply aspect-square bg-center bg-cover bg-[url('https://loremflickr.com/200/300/cat')] h-full mx-auto;
+  }
+
+  &__title {
+    @apply absolute flex inset-0 items-center justify-center text-white;
+  }
+
+  &__title-content {
+    @apply bg-orange-200 font-black shadow-lg text-center w-full;
+
+    text-shadow: 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
+  }
+
+  &__description {
+    @apply pt-5 text-xs;
+  }
+
+  &--board {
+    .card {
+      &__container {
+        @apply block;
+      }
+
+      &__cost,
+      &__title,
+      &__description {
+        @apply hidden;
+      }
+
+      &__image-container {
+        @apply aspect-auto h-full;
+      }
+
+      &__image {
+        @apply aspect-auto h-full mx-0;
+      }
+    }
   }
 
   &--hand {
-    @apply -mx-0.5;
+    .card__content {
+      @apply -mx-2;
+    }
+  }
+
+  &--back {
+    .card__content {
+      @apply bg-neutral-500;
+    }
   }
 
   &--front {
-    .card {
-      &__tracker {
-        @apply absolute inset-0 z-10;
-
-        // Column 1
-        &:nth-child(3n - 2) {
-          @apply col-start-1 col-end-1;
-
-          &:hover ~ .card__content {
-            --rotateY: calc(var(--angle) * -1);
-          }
-        }
-
-        // Column 2
-        &:nth-child(3n - 1) {
-          @apply col-start-2 col-end-2;
-        }
-
-        // Column 3
-        &:nth-child(3n) {
-          @apply col-start-3 col-end-3;
-
-          &:hover ~ .card__content {
-            --rotateY: var(--angle);
-          }
-        }
-
-        // Row 1
-        &:nth-child(n + 1):nth-child(-n + 3) {
-          @apply row-start-1 row-end-1;
-
-          &:hover ~ .card__content {
-            --rotateX: var(--angle);
-          }
-        }
-
-        // Row 2
-        &:nth-child(n + 4):nth-child(-n + 6) {
-          @apply row-start-2 row-end-2;
-        }
-
-        // Row 3
-        &:nth-child(n + 7):nth-child(-n + 9) {
-          @apply row-start-3 row-end-3;
-
-          &:hover ~ .card__content {
-            --rotateX: calc(var(--angle) * -1);
-          }
-        }
-      }
-    }
-
     &.card--hand {
-      @apply cursor-pointer grid grid-cols-3 grid-rows-3 origin-bottom transition-transform hover:scale-[2.5] hover:-translate-y-6 hover:z-20;
-
       .card__content {
-        --angle: 5deg;
-        --perspective: 500px;
-        --rotateX: 0;
-        --rotateY: 0;
-
-        @apply col-span-full row-span-full;
-
-        transform: perspective(var(--perspective)) rotateX(var(--rotateX))
-          rotateY(var(--rotateY));
+        @apply cursor-pointer origin-bottom;
       }
 
       &:hover {
+        @apply mx-0 z-20;
+
+        --perspective: 500px;
+
+        transform: scale(2.5) translateY(-5rem) perspective(var(--perspective))
+          rotateX(var(--rotateX)) rotateY(var(--rotateY));
+
         .card__content {
           @apply shadow-2xl;
         }
+
+        &::after {
+          @apply absolute inset-0 transition-opacity;
+
+          background: radial-gradient(
+            600px circle at var(--mouse-x) var(--mouse-y),
+            rgba(255, 255, 255, 0.4),
+            transparent 40%
+          );
+          content: "";
+        }
+
+        // &::before {
+        //   @apply absolute inset-0;
+
+        //   background: radial-gradient(
+        //     600px circle at var(--mouse-x) var(--mouse-y),
+        //     rgba(255, 0, 0, 0.4),
+        //     transparent 40%
+        //   );
+        //   content: "";
+        // }
       }
     }
   }
 
   &--outline {
     .card__content {
-      @apply outline outline-4 outline-lime-400;
+      @apply outline outline-8 outline-lime-400;
     }
   }
+
+  // &__border {
+  //   @apply absolute -inset-1.5 rounded-[inherit] -z-50;
+
+  //   background: radial-gradient(
+  //     600px circle at var(--mouse-x) var(--mouse-y),
+  //     rgba(255, 0, 0, 1),
+  //     transparent 40%
+  //   );
+  //   content: "";
+  // }
 }
 </style>

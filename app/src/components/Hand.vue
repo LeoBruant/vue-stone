@@ -2,29 +2,28 @@
 import Card from "@/components/Card.vue";
 
 const props = defineProps({
-  cards: {
-    type: Array,
-    default: () => [],
-  },
-  mana: {
-    type: Number,
-    default: 0,
-  },
   player: {
-    type: String,
+    type: Object,
     default: null,
+  },
+  self: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>
 
 <template>
-  <div :class="`hand ${player ? ' hand--' + player : ''}`">
+  <div :class="`hand ${'hand--' + (self ? 'self' : 'opponent')}`">
     <Card
-      v-for="card in cards"
-      :outlined="player === 'self' && mana >= card.cost"
-      :side="player === 'opponent' ? 'back' : 'front'"
+      v-for="card in player.hand"
+      :cost="card.cost"
+      :outlined="self && player.playing && player.mana >= card.cost"
+      :power="card.power"
+      :side="!self ? 'back' : 'front'"
       state="hand"
       :title="card.title"
+      :toughness="card.toughness"
       @click="$emit('play', card)"
     />
   </div>
@@ -35,11 +34,11 @@ const props = defineProps({
   @apply fixed flex w-full justify-center z-10;
 
   &--opponent {
-    @apply top-2;
+    @apply -top-10;
   }
 
   &--self {
-    @apply bottom-2;
+    @apply -bottom-10;
   }
 }
 </style>

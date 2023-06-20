@@ -8,12 +8,12 @@ export default function match(io, emitter) {
   const players = [
     {
       hand: [
-        { cost: 1, id: 1, title: "Card 1" },
-        { cost: 2, id: 2, title: "Card 2" },
-        { cost: 3, id: 3, title: "Card 3" },
-        { cost: 4, id: 4, title: "Card 4" },
+        { cost: 1, id: 1, power: 1, title: "Card 1", toughness: 1 },
+        { cost: 2, id: 2, power: 2, title: "Card 2", toughness: 2 },
+        { cost: 3, id: 3, power: 3, title: "Card 3", toughness: 3 },
+        { cost: 4, id: 4, power: 4, title: "Card 4", toughness: 4 },
       ],
-      hp: 30,
+      health: 30,
       id: 1,
       mana: 1,
       minions: [null, null, null, null, null, null, null],
@@ -22,12 +22,12 @@ export default function match(io, emitter) {
     },
     {
       hand: [
-        { cost: 1, id: 1, title: "Card 1" },
-        { cost: 2, id: 2, title: "Card 2" },
-        { cost: 3, id: 3, title: "Card 3" },
-        { cost: 4, id: 4, title: "Card 4" },
+        { cost: 1, id: 1, power: 1, title: "Card 1", toughness: 1 },
+        { cost: 2, id: 2, power: 2, title: "Card 2", toughness: 2 },
+        { cost: 3, id: 3, power: 3, title: "Card 3", toughness: 3 },
+        { cost: 4, id: 4, power: 4, title: "Card 4", toughness: 4 },
       ],
-      hp: 30,
+      health: 30,
       id: 2,
       mana: 1,
       minions: [null, null, null, null, null, null, null],
