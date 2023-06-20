@@ -26,17 +26,12 @@ await db.connection.sync({ force: true });
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
-app.use(express.json())
-
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-
-await db.Card.create({ title: "abc", cost: 2, power: 5, toughness: 7, img: "a", ability: "provocation"});
-await db.Card.create({ title: "def", cost: 4, power: 2, toughness: 4, img: "a", ability: "rale"});
 
 app.use(userController);
 app.use(authenticationController);
@@ -52,5 +47,3 @@ server.listen(port, () => {
 });
 
 app.use(cardController);
-
-

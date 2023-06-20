@@ -2,20 +2,15 @@ import express from "express";
 import {createCard, findCards, findCardById, createCardImage} from "../service/cardService.js";
 import { Router } from "express";
 import { join, resolve } from "path";
-import fs from "fs/promises";
 
 const router = Router();
 
 router.post("/card", async (req, res) => {
-    console.log("+++++++++++++++++++++++++++++++++++++++++++++");
-    console.log(req.body);
     const card = await createCard(req.body);
     res.send(card);
 });
-//
 router.post(
-    "/card/image/:cardId", // ":cardId" est un "path param"
-    // Pas besoin de la lib `body-parser`, tu peux la désinstaller
+    "/card/image/:cardId",
     express.raw({ type: "image/jpeg", limit: "10mb" }),
     async (req, res) => {
         const { cardId } = req.params;

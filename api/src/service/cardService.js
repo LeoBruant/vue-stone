@@ -18,11 +18,7 @@ export async function createCardImage(id, outputFolder, body){
     try {
         await fs.writeFile(outputPath, body);
 
-        // Maintenant que l'image est créer, il ne te reste plus qu'à enregistré son chemin en base
-        // Le chemin a enregistré est dans la variable "outputPath"
-        // TODO: Enregistrer le chemin d'accès à l'image dans la base de données
         (await db.Card.findByPk(1)).update({img: outputPath});
-
 
         return "created";
     } catch (e) {
