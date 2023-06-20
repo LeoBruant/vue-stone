@@ -1,6 +1,7 @@
 # Projet top secret
 
 ## Environment variables
+
 An example is provided in the file `.env.example`.
 You have to rename it to `.env` and copy it to the `app` and `api` folders.
 
@@ -17,15 +18,16 @@ docker compose -f docker-compose.dev.yml up --build
 #### On host
 
 1. Install dependencies:
-    ```shell
-    npm --workspaces install
-    ```
+
+   ```shell
+   npm --workspaces install
+   ```
 
 2. Open two terminal to run these commands concurrently:
-    ```shell
-    npm run dev -w api
-    npm run dev -w app
-    ```
+   ```shell
+   npm run dev -w api
+   npm run dev -w app
+   ```
 
 ### Production mode
 
