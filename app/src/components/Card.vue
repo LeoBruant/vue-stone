@@ -78,6 +78,7 @@ const reflect = (e) => {
     `"
     ref="card"
   >
+    <div class="card__border"></div>
     <div class="card__content">
       <!-- Front side -->
       <div v-if="side === 'front'" class="contents">
@@ -120,10 +121,10 @@ const reflect = (e) => {
 
 <style lang="scss" scoped>
 .card {
-  @apply duration-300 transition-all z-10;
+  @apply duration-300 ease-out origin-bottom relative transition-all z-10;
 
   &__content {
-    @apply aspect-[5/7] bg-orange-200 border-4 border-neutral-700 ease-out p-1 relative rounded-lg select-none shadow w-36 z-10;
+    @apply aspect-[5/7] bg-orange-200 border-4 border-neutral-700 p-1 pointer-events-none relative rounded-lg select-none shadow w-36 z-10;
   }
 
   &__cost,
@@ -195,8 +196,49 @@ const reflect = (e) => {
   }
 
   &--hand {
-    .card__content {
-      @apply -mx-2;
+    .card {
+      &__border {
+        @apply absolute bg-neutral-700 -inset-0.5 -mx-2 rounded-lg;
+
+        &::before {
+          @apply absolute inset-0 rounded-lg;
+
+          background: radial-gradient(
+            200px circle at var(--mouse-x) var(--mouse-y),
+            rgba(255, 255, 255, 1),
+            transparent 100%
+          );
+          content: "";
+        }
+      }
+
+      &__content {
+        @apply -mx-2;
+      }
+    }
+
+    &.card--front {
+      &:hover {
+        @apply mx-0 z-20;
+
+        transform: translateY(-5rem) scale(2.5) perspective(500px)
+          rotateX(var(--rotateX)) rotateY(var(--rotateY));
+
+        .card__content {
+          @apply shadow-2xl;
+
+          &::after {
+            @apply absolute inset-0 rounded-[inherit] transition-opacity;
+
+            background: radial-gradient(
+              600px circle at var(--mouse-x) var(--mouse-y),
+              rgba(255, 255, 255, 0.4),
+              transparent 40%
+            );
+            content: "";
+          }
+        }
+      }
     }
   }
 
@@ -206,64 +248,12 @@ const reflect = (e) => {
     }
   }
 
-  &--front {
-    &.card--hand {
-      .card__content {
-        @apply cursor-pointer origin-bottom;
-      }
-
-      &:hover {
-        @apply mx-0 z-20;
-
-        --perspective: 500px;
-
-        transform: scale(2.5) translateY(-5rem) perspective(var(--perspective))
-          rotateX(var(--rotateX)) rotateY(var(--rotateY));
-
-        .card__content {
-          @apply shadow-2xl;
-        }
-
-        &::after {
-          @apply absolute inset-0 transition-opacity;
-
-          background: radial-gradient(
-            600px circle at var(--mouse-x) var(--mouse-y),
-            rgba(255, 255, 255, 0.4),
-            transparent 40%
-          );
-          content: "";
-        }
-
-        // &::before {
-        //   @apply absolute inset-0;
-
-        //   background: radial-gradient(
-        //     600px circle at var(--mouse-x) var(--mouse-y),
-        //     rgba(255, 0, 0, 0.4),
-        //     transparent 40%
-        //   );
-        //   content: "";
-        // }
-      }
-    }
-  }
-
   &--outline {
+    @apply cursor-pointer;
+
     .card__content {
-      @apply outline outline-8 outline-lime-400;
+      @apply outline-offset-2 outline outline-8 outline-lime-400;
     }
   }
-
-  // &__border {
-  //   @apply absolute -inset-1.5 rounded-[inherit] -z-50;
-
-  //   background: radial-gradient(
-  //     600px circle at var(--mouse-x) var(--mouse-y),
-  //     rgba(255, 0, 0, 1),
-  //     transparent 40%
-  //   );
-  //   content: "";
-  // }
 }
 </style>
