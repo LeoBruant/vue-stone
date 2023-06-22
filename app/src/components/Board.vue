@@ -86,25 +86,19 @@ const startAttack = (minion) => {
           v-for="minion in players.opponent.minions"
           name="minion-opponent"
         >
-          <Card
-            v-show="minion"
-            state="board"
-            :power="minion?.power"
-            :toughness="minion?.toughness"
-          />
+          <Card v-show="minion" :card="minion" state="board" />
         </transition>
       </div>
       <div class="flex flex-1 gap-7 items-start">
         <transition v-for="minion in players.self.minions" name="minion-self">
           <Card
-            @click="startAttack(minion)"
             v-show="minion"
+            @click="startAttack(minion)"
             :animation="minionsAnimation[minion?.id]"
+            :card="minion"
             state="board"
             :outlined="canAttack(minion)"
             :outlineStyle="attacking === minion ? 'attack' : 'play'"
-            :power="minion?.power"
-            :toughness="minion?.toughness"
           />
         </transition>
       </div>
@@ -137,7 +131,7 @@ const startAttack = (minion) => {
 
     <!-- End turn button -->
     <button
-      class="absolute bg-yellow-300 border-2 border-yellow-700 font-black p-4 uppercase right-2 rounded text-xl top-1/2 transition-colors -translate-y-1/2 disabled:opacity-50 hover:bg-yellow-300/50 hover:border-yellow-700/50 hover:disabled:bg-opacity-100 hover:disabled:border-opacity-100"
+      class="absolute bg-yellow-300 border-2 border-yellow-700 font-black p-4 uppercase right-1 rounded text-xl top-1/2 transition-colors -translate-y-1/2 disabled:opacity-50 hover:bg-yellow-300/50 hover:border-yellow-700/50 hover:disabled:bg-opacity-100 hover:disabled:border-opacity-100"
       @click="endTurn"
       :disabled="!players.self.playing"
     >

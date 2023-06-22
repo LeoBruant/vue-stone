@@ -9,8 +9,8 @@ export default function match(io, emitter) {
     {
       hand: [
         { cost: 1, id: 1, power: 1, rarity: 'common', title: "Card 1", toughness: 1 },
-        { cost: 2, id: 2, power: 2, rarity: 'common', title: "Card 2", toughness: 2 },
-        { cost: 3, id: 3, power: 3, rarity: 'common', title: "Card 3", toughness: 3 },
+        { cost: 2, id: 2, power: 2, rarity: 'rare', title: "Card 2", toughness: 2 },
+        { cost: 3, id: 3, power: 3, rarity: 'epic', title: "Card 3", toughness: 3 },
         { cost: 4, id: 4, power: 4, rarity: 'legendary', title: "Card 4", toughness: 4 },
       ],
       health: 30,

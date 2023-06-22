@@ -6,9 +6,9 @@ const props = defineProps({
     type: String,
     default: null,
   },
-  cost: {
-    type: Number,
-    default: 0,
+  card: {
+    type: Object,
+    default: null,
   },
   outlined: {
     type: Boolean,
@@ -18,14 +18,6 @@ const props = defineProps({
     type: String,
     default: "play",
   },
-  power: {
-    type: Number,
-    default: null,
-  },
-  rarity: {
-    type: String,
-    default: "common",
-  },
   side: {
     type: String,
     default: "front",
@@ -34,18 +26,13 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  title: {
-    type: String,
-    default: "",
-  },
-  toughness: {
-    type: Number,
-    default: null,
-  },
 });
 
-const angle = 5;
-const card = ref(null);
+const angle = 10;
+const cardElement = ref(null);
+const throttle = 5;
+const mouseX = ref(0);
+const mouseY = ref(0);
 
 const reflect = (e) => {
   if (props.side !== "front" || props.state !== "hand") {
@@ -55,45 +42,57 @@ const reflect = (e) => {
   const x = e.layerX;
   const y = e.layerY;
 
-  const height = e.target.clientHeight;
-  const width = e.target.clientWidth;
+  const mouseXValue = mouseX.value;
+  const mouseYValue = mouseY.value;
 
-  const closeToTop = y < height / 2;
-  const closeToLeft = x < width / 2;
+  // Do nothing if mouse too close to previous position
+  const xDifference = mouseXValue > x ? mouseXValue - x : x - mouseXValue;
+  const yDifference = mouseYValue > y ? mouseYValue - y : y - mouseYValue;
 
-  const percentX = x / width;
-  const percentY = y / height;
+  if (xDifference < throttle && yDifference < throttle) {
+    return;
+  } else {
+    mouseX.value = x;
+    mouseY.value = y;
+  }
 
-  card.value.style.setProperty("--mouse-x", `${x}px`);
-  card.value.style.setProperty("--mouse-y", `${y}px`);
+  const height = e.target.clientHeight / 2;
+  const width = e.target.clientWidth / 2;
 
-  card.value.style.setProperty(
-    "--rotateX",
-    `${closeToTop ? angle * (1 - percentY) : -angle * percentY}deg`
-  );
+  const basePercentX = x / width;
+  const basePercentY = y / height;
 
-  card.value.style.setProperty(
-    "--rotateY",
-    `${closeToLeft ? -angle * (1 - percentX) : angle * percentX}deg`
-  );
+  const closeToLeft = x < width;
+  const closeToTop = y < height;
+
+  const percentX = closeToLeft ? -(1 - basePercentX) : basePercentX - 1;
+  const percentY = closeToTop ? -(1 - basePercentY) : basePercentY - 1;
+
+  cardElement.value.style.setProperty("--mouse-x", `${x}px`);
+  cardElement.value.style.setProperty("--mouse-y", `${y}px`);
+
+  cardElement.value.style.setProperty("--rotateX", `${-angle * percentY}deg`);
+  cardElement.value.style.setProperty("--rotateY", `${angle * percentX}deg`);
 };
 </script>
 
 <template>
   <div
+    v-if="card"
     @mousemove="reflect"
     :class="`
       card
       card--${side}
       card--${state}
-      ${animation ? 'card--' + animation : ''}
-      ${outlined ? 'card--outline card--outline-' + outlineStyle : ''}
-    `"
-    ref="card"
+      ${animation ? `card--${animation}` : ''} ${
+      outlined ? `card--outline card--outline-${outlineStyle}` : ''
+    }
+      `"
+    ref="cardElement"
   >
     <div
-      v-if="rarity === 'legendary'"
-      class="card__border card__border--legendary"
+      v-if="card.rarity !== 'common'"
+      :class="`card__border card__border--animated card__border--${card.rarity}`"
     ></div>
     <div v-else class="card__border card__border--common"></div>
     <div class="card__content">
@@ -106,7 +105,7 @@ const reflect = (e) => {
           </div>
           <div class="card__title">
             <p class="card__title-content">
-              {{ title }}
+              {{ card.title }}
             </p>
           </div>
           <div class="card__description">
@@ -116,17 +115,17 @@ const reflect = (e) => {
 
         <!-- Cost -->
         <div class="card__cost">
-          {{ cost }}
+          {{ card.cost }}
         </div>
 
         <!-- Power -->
-        <div v-if="power" class="card__power">
-          {{ power }}
+        <div v-if="card.power" class="card__power">
+          {{ card.power }}
         </div>
 
         <!-- Toughness -->
-        <div v-if="toughness" class="card__toughness">
-          {{ toughness }}
+        <div v-if="card.toughness" class="card__toughness">
+          {{ card.toughness }}
         </div>
       </div>
 
@@ -224,27 +223,32 @@ const reflect = (e) => {
 
   &--front {
     .card__border {
-      @apply absolute -inset-0.5 rounded-lg;
+      @apply absolute -inset-1 rounded-lg;
 
-      &--common {
-        @apply bg-neutral-700;
-      }
-
-      &--legendary {
+      &--animated {
         @apply flex overflow-hidden;
 
         &::after {
           @apply absolute animate-spin aspect-square -inset-14 m-auto pointer-events-none;
 
-          background: linear-gradient(
-            90deg,
-            rgb(255 0 0) 0%,
-            rgb(255 165 0) 33%,
-            rgb(255 255 0) 66%,
-            rgb(238 130 238) 100%
-          );
           content: "";
         }
+      }
+
+      &--common {
+        @apply bg-neutral-700;
+      }
+
+      &--rare::after {
+        @apply bg-gradient-to-r from-blue-400 to-emerald-400;
+      }
+
+      &--epic::after {
+        @apply bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500;
+      }
+
+      &--legendary::after {
+        @apply bg-gradient-to-r from-lime-600 via-yellow-300 to-red-600;
       }
     }
   }
@@ -296,7 +300,7 @@ const reflect = (e) => {
     @apply cursor-pointer;
 
     .card__content {
-      @apply outline-offset-2 outline outline-8;
+      @apply outline-offset-4 outline outline-4;
     }
 
     &-attack .card__content {
