@@ -20,6 +20,7 @@ const props = defineProps({
       :cost="card.cost"
       :outlined="self && player.playing && player.mana >= card.cost"
       :power="card.power"
+      :rarity="card.rarity"
       :side="!self ? 'back' : 'front'"
       state="hand"
       :title="card.title"

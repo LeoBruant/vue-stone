@@ -7,6 +7,8 @@ import { ref } from "vue";
 
 const socket = io("ws://localhost:8080/");
 
+const attacking = ref(null);
+
 const game = ref();
 
 const players = ref();
@@ -25,6 +27,14 @@ socket.on("game", (data) => {
   };
 });
 
+const startAttack = (minion) => {
+  if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
+    return;
+  }
+
+  attacking.value = minion;
+};
+
 const play = (card) => {
   socket.emit("play", {
     card,
@@ -36,7 +46,13 @@ const play = (card) => {
 <template>
   <div v-if="players && game" class="bg-amber-900">
     <Hand :player="players.opponent" />
-    <Board :game="game" :players="players" />
+    <Board
+      @startAttack="startAttack"
+      @stopAttack="attacking = null"
+      :attacking="attacking"
+      :game="game"
+      :players="players"
+    />
     <Hand @play="play" :player="players.self" self />
   </div>
 </template>

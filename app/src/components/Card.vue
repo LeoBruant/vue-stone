@@ -2,6 +2,10 @@
 import { ref } from "vue";
 
 const props = defineProps({
+  animation: {
+    type: String,
+    default: null,
+  },
   cost: {
     type: Number,
     default: 0,
@@ -10,9 +14,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  outlineStyle: {
+    type: String,
+    default: "play",
+  },
   power: {
     type: Number,
     default: null,
+  },
+  rarity: {
+    type: String,
+    default: "common",
   },
   side: {
     type: String,
@@ -74,11 +86,16 @@ const reflect = (e) => {
       card
       card--${side}
       card--${state}
-      ${outlined ? 'card--outline' : ''}
+      ${animation ? 'card--' + animation : ''}
+      ${outlined ? 'card--outline card--outline-' + outlineStyle : ''}
     `"
     ref="card"
   >
-    <div class="card__border"></div>
+    <div
+      v-if="rarity === 'legendary'"
+      class="card__border card__border--legendary"
+    ></div>
+    <div v-else class="card__border card__border--common"></div>
     <div class="card__content">
       <!-- Front side -->
       <div v-if="side === 'front'" class="contents">
@@ -121,10 +138,10 @@ const reflect = (e) => {
 
 <style lang="scss" scoped>
 .card {
-  @apply duration-300 ease-out origin-bottom relative transition-all z-10;
+  @apply duration-300 ease-out relative transition-all z-10;
 
   &__content {
-    @apply aspect-[5/7] bg-orange-200 border-4 border-neutral-700 p-1 pointer-events-none relative rounded-lg select-none shadow w-36 z-10;
+    @apply aspect-[5/7] bg-orange-200 border-4 border-neutral-700 p-1 pointer-events-none relative rounded-lg select-none shadow-md transition-all w-36 z-10;
   }
 
   &__cost,
@@ -140,7 +157,7 @@ const reflect = (e) => {
   }
 
   &__power {
-    @apply bg-yellow-500 bottom-0 left-0 -translate-x-1/4 translate-y-1/4;
+    @apply bg-amber-400 bottom-0 left-0 -translate-x-1/4 translate-y-1/4;
   }
 
   &__toughness {
@@ -173,6 +190,16 @@ const reflect = (e) => {
     @apply pt-5 text-xs;
   }
 
+  &--attack {
+    @apply animate-allyMinionAttack;
+  }
+
+  &--back {
+    .card__content {
+      @apply bg-neutral-500;
+    }
+  }
+
   &--board {
     .card {
       &__container {
@@ -195,45 +222,68 @@ const reflect = (e) => {
     }
   }
 
-  &--hand {
-    .card {
-      &__border {
-        @apply absolute bg-neutral-700 -inset-0.5 -mx-2 rounded-lg;
+  &--front {
+    .card__border {
+      @apply absolute -inset-0.5 rounded-lg;
 
-        &::before {
-          @apply absolute inset-0 rounded-lg;
+      &--common {
+        @apply bg-neutral-700;
+      }
 
-          background: radial-gradient(
-            200px circle at var(--mouse-x) var(--mouse-y),
-            rgba(255, 255, 255, 1),
-            transparent 100%
+      &--legendary {
+        @apply flex overflow-hidden;
+
+        &::after {
+          @apply absolute animate-spin aspect-square -inset-14 m-auto pointer-events-none;
+
+          background: linear-gradient(
+            90deg,
+            rgb(255 0 0) 0%,
+            rgb(255 165 0) 33%,
+            rgb(255 255 0) 66%,
+            rgb(238 130 238) 100%
           );
           content: "";
         }
       }
-
-      &__content {
-        @apply -mx-2;
-      }
     }
+  }
+
+  &--hand {
+    @apply -mx-2;
 
     &.card--front {
       &:hover {
-        @apply mx-0 z-20;
+        @apply z-20;
 
-        transform: translateY(-5rem) scale(2.5) perspective(500px)
+        transform: translateY(-14rem) scale(2.5) perspective(500px)
           rotateX(var(--rotateX)) rotateY(var(--rotateY));
 
-        .card__content {
-          @apply shadow-2xl;
+        .card {
+          &__content {
+            @apply mx-0;
 
-          &::after {
-            @apply absolute inset-0 rounded-[inherit] transition-opacity;
+            &::after {
+              @apply absolute inset-0 rounded-[inherit] transition-opacity;
+
+              background: radial-gradient(
+                600px circle at var(--mouse-x) var(--mouse-y),
+                rgba(255, 255, 255, 0.4),
+                transparent 40%
+              );
+              content: "";
+            }
+          }
+
+          &__border::before {
+            @apply absolute inset-0 rounded-lg;
+
+            --opacity: 1;
 
             background: radial-gradient(
-              600px circle at var(--mouse-x) var(--mouse-y),
-              rgba(255, 255, 255, 0.4),
-              transparent 40%
+              200px circle at var(--mouse-x) var(--mouse-y),
+              rgb(255, 255, 255),
+              transparent 100%
             );
             content: "";
           }
@@ -242,17 +292,19 @@ const reflect = (e) => {
     }
   }
 
-  &--back {
-    .card__content {
-      @apply bg-neutral-500;
-    }
-  }
-
   &--outline {
     @apply cursor-pointer;
 
     .card__content {
-      @apply outline-offset-2 outline outline-8 outline-lime-400;
+      @apply outline-offset-2 outline outline-8;
+    }
+
+    &-attack .card__content {
+      @apply outline-orange-400;
+    }
+
+    &-play .card__content {
+      @apply outline-lime-400;
     }
   }
 }
