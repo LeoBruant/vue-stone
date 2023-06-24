@@ -5,6 +5,9 @@ import Mana from "@/components/Mana.vue";
 import PlayerName from "@/components/PlayerName.vue";
 
 import { io } from "socket.io-client";
+import { ref } from "vue";
+
+const emit = defineEmits(["startAttack", "stopAttack"]);
 
 const socket = io("ws://localhost:8080/");
 
@@ -23,7 +26,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["startAttack", "stopAttack"]);
+const minionInfo = ref(null);
 
 const minionsAnimation = {};
 
@@ -78,7 +81,9 @@ const startAttack = (minion) => {
 </script>
 
 <template>
-  <div class="container | bg-orange-200 mx-auto relative">
+  <div
+    class="container | bg-orange-200/95 mx-auto relative shadow-2xl shadow-orange-200"
+  >
     <!-- Cards -->
     <div class="flex flex-col gap-6 h-screen justify-center items-center">
       <div class="flex flex-1 gap-7 items-end">
@@ -86,7 +91,13 @@ const startAttack = (minion) => {
           v-for="minion in players.opponent.minions"
           name="minion-opponent"
         >
-          <Card v-show="minion" :card="minion" state="board" />
+          <Card
+            v-show="minion"
+            @mouseenter="minionInfo = minion"
+            @mouseleave="minionInfo = null"
+            :card="minion"
+            state="board"
+          />
         </transition>
       </div>
       <div class="flex flex-1 gap-7 items-start">
@@ -94,6 +105,8 @@ const startAttack = (minion) => {
           <Card
             v-show="minion"
             @click="startAttack(minion)"
+            @mouseenter="minionInfo = minion"
+            @mouseleave="minionInfo = null"
             :animation="minionsAnimation[minion?.id]"
             :card="minion"
             state="board"
@@ -137,6 +150,16 @@ const startAttack = (minion) => {
     >
       end turn
     </button>
+
+    <!-- Minion infos -->
+    <transition name="minion-info">
+      <div
+        v-if="minionInfo"
+        class="absolute left-6 origin-left pointer-events-none scale-[2.5] top-1/2 -translate-y-1/2"
+      >
+        <Card :card="minionInfo" state="hand" />
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -159,12 +182,12 @@ const startAttack = (minion) => {
 }
 
 .hp-opponent {
-  @apply mt-24 rounded-full self-start;
+  @apply mt-20 rounded-full self-start;
 
   grid-area: hp-opponent;
 
   &.outlined {
-    @apply cursor-pointer outline outline-8 outline-orange-400;
+    @apply cursor-pointer outline outline-4 outline-orange-400;
   }
 }
 
@@ -179,7 +202,7 @@ const startAttack = (minion) => {
 }
 
 .hp-self {
-  @apply mb-24 self-end;
+  @apply mb-20 self-end;
 
   grid-area: hp-self;
 }
@@ -188,6 +211,16 @@ const startAttack = (minion) => {
   @apply justify-self-end;
 
   grid-area: mana-self;
+}
+
+.minion-info-enter-active,
+.minion-info-leave-active {
+  @apply duration-300 transition-all;
+}
+
+.minion-info-enter-from,
+.minion-info-leave-to {
+  @apply opacity-0 -translate-x-full;
 }
 
 .minion-opponent-enter-active,
@@ -201,10 +234,10 @@ const startAttack = (minion) => {
 .minion-opponent-leave-to,
 .minion-self-enter-from,
 .minion-self-leave-to {
-  @apply opacity-0 z-10;
+  @apply opacity-0;
 
-  transform: perspective(500px) rotate(var(--rotate))
-    translateY(var(--translate-y)) translateZ(15rem);
+  transform: rotate(var(--rotate)) translateY(var(--translate-y))
+    translateZ(15rem);
 }
 
 .minion-opponent-enter-from,

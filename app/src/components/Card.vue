@@ -147,8 +147,6 @@ const reflect = (e) => {
   &__power,
   &__toughness {
     @apply absolute aspect-square border-2 border-neutral-700 flex font-black justify-center h-10 items-center pointer-events-none rounded-full shadow-xl text-white text-2xl z-10;
-
-    text-shadow: 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
   }
 
   &__cost {
@@ -156,7 +154,7 @@ const reflect = (e) => {
   }
 
   &__power {
-    @apply bg-amber-400 bottom-0 left-0 -translate-x-1/4 translate-y-1/4;
+    @apply bg-yellow-500 bottom-0 left-0 -translate-x-1/4 translate-y-1/4;
   }
 
   &__toughness {
@@ -176,13 +174,11 @@ const reflect = (e) => {
   }
 
   &__title {
-    @apply absolute flex inset-0 items-center justify-center text-white;
+    @apply absolute flex inset-0 items-center justify-center;
   }
 
   &__title-content {
     @apply bg-orange-200 font-black shadow-lg text-center w-full;
-
-    text-shadow: 1px 0 0 #000, 0 1px 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
   }
 
   &__description {
@@ -201,6 +197,10 @@ const reflect = (e) => {
 
   &--board {
     .card {
+      &__content {
+        @apply p-0;
+      }
+
       &__container {
         @apply block;
       }
@@ -216,7 +216,7 @@ const reflect = (e) => {
       }
 
       &__image {
-        @apply aspect-auto h-full mx-0;
+        @apply aspect-auto h-full mx-0 rounded-lg;
       }
     }
   }
@@ -235,10 +235,6 @@ const reflect = (e) => {
         }
       }
 
-      &--common {
-        @apply bg-neutral-700;
-      }
-
       &--rare::after {
         @apply bg-gradient-to-r from-blue-400 to-emerald-400;
       }
@@ -254,7 +250,9 @@ const reflect = (e) => {
   }
 
   &--hand {
-    @apply -mx-2;
+    & ~ .card {
+      @apply -mx-2;
+    }
 
     &.card--front {
       &:hover {
@@ -263,10 +261,12 @@ const reflect = (e) => {
         transform: translateY(-14rem) scale(2.5) perspective(500px)
           rotateX(var(--rotateX)) rotateY(var(--rotateY));
 
+        .card__border--common {
+          @apply bg-neutral-700;
+        }
+
         .card {
           &__content {
-            @apply mx-0;
-
             &::after {
               @apply absolute inset-0 rounded-[inherit] transition-opacity;
 

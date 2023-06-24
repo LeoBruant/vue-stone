@@ -44,7 +44,7 @@ const play = (card) => {
 </script>
 
 <template>
-  <div v-if="players && game" class="bg-amber-900">
+  <div v-if="players && game" class="bg-[url('/img/wooden-table.jpeg')]">
     <Hand :player="players.opponent" />
     <Board
       @startAttack="startAttack"
