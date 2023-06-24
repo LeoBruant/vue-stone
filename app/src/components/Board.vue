@@ -3,13 +3,9 @@ import Card from "@/components/Card.vue";
 import Health from "@/components/Health.vue";
 import Mana from "@/components/Mana.vue";
 import PlayerName from "@/components/PlayerName.vue";
-
-import { io } from "socket.io-client";
 import { ref } from "vue";
 
 const emit = defineEmits(["startAttack", "stopAttack"]);
-
-const socket = io("ws://localhost:8080/");
 
 const props = defineProps({
   attacking: {
@@ -21,6 +17,10 @@ const props = defineProps({
     default: null,
   },
   players: {
+    type: Object,
+    default: null,
+  },
+  socket: {
     type: Object,
     default: null,
   },
@@ -37,7 +37,7 @@ const attackPlayer = (minion) => {
 
   minionAttack();
 
-  socket.emit("damagePlayer", {
+  props.socket.emit("damagePlayer", {
     damage: minion.power,
     playerId: props.players.opponent.id,
   });
@@ -56,7 +56,7 @@ const endTurn = () => {
     return;
   }
 
-  socket.emit("endTurn");
+  props.socket.emit("endTurn");
 };
 
 const minionAttack = () => {

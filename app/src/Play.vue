@@ -62,6 +62,7 @@ const play = (card) => {
       :attacking="attacking"
       :game="game"
       :players="players"
+      :socket="socket"
     />
     <Hand @play="play" :player="players.self" self />
   </div>
