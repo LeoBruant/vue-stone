@@ -16,12 +16,12 @@ const props = defineProps({
 <template>
   <div :class="`hand ${'hand--' + (self ? 'self' : 'opponent')}`">
     <Card
-      v-for="card in player.hand"
+      v-for="(card, index) in player.hand"
       :card="card"
       :outlined="self && player.playing && player.mana >= card.cost"
       :side="!self ? 'back' : 'front'"
       state="hand"
-      @click="$emit('play', card)"
+      @click="$emit('play', index)"
     />
   </div>
 </template>

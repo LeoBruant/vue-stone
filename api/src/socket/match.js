@@ -121,12 +121,23 @@ function startGame(team) {
 
   /**
    * @param {Socket} socket
-   * @param {Card} card
+   * @param {number} cardIndex
    */
-  function play(socket, { card }) {
+  function play(socket, cardIndex) {
     const self = findPlayer(socket);
     // Cancel if player is not allowed to play
-    if (!self.playing) return;
+    if (!self.playing) {
+      return;
+    }
+
+    /**
+     * @type {Card}
+     */
+    const card = self.hand[cardIndex];
+    // If card does not exist, cancel
+    if (!card) {
+      return;
+    }
 
     // Do nothing if not enough mana
     if (self.mana < card.cost) {
@@ -150,7 +161,7 @@ function startGame(team) {
     };
 
     // Remove card from hand
-    self.hand.splice(self.hand.indexOf(card), 1);
+    self.hand.splice(cardIndex, 1);
 
     update();
   }
@@ -196,6 +207,10 @@ function startGame(team) {
     });
 
     socket.on("endTurn", () => {
+      const self = findPlayer(socket);
+      // Cancel if player is not allowed to play
+      if (!self.playing) return;
+
       turnMaxMana = Math.min(++turn, MAX_MANA);
 
       for (const key in players) {
@@ -210,9 +225,15 @@ function startGame(team) {
       update();
     });
 
-    socket.on("play", (data) => {
-      play(socket, data);
-    });
+    socket.on(
+      "play",
+      /**
+       * @param {number} card Index of the card to play
+       */
+      (card) => {
+        play(socket, card);
+      }
+    );
 
     socket.on("disconnect", () => {
       console.log("One player disconnected, ending game.");

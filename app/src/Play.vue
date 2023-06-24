@@ -41,11 +41,11 @@ const startAttack = (minion) => {
   attacking.value = minion;
 };
 
+/**
+ * @param {number} card Index of the card to play
+ */
 const play = (card) => {
-  socket.emit("play", {
-    card,
-    player: JSON.parse(localStorage.getItem("player")),
-  });
+  socket.emit("play", card);
 };
 </script>
 
