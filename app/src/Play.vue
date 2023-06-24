@@ -9,23 +9,29 @@ const socket = io("ws://localhost:8080/");
 
 const attacking = ref(null);
 
-const game = ref();
+const game = ref(null);
 
-const players = ref();
+const players = ref(null);
 
 socket.on("game", (data) => {
   game.value = data;
+  const { self, opponent } = data;
 
   // Define players
   players.value = {
-    self: data.players.find(
-      ({ id }) => id === JSON.parse(localStorage.getItem("player")).id
-    ),
-    opponent: data.players.find(
-      ({ id }) => id !== JSON.parse(localStorage.getItem("player")).id
-    ),
+    self,
+    opponent,
   };
 });
+
+function clearGame() {
+  console.log("Game cleared");
+  game.value = null;
+  players.value = null;
+}
+
+socket.on("endGame", clearGame);
+socket.on("disconnect", clearGame);
 
 const startAttack = (minion) => {
   if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
@@ -44,6 +50,10 @@ const play = (card) => {
 </script>
 
 <template>
+  <div v-if="!socket.active">
+    Disconnected <button v-on:click="socket.connect()">Reconnect</button>
+  </div>
+  <div v-if="!game || !players">Waiting for an opponent</div>
   <div v-if="players && game" class="bg-[url('/img/wooden-table.jpeg')]">
     <Hand :player="players.opponent" />
     <Board
