@@ -90,11 +90,13 @@ const reflect = (e) => {
       `"
     ref="cardElement"
   >
+    <!-- Border -->
     <div
-      v-if="card.rarity !== 'common'"
-      :class="`card__border card__border--animated card__border--${card.rarity}`"
+      :class="`card__border card__border--${card.rarity} ${
+        card.rarity !== 'common' ? 'card__border--animated' : ''
+      }`"
     ></div>
-    <div v-else class="card__border card__border--common"></div>
+    <!-- Content -->
     <div class="card__content">
       <!-- Front side -->
       <div v-if="side === 'front'" class="contents">
@@ -223,11 +225,9 @@ const reflect = (e) => {
 
   &--front {
     .card__border {
-      @apply absolute -inset-1 rounded-lg;
+      @apply absolute bg-neutral-400 flex -inset-1 overflow-hidden rounded-lg;
 
       &--animated {
-        @apply flex overflow-hidden;
-
         &::after {
           @apply absolute animate-spin aspect-square -inset-14 m-auto pointer-events-none;
 
@@ -300,7 +300,7 @@ const reflect = (e) => {
     @apply cursor-pointer;
 
     .card__content {
-      @apply outline-offset-4 outline outline-4;
+      @apply outline-offset-4 outline outline-[6px];
     }
 
     &-attack .card__content {

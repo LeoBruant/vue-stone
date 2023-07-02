@@ -155,7 +155,7 @@ const startAttack = (minion) => {
     <transition name="minion-info">
       <div
         v-if="minionInfo"
-        class="absolute left-6 origin-left pointer-events-none scale-[2.5] top-1/2 -translate-y-1/2"
+        class="absolute left-6 origin-left pointer-events-none scale-[2.5] top-1/2 -translate-y-1/2 z-10"
       >
         <Card :card="minionInfo" state="hand" />
       </div>

@@ -2,10 +2,13 @@
 import Board from "@/components/Board.vue";
 import Hand from "@/components/Hand.vue";
 
+import { useUserStore } from "@/stores/user";
 import { io } from "socket.io-client";
 import { ref } from "vue";
 
 const socket = io("ws://localhost:8080/");
+
+const user = useUserStore();
 
 const attacking = ref(null);
 
@@ -13,8 +16,17 @@ const game = ref(null);
 
 const players = ref(null);
 
+const clearGame = () => {
+  game.value = null;
+  players.value = null;
+};
+
+socket.on("endGame", clearGame);
+socket.on("disconnect", clearGame);
+
 socket.on("game", (data) => {
   game.value = data;
+
   const { self, opponent } = data;
 
   // Define players
@@ -23,15 +35,6 @@ socket.on("game", (data) => {
     opponent,
   };
 });
-
-function clearGame() {
-  console.log("Game cleared");
-  game.value = null;
-  players.value = null;
-}
-
-socket.on("endGame", clearGame);
-socket.on("disconnect", clearGame);
 
 const startAttack = (minion) => {
   if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
@@ -47,6 +50,8 @@ const startAttack = (minion) => {
 const play = (card) => {
   socket.emit("play", card);
 };
+
+socket.emit("setName", user.name);
 </script>
 
 <template>

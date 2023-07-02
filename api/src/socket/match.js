@@ -36,7 +36,7 @@ const DEFAULT_PLAYER = {
       cost: 2,
       id: 2,
       power: 2,
-      rarity: "common",
+      rarity: "rare",
       title: "Card 2",
       toughness: 2,
     },
@@ -44,7 +44,7 @@ const DEFAULT_PLAYER = {
       cost: 3,
       id: 3,
       power: 3,
-      rarity: "common",
+      rarity: "epic",
       title: "Card 3",
       toughness: 3,
     },
@@ -61,7 +61,7 @@ const DEFAULT_PLAYER = {
   id: 2,
   mana: 1,
   minions: [null, null, null, null, null, null, null],
-  name: "Player2",
+  name: '',
   playing: false,
 };
 
@@ -72,13 +72,13 @@ const MAX_MANA = 10;
  * @param {MatchEmitter} emitter
  */
 export default function match(io, emitter) {
-  emitter.on(
-    "teamReadyEvent",
+  emitter.on("teamReadyEvent",
     /**
      * @param {{team: Socket[]}} data
      */
     ({ team }) => {
       console.log("A team is ready to play.");
+
       startGame(team);
     }
   );
@@ -87,20 +87,59 @@ export default function match(io, emitter) {
 /**
  * @param {Socket[]} team
  */
-function startGame(team) {
+const startGame = (team) => {
   /**
    * @type {{[id: string]: Player}}
    */
   const players = {};
+
   let turn = 1;
   let turnMaxMana = 1;
+
+  /**
+   * @param {Number} damage 
+   * @param {Player} socket 
+   */
+  const damagePlayer = (damage, socket) => {
+    const player = players[socket.id];
+
+    // Cancel if player is not allowed to play
+    if (!player.playing) {
+      return;
+    }
+
+    const opponent = findOpponent(player);
+
+    opponent.health = Math.max(opponent.health - damage, 0);
+  }
+
+  /**
+   * @param {Player} socket 
+   */
+  const endTurn = (socket) => {
+    const player = players[socket.id];
+
+    // Cancel if player is not allowed to play
+    if (!player.playing) {
+      return;
+    }
+
+    turnMaxMana = Math.min(++turn, MAX_MANA);
+
+    for (const key in players) {
+      const player = players[key];
+
+      player.playing = !player.playing;
+      player.mana = turnMaxMana;
+    }
+  }
 
   /**
    * Find the opponent of a given player
    * @param {Player} player
    * @returns {Player}
    */
-  function findOpponent(player) {
+  const findOpponent = (player) => {
     if (!player) {
       throw Error("Player is not defined!");
     }
@@ -113,38 +152,33 @@ function startGame(team) {
   }
 
   /**
-   * Finds a player from a socket
-   * @param {Socket} socket
-   * @returns {Player}
-   */
-  const findPlayer = (socket) => players[socket.id];
-
-  /**
    * @param {Socket} socket
    * @param {number} cardIndex
    */
-  function play(socket, cardIndex) {
-    const self = findPlayer(socket);
-    // Cancel if player is not allowed to play
-    if (!self.playing) {
+  const play = (socket, cardIndex) => {
+    const player = players[socket.id];
+
+    // Do nothing if not player's turn
+    if (!player.playing) {
       return;
     }
 
     /**
      * @type {Card}
      */
-    const card = self.hand[cardIndex];
+    const card = player.hand[cardIndex];
+
     // If card does not exist, cancel
-    if (!card) {
-      return;
-    }
+    // if (!card) {
+    //   return;
+    // }
 
     // Do nothing if not enough mana
-    if (self.mana < card.cost) {
+    if (player.mana < card.cost) {
       return;
     }
 
-    const emptySlotIndex = self.minions.indexOf(null);
+    const emptySlotIndex = player.minions.indexOf(null);
 
     // Do nothing if no empty slot on the board
     if (emptySlotIndex === -1) {
@@ -152,32 +186,34 @@ function startGame(team) {
     }
 
     // Remove mana
-    self.mana -= card.cost;
+    player.mana -= card.cost;
 
     // Put card on board
-    self.minions[emptySlotIndex] = {
+    player.minions[emptySlotIndex] = {
       ...card,
       turnPlayed: turn,
     };
 
     // Remove card from hand
-    self.hand.splice(cardIndex, 1);
+    player.hand.splice(cardIndex, 1);
 
     update();
   }
 
-  function update() {
+  const update = () => {
     for (const socket of team) {
-      const self = findPlayer(socket);
-      if (!self) break;
+      const self = players[socket.id];
       const opponent = findOpponent(self);
-      if (!opponent) break;
+
+      if (!opponent || !self) {
+        break;
+      }
 
       socket.emit("game", {
-        turn,
-        turnMaxMana,
-        self,
         opponent,
+        self,
+        turn,
+        turnMaxMana
       });
     }
   }
@@ -189,44 +225,31 @@ function startGame(team) {
      * @type {Player}
      */
     const player = structuredClone(DEFAULT_PLAYER);
-    player.name = player.id = socket.id;
+
+    player.id = socket.id;
+
     // Sets the first player as playing
     player.playing = playing;
-    playing = !playing;
+    playing = false;
+
+    // Update player
     players[player.id] = player;
 
-    socket.on("damagePlayer", ({ damage }) => {
-      const self = findPlayer(socket);
-      // Cancel if player is not allowed to play
-      if (!self.playing) return;
-      const opponent = findOpponent(self);
-
-      opponent.health = Math.max(opponent.health - damage, 0);
-
+    socket.on("damagePlayer",
+    /**
+     * @param {{damage: number}} obj
+     */
+    ({ damage }) => {
+      damagePlayer(damage, socket);
       update();
     });
 
     socket.on("endTurn", () => {
-      const self = findPlayer(socket);
-      // Cancel if player is not allowed to play
-      if (!self.playing) return;
-
-      turnMaxMana = Math.min(++turn, MAX_MANA);
-
-      for (const key in players) {
-        /**
-         * @type {Player}
-         */
-        const player = players[key];
-        player.playing = !player.playing;
-        player.mana = turnMaxMana;
-      }
-
+      endTurn(socket);
       update();
     });
 
-    socket.on(
-      "play",
+    socket.on("play",
       /**
        * @param {number} card Index of the card to play
        */
@@ -235,8 +258,18 @@ function startGame(team) {
       }
     );
 
+    socket.on('setName',
+    /**
+     * @param {string} name 
+     */
+    (name) => {
+      players[player.id].name = name;
+      update();
+    });
+
     socket.on("disconnect", () => {
       console.log("One player disconnected, ending game.");
+
       for (const socket of team) {
         socket.emit("endGame");
         socket.disconnect(true);
