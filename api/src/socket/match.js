@@ -25,6 +25,7 @@
 const DEFAULT_PLAYER = {
   hand: [
     {
+      attacks: 0,
       cost: 1,
       id: 1,
       power: 1,
@@ -33,6 +34,7 @@ const DEFAULT_PLAYER = {
       toughness: 1,
     },
     {
+      attacks: 0,
       cost: 2,
       id: 2,
       power: 2,
@@ -41,6 +43,7 @@ const DEFAULT_PLAYER = {
       toughness: 2,
     },
     {
+      attacks: 0,
       cost: 3,
       id: 3,
       power: 3,
@@ -49,6 +52,7 @@ const DEFAULT_PLAYER = {
       toughness: 3,
     },
     {
+      attacks: 0,
       cost: 4,
       id: 4,
       power: 4,
@@ -97,10 +101,11 @@ const startGame = (team) => {
   let turnMaxMana = 1;
 
   /**
-   * @param {Number} damage 
+   * @param {Card} minion 
+   * @param {Number} minionPosition
    * @param {Player} socket 
    */
-  const damagePlayer = (damage, socket) => {
+  const minionAttackPlayer = (minion, minionPosition, socket) => {
     const player = players[socket.id];
 
     // Cancel if player is not allowed to play
@@ -110,7 +115,9 @@ const startGame = (team) => {
 
     const opponent = findOpponent(player);
 
-    opponent.health = Math.max(opponent.health - damage, 0);
+    opponent.health -= minion.power;
+
+    player.minions[minionPosition].attacks -= 1;
   }
 
   /**
@@ -131,6 +138,12 @@ const startGame = (team) => {
 
       player.playing = !player.playing;
       player.mana = turnMaxMana;
+
+      for (const minion of player.minions) {
+        if (minion) {
+          minion.attacks = 1;
+        }
+      }
     }
   }
 
@@ -235,17 +248,17 @@ const startGame = (team) => {
     // Update player
     players[player.id] = player;
 
-    socket.on("damagePlayer",
-    /**
-     * @param {{damage: number}} obj
-     */
-    ({ damage }) => {
-      damagePlayer(damage, socket);
+    socket.on("endTurn", () => {
+      endTurn(socket);
       update();
     });
 
-    socket.on("endTurn", () => {
-      endTurn(socket);
+    socket.on("minionAttackPlayer",
+    /**
+     * @param {{minion: Card, minionPosition: Number}} obj
+     */
+    ({ minion, minionPosition }) => {
+      minionAttackPlayer(minion, minionPosition, socket);
       update();
     });
 

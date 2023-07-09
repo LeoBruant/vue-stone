@@ -30,7 +30,7 @@ const props = defineProps({
 
 const angle = 10;
 const cardElement = ref(null);
-const throttle = 5;
+const threshold = 5;
 const mouseX = ref(0);
 const mouseY = ref(0);
 
@@ -49,7 +49,7 @@ const reflect = (e) => {
   const xDifference = mouseXValue > x ? mouseXValue - x : x - mouseXValue;
   const yDifference = mouseYValue > y ? mouseYValue - y : y - mouseYValue;
 
-  if (xDifference < throttle && yDifference < throttle) {
+  if (xDifference < threshold && yDifference < threshold) {
     return;
   } else {
     mouseX.value = x;
@@ -218,7 +218,7 @@ const reflect = (e) => {
       }
 
       &__image {
-        @apply aspect-auto h-full mx-0 rounded-lg;
+        @apply aspect-auto h-full mx-0 rounded;
       }
     }
   }

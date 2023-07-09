@@ -28,27 +28,25 @@ const props = defineProps({
 
 const minionInfo = ref(null);
 
-const minionsAnimation = {};
+let minionsAnimation = {};
 
 const attackPlayer = (minion) => {
-  if (!props.players.self.playing || !props.attacking) {
-    return;
-  }
+  minionsAnimation[props.attacking.id] = "attack";
 
-  minionAttack();
-
-  props.socket.emit("damagePlayer", {
-    damage: minion.power,
-    playerId: props.players.opponent.id,
+  props.socket.emit("minionAttackPlayer", {
+    minion,
+    minionPosition: props.players.self.minions.indexOf(minion),
   });
+
+  emit("stopAttack");
+
+  setTimeout(() => {
+    minionsAnimation = {};
+  }, 500);
 };
 
 const canAttack = (minion) => {
-  return (
-    props.players.self.playing &&
-    minion?.turnPlayed < props.game.turn &&
-    minion.canAttack !== false
-  );
+  return props.players.self.playing && minion?.attacks > 0;
 };
 
 const endTurn = () => {
@@ -57,18 +55,6 @@ const endTurn = () => {
   }
 
   props.socket.emit("endTurn");
-};
-
-const minionAttack = () => {
-  const minionIndex = props.players.self.minions.findIndex(
-    (m) => m === props.attacking
-  );
-
-  props.players.self.minions[minionIndex].canAttack = false;
-
-  minionsAnimation[props.attacking.id] = "attack";
-
-  emit("stopAttack");
 };
 
 const startAttack = (minion) => {
@@ -82,7 +68,7 @@ const startAttack = (minion) => {
 
 <template>
   <div
-    class="container | bg-orange-200/95 mx-auto relative shadow-2xl shadow-orange-200"
+    class="container | bg-orange-200 mx-auto relative shadow-2xl shadow-orange-200"
   >
     <!-- Cards -->
     <div class="flex flex-col gap-6 h-screen justify-center items-center">
