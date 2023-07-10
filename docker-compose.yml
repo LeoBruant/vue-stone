@@ -14,3 +14,11 @@ services:
       target: prod
     ports:
       - "8080:8080"
+
+  postgres:
+    extends:
+      file: docker-compose.dev.yml
+      service: postgres
+
+volumes:
+  db:

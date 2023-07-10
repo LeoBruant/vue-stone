@@ -10,7 +10,7 @@ import db from "./model.mjs";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
 
-const app = express();
+export const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {

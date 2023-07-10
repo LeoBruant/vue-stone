@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/main.js",
     "start": "node src/main.js",
-    "lint": "npx eslint ./src && prettier -c ./src"
+    "lint": "npx eslint ./src && prettier -c ./src",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +20,12 @@
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.0",
-    "socket.io": "^4.6.2"
+    "socket.io": "^4.6.2",
+    "sqlite": "^5.0.1"
   },
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "supertest": "^6.3.3",
+    "vitest": "^0.32.2"
+  }
 }
