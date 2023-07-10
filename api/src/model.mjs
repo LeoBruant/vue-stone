@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+// eslint-disable-next-line no-unused-vars
 import { Model, Sequelize } from "sequelize";
 import { fileURLToPath } from "url";
 
@@ -28,6 +29,6 @@ for (const model of models) {
   db[modelInstance.name] = modelInstance;
 }
 
-await db.connection.sync({ force: true });
+await db.connection.sync();
 
 export default db;

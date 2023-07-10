@@ -2,7 +2,12 @@
 import { ref } from "vue";
 
 const animationDelay = 150;
-const dots = ref([false, false, false]);
+const dots = ref([]);
+const number = 3;
+
+for (let i = 0; i < number; i++) {
+  dots.value.push(false);
+}
 
 dots.value.forEach((dot, index) => {
   setTimeout(() => {
@@ -12,7 +17,7 @@ dots.value.forEach((dot, index) => {
 </script>
 
 <template>
-  <div class="flex gap-1">
+  <div class="animate-pulse flex gap-1">
     <span v-for="(dot, index) in dots" v-show="dot" class="animate-bounce"
       >.</span
     >

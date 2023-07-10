@@ -18,7 +18,7 @@ export async function createUser(name, email, password) {
 }
 
 /**
- * Finds a new user by criteria.
+ * Finds all users by criteria.
  * @param criteria
  * @param options
  * @returns {Promise<User[]>}
@@ -26,6 +26,20 @@ export async function createUser(name, email, password) {
 export async function findAllUsers(criteria, options = {}) {
   return db.User.findAll({
     where: criteria,
+    ...options,
+    order: Object.entries(options.order || {}),
+  });
+}
+
+/**
+ * Finds user by id.
+ * @param id
+ * @param options
+ * @returns {Promise<User>}
+ */
+export async function findOneUser(id, options = {}) {
+  return db.User.findOne({
+    where: {id},
     ...options,
     order: Object.entries(options.order || {}),
   });

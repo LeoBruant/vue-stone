@@ -2,14 +2,13 @@
 import Board from "@/components/Board.vue";
 import Hand from "@/components/Hand.vue";
 
-import { useUserStore } from "@/stores/user";
 import { io } from "socket.io-client";
 import { ref } from "vue";
 import Dots from "./components/Dots.vue";
 
 const socket = io("ws://localhost:8080/");
 
-const user = useUserStore();
+const spell = ref(null);
 
 const attacking = ref(null);
 
@@ -21,6 +20,39 @@ const clearGame = () => {
   game.value = null;
   players.value = null;
 };
+
+const startAttack = (minion) => {
+  if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
+    return;
+  }
+
+  attacking.value = minion;
+};
+
+const playSpell = (card) => {
+  if (card.spell.type === "targetOpponentMinion") {
+    spell.value = card;
+  }
+};
+
+/**
+ * @param {number} card Index of the card to play
+ */
+const play = (card) => {
+  if (players.value.self.hand[card].spell) {
+    playSpell(players.value.self.hand[card]);
+
+    return;
+  }
+
+  spell.value = null;
+
+  socket.emit("play", card);
+};
+
+socket.on("connect", () => {
+  socket.emit("setJwt", localStorage.getItem("jwt"));
+});
 
 socket.on("endGame", clearGame);
 socket.on("disconnect", clearGame);
@@ -36,23 +68,6 @@ socket.on("game", (data) => {
     opponent,
   };
 });
-
-const startAttack = (minion) => {
-  if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
-    return;
-  }
-
-  attacking.value = minion;
-};
-
-/**
- * @param {number} card Index of the card to play
- */
-const play = (card) => {
-  socket.emit("play", card);
-};
-
-socket.emit("setName", user.name);
 </script>
 
 <template>
@@ -82,6 +97,7 @@ socket.emit("setName", user.name);
         :game="game"
         :players="players"
         :socket="socket"
+        :spell="spell"
       />
       <Hand @play="play" :player="players.self" self />
     </div>

@@ -1,12 +1,8 @@
 <script setup>
-import { useUserStore } from "@/stores/user";
-
 let name = "";
 let email = "";
 let password = "";
 let jwt = "";
-
-const user = useUserStore();
 
 const signup = async () => {
   try {
@@ -47,10 +43,9 @@ const login = async () => {
       }),
     });
     if (response.status === 200) {
-      const { id, token } = await response.json();
-      jwt = token;
+      const { token } = await response.json();
 
-      user.$patch({ id, name });
+      localStorage.setItem("jwt", token);
 
       alert("Connecté!");
     } else {

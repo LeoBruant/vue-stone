@@ -62,7 +62,7 @@ export default function (connection) {
         allowNull: false,
         validate: {
           min: 8,
-          is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+          is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*?])/,
         },
       },
     },

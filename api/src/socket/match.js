@@ -1,9 +1,19 @@
+import tokenLib from "jsonwebtoken";
+import { findOneUser } from "../service/user.js";
+
 /**
  * @typedef Card
+ * @property {number} attacks
  * @property {number} cost
  * @property {number} id
  * @property {number} power
  * @property {string} rarity
+ * @property {obj: {
+ *  drawnCards: number | null, 
+ *  powerAdded: number | null,
+ *  toughnessAdded: number | null,
+ *  type: string
+ * } | null} spell
  * @property {string} title
  * @property {number} toughness
  */
@@ -55,17 +65,23 @@ const DEFAULT_PLAYER = {
       attacks: 0,
       cost: 4,
       id: 4,
-      power: 4,
+      power: null,
       rarity: "legendary",
+      spell: {
+        drawnCards: null,
+        powerAdded: 4,
+        toughnessAdded: 4,
+        type: "targetOpponentMinion",
+      },
       title: "Card 4",
-      toughness: 4,
+      toughness: null,
     },
   ],
   health: 30,
   id: 2,
   mana: 1,
   minions: [null, null, null, null, null, null, null],
-  name: '',
+  name: null,
   playing: false,
 };
 
@@ -78,7 +94,7 @@ const MAX_MANA = 10;
 export default function match(io, emitter) {
   emitter.on("teamReadyEvent",
     /**
-     * @param {{team: Socket[]}} data
+     * @param {{team: {jwt: string, socket: Socket}[]}} data
      */
     ({ team }) => {
       console.log("A team is ready to play.");
@@ -89,9 +105,9 @@ export default function match(io, emitter) {
 }
 
 /**
- * @param {Socket[]} team
+ * @param {{jwt: string, socket: Socket}[]} team
  */
-const startGame = (team) => {
+const startGame = async (team) => {
   /**
    * @type {{[id: string]: Player}}
    */
@@ -214,7 +230,7 @@ const startGame = (team) => {
   }
 
   const update = () => {
-    for (const socket of team) {
+    for (const {socket} of team) {
       const self = players[socket.id];
       const opponent = findOpponent(self);
 
@@ -233,13 +249,15 @@ const startGame = (team) => {
 
   let playing = true;
 
-  for (const socket of team) {
+  for (const {jwt, socket} of team) {
     /**
      * @type {Player}
      */
     const player = structuredClone(DEFAULT_PLAYER);
+    const user = await findOneUser(tokenLib.decode(jwt).id);
 
     player.id = socket.id;
+    player.name = user.name;
 
     // Sets the first player as playing
     player.playing = playing;
@@ -271,19 +289,10 @@ const startGame = (team) => {
       }
     );
 
-    socket.on('setName',
-    /**
-     * @param {string} name 
-     */
-    (name) => {
-      players[player.id].name = name;
-      update();
-    });
-
     socket.on("disconnect", () => {
       console.log("One player disconnected, ending game.");
 
-      for (const socket of team) {
+      for (const {socket} of team) {
         socket.emit("endGame");
         socket.disconnect(true);
       }

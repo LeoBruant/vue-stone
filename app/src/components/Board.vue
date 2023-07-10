@@ -24,6 +24,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  spell: {
+    type: Object,
+    default: null,
+  },
 });
 
 const minionInfo = ref(null);
@@ -82,6 +86,12 @@ const startAttack = (minion) => {
             @mouseenter="minionInfo = minion"
             @mouseleave="minionInfo = null"
             :card="minion"
+            :outlined="
+              players.self.mana >= spell?.cost
+                ? spell?.spell.type === 'targetOpponentMinion'
+                : false
+            "
+            outlineStyle="attack"
             state="board"
           />
         </transition>
