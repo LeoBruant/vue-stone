@@ -53,6 +53,16 @@ const canAttack = (minion) => {
   return props.players.self.playing && minion?.attacks > 0;
 };
 
+const clickOpponentMinion = (minionIndex) => {
+  if (props.spell && props.spell.spell?.type === "targetOpponentMinion") {
+    emit("applySpell", {
+      minionIndex,
+      spell: props.spell.spell,
+      spellIndex: props.players.self.hand.indexOf(props.spell),
+    });
+  }
+};
+
 const endTurn = () => {
   if (!props.players.self.playing) {
     return;
@@ -78,11 +88,12 @@ const startAttack = (minion) => {
     <div class="flex flex-col gap-6 h-screen justify-center items-center">
       <div class="flex flex-1 gap-7 items-end">
         <transition
-          v-for="minion in players.opponent.minions"
+          v-for="(minion, index) in players.opponent.minions"
           name="minion-opponent"
         >
           <Card
             v-show="minion"
+            @click="clickOpponentMinion(index)"
             @mouseenter="minionInfo = minion"
             @mouseleave="minionInfo = null"
             :card="minion"

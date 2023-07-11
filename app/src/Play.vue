@@ -16,6 +16,16 @@ const game = ref(null);
 
 const players = ref(null);
 
+const applySpell = ({ minionIndex, spell, spellIndex }) => {
+  if (spell.type === "targetOpponentMinion") {
+    socket.emit("spellMinion", {
+      minionIndex,
+      spell,
+      spellIndex,
+    });
+  }
+};
+
 const clearGame = () => {
   game.value = null;
   players.value = null;
@@ -44,8 +54,6 @@ const play = (card) => {
 
     return;
   }
-
-  spell.value = null;
 
   socket.emit("play", card);
 };
@@ -91,6 +99,7 @@ socket.on("game", (data) => {
     <div v-if="players && game" class="w-full">
       <Hand :player="players.opponent" />
       <Board
+        @applySpell="applySpell"
         @startAttack="startAttack"
         @stopAttack="attacking = null"
         :attacking="attacking"

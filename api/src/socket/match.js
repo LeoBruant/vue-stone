@@ -116,6 +116,10 @@ const startGame = async (team) => {
   let turn = 1;
   let turnMaxMana = 1;
 
+  const spellMinion = ({minionIndex, spell: {powerAdded, toughnessAdded, type}, spellIndex}, socket) => {
+    console.log(minionIndex, powerAdded, toughnessAdded, spellIndex, type);
+  }
+
   /**
    * @param {Card} minion 
    * @param {Number} minionPosition
@@ -147,7 +151,9 @@ const startGame = async (team) => {
       return;
     }
 
-    turnMaxMana = Math.min(++turn, MAX_MANA);
+    if (!Object.values(players).slice(0, -1).includes(player)) {
+      turnMaxMana = Math.min(++turn, MAX_MANA);
+    }
 
     for (const key in players) {
       const player = players[key];
@@ -265,6 +271,11 @@ const startGame = async (team) => {
 
     // Update player
     players[player.id] = player;
+
+    socket.on("spellMinion", (data) => {
+      spellMinion(data, socket);
+      update();
+    })
 
     socket.on("endTurn", () => {
       endTurn(socket);
