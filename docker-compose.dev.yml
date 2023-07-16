@@ -5,6 +5,8 @@ services:
     build:
       context: app
       target: dev
+    env_file:
+      - ./app/.env
     network_mode: "host"
     volumes:
       - "./app:/app"
@@ -13,6 +15,8 @@ services:
     build:
       context: api
       target: dev
+    env_file:
+      - ./api/.env
     network_mode: "host"
     volumes:
       - "./api:/app"

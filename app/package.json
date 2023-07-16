@@ -9,10 +9,12 @@
     "lint": "npx eslint ./src && prettier -c ./src"
   },
   "dependencies": {
-    "socket.io-client": "^4.6.2",
+    "pinia": "^2.1.4",
     "prettier": "^2.8.8",
+    "socket.io-client": "^4.6.2",
     "vue": "^3.2.47",
-    "vue-router": "^4.2.2"
+    "vue-router": "^4.2.2",
+    "vue-stone": "file:"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
