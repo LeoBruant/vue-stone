@@ -117,7 +117,7 @@ const startGame = async (team) => {
   let turnMaxMana = 1;
 
   const spellMinion = ({minionIndex, spell: {powerAdded, toughnessAdded, type}, spellIndex}, socket) => {
-    console.log(minionIndex, powerAdded, toughnessAdded, spellIndex, type);
+    console.log(minionIndex, powerAdded, toughnessAdded, socket, spellIndex, type);
   }
 
   /**
