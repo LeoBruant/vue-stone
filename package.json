@@ -16,5 +16,8 @@
   "devDependencies": {
     "eslint": "^8.41.0",
     "prettier": "^2.8.8"
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^8.8.0"
   }
 }
