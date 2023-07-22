@@ -8,11 +8,11 @@ router.post("/login", async (req, res) => {
 
   const [user] = await findAllUsers({ email });
 
-  if (!user || !user.checkPassword(password)) {
+  if (!user?.checkPassword(password)) {
     return res.sendStatus(401);
   }
 
-  res.json({ id: user.id, token: user.generateToken() });
+  res.json({ token: user.generateToken() });
 });
 
 export default router;
