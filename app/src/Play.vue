@@ -8,9 +8,9 @@ import Dots from "./components/Dots.vue";
 
 const jwt = window.localStorage.getItem("jwt");
 
-const socket = io(import.meta.env.VITE_SOCKET_URL);
+const currentSpell = ref(null);
 
-const spell = ref(null);
+const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 const attacking = ref(null);
 
@@ -18,14 +18,11 @@ const game = ref(null);
 
 const players = ref(null);
 
-const applySpell = ({ minionIndex, spell, spellIndex }) => {
-  if (spell.type === "targetOpponentMinion") {
-    socket.emit("spellMinion", {
-      minionIndex,
-      spell,
-      spellIndex,
-    });
-  }
+/**
+ * @param {object} spellData All the data needed to apply a spell
+ */
+const applySpell = (spellData) => {
+  socket.emit("applySpell", spellData);
 };
 
 const clearGame = () => {
@@ -33,31 +30,56 @@ const clearGame = () => {
   players.value = null;
 };
 
+/**
+ * @param {number} card Index of the card to play
+ */
+const play = (card) => {
+  if (players.value.self.hand[card].spell) {
+    playSpell(players.value.self.hand[card].spell);
+
+    return;
+  }
+
+  socket.emit("play", card);
+};
+
+/**
+ * @param {object} spell Spell property of a card
+ */
+const playSpell = (spell) => {
+  if (
+    [
+      "drawCards",
+      "targetAll",
+      "targetAllAllyMinions",
+      "targetAllOpponentMinions",
+      "targetAllyPlayer",
+      "targetOpponentPlayer",
+      "targetRandomOpponentMinions",
+    ].includes(spell[0].type)
+  ) {
+    socket.emit("playSpell", {
+      cardIndex: players.value.self.hand.indexOf(
+        players.value.self.hand.find((card) => card?.spell === spell)
+      ),
+      spell,
+    });
+
+    return;
+  }
+
+  currentSpell.value = spell;
+};
+
+/**
+ * @param {object} minion Minion card
+ */
 const startAttack = (minion) => {
   if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
     return;
   }
 
   attacking.value = minion;
-};
-
-const playSpell = (card) => {
-  if (card.spell.type === "targetOpponentMinion") {
-    spell.value = card;
-  }
-};
-
-/**
- * @param {number} card Index of the card to play
- */
-const play = (card) => {
-  if (players.value.self.hand[card].spell) {
-    playSpell(players.value.self.hand[card]);
-
-    return;
-  }
-
-  socket.emit("play", card);
 };
 
 socket.on("connect", () => {
@@ -110,7 +132,7 @@ socket.on("game", (data) => {
         :game="game"
         :players="players"
         :socket="socket"
-        :spell="spell"
+        :spell="currentSpell"
       />
       <Hand @play="play" :player="players.self" self />
     </div>
