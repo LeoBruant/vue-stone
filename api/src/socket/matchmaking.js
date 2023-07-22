@@ -14,27 +14,29 @@ export default function matchmaking(io, emitter) {
      * @param {Socket} socket
      */
     (socket) => {
-      socket.on('setJwt', 
-      /**
-       * @param {string} jwt 
-       */
-      (jwt) => {
-        waiting.add({jwt, socket});
+      socket.on(
+        "setJwt",
+        /**
+         * @param {string} jwt
+         */
+        (jwt) => {
+          waiting.add({ jwt, socket });
 
-        console.log(
-          `A new player has joined, ${waiting.size} players in waiting room.`
-        );
+          console.log(
+            `A new player has joined, ${waiting.size} players in waiting room.`
+          );
 
-        if (waiting.size >= 2) {
-          const team = Array.from(waiting).slice(0, 2);
-  
-          emitter.emit("teamReadyEvent", { team });
-  
-          for (const member of team) {
-            waiting.delete(member);
+          if (waiting.size >= 2) {
+            const team = Array.from(waiting).slice(0, 2);
+
+            emitter.emit("teamReadyEvent", { team });
+
+            for (const member of team) {
+              waiting.delete(member);
+            }
           }
         }
-      })
+      );
 
       socket.on("disconnect", () => {
         console.log(

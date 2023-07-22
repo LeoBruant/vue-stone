@@ -1,6 +1,6 @@
-import { createUser } from "../service/user.js";
 import { Router } from "express";
 import { ValidationError } from "sequelize";
+import { createUser } from "../service/user.js";
 
 const router = Router();
 

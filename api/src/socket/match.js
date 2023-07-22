@@ -9,7 +9,7 @@ import { findOneUser } from "../service/user.js";
  * @property {number} power
  * @property {string} rarity
  * @property {obj: {
- *  drawnCards: number | null, 
+ *  drawnCards: number | null,
  *  powerAdded: number | null,
  *  toughnessAdded: number | null,
  *  type: string
@@ -92,7 +92,8 @@ const MAX_MANA = 10;
  * @param {MatchEmitter} emitter
  */
 export default function match(io, emitter) {
-  emitter.on("teamReadyEvent",
+  emitter.on(
+    "teamReadyEvent",
     /**
      * @param {{team: {jwt: string, socket: Socket}[]}} data
      */
@@ -116,14 +117,24 @@ const startGame = async (team) => {
   let turn = 1;
   let turnMaxMana = 1;
 
-  const spellMinion = ({minionIndex, spell: {powerAdded, toughnessAdded, type}, spellIndex}, socket) => {
-    console.log(minionIndex, powerAdded, toughnessAdded, socket, spellIndex, type);
-  }
+  const spellMinion = (
+    { minionIndex, spell: { powerAdded, toughnessAdded, type }, spellIndex },
+    socket
+  ) => {
+    console.log(
+      minionIndex,
+      powerAdded,
+      toughnessAdded,
+      socket,
+      spellIndex,
+      type
+    );
+  };
 
   /**
-   * @param {Card} minion 
+   * @param {Card} minion
    * @param {Number} minionPosition
-   * @param {Player} socket 
+   * @param {Player} socket
    */
   const minionAttackPlayer = (minion, minionPosition, socket) => {
     const player = players[socket.id];
@@ -138,10 +149,10 @@ const startGame = async (team) => {
     opponent.health -= minion.power;
 
     player.minions[minionPosition].attacks -= 1;
-  }
+  };
 
   /**
-   * @param {Player} socket 
+   * @param {Player} socket
    */
   const endTurn = (socket) => {
     const player = players[socket.id];
@@ -167,7 +178,7 @@ const startGame = async (team) => {
         }
       }
     }
-  }
+  };
 
   /**
    * Find the opponent of a given player
@@ -184,7 +195,7 @@ const startGame = async (team) => {
         return players[key];
       }
     }
-  }
+  };
 
   /**
    * @param {Socket} socket
@@ -233,10 +244,10 @@ const startGame = async (team) => {
     player.hand.splice(cardIndex, 1);
 
     update();
-  }
+  };
 
   const update = () => {
-    for (const {socket} of team) {
+    for (const { socket } of team) {
       const self = players[socket.id];
       const opponent = findOpponent(self);
 
@@ -248,14 +259,14 @@ const startGame = async (team) => {
         opponent,
         self,
         turn,
-        turnMaxMana
+        turnMaxMana,
       });
     }
-  }
+  };
 
   let playing = true;
 
-  for (const {jwt, socket} of team) {
+  for (const { jwt, socket } of team) {
     /**
      * @type {Player}
      */
@@ -275,23 +286,26 @@ const startGame = async (team) => {
     socket.on("spellMinion", (data) => {
       spellMinion(data, socket);
       update();
-    })
+    });
 
     socket.on("endTurn", () => {
       endTurn(socket);
       update();
     });
 
-    socket.on("minionAttackPlayer",
-    /**
-     * @param {{minion: Card, minionPosition: Number}} obj
-     */
-    ({ minion, minionPosition }) => {
-      minionAttackPlayer(minion, minionPosition, socket);
-      update();
-    });
+    socket.on(
+      "minionAttackPlayer",
+      /**
+       * @param {{minion: Card, minionPosition: Number}} obj
+       */
+      ({ minion, minionPosition }) => {
+        minionAttackPlayer(minion, minionPosition, socket);
+        update();
+      }
+    );
 
-    socket.on("play",
+    socket.on(
+      "play",
       /**
        * @param {number} card Index of the card to play
        */
@@ -303,7 +317,7 @@ const startGame = async (team) => {
     socket.on("disconnect", () => {
       console.log("One player disconnected, ending game.");
 
-      for (const {socket} of team) {
+      for (const { socket } of team) {
         socket.emit("endGame");
         socket.disconnect(true);
       }
@@ -311,4 +325,4 @@ const startGame = async (team) => {
 
     update();
   }
-}
+};
