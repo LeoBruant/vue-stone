@@ -39,7 +39,7 @@ export async function findAllUsers(criteria, options = {}) {
  */
 export async function findOneUser(id, options = {}) {
   return db.User.findOne({
-    where: {id},
+    where: { id },
     ...options,
     order: Object.entries(options.order || {}),
   });
