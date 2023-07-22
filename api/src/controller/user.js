@@ -1,15 +1,15 @@
-import { createUser } from "../service/user.js";
 import { Router } from "express";
 import { ValidationError } from "sequelize";
+import { createUser } from "../service/user.js";
 
 const router = Router();
 
 router.post("/user", async (req, res) => {
   console.log(req.body);
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   try {
-    const user = await createUser(email, password);
+    const user = await createUser(name, email, password);
     res.status(201);
     res.send(user);
   } catch (e) {

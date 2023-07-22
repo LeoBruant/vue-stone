@@ -24,6 +24,7 @@ docker compose -f docker-compose.dev.yml up --build
    ```
 
 2. Open two terminal to run these commands concurrently:
+
    ```shell
    npm run dev -w api
    npm run dev -w app

@@ -1,6 +1,6 @@
-import { DataTypes, Model } from "sequelize";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { DataTypes, Model } from "sequelize";
 
 export default function (connection) {
   const salt =
@@ -36,6 +36,14 @@ export default function (connection) {
 
   User.init(
     {
+      name: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+        validate: {
+          max: 25,
+        },
+      },
       email: {
         type: DataTypes.STRING,
         unique: true,
@@ -54,7 +62,7 @@ export default function (connection) {
         allowNull: false,
         validate: {
           min: 8,
-          is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+          is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*?])/,
         },
       },
     },

@@ -1,10 +1,10 @@
 compose = docker compose
 
 up:
-	$(compose) -f docker-compose.dev.yml up --build -d
+	$(compose) stop && $(compose) -f docker-compose.dev.yml up --build -d --remove-orphans
 
-prod:
-	$(compose) up --build -d
+ssh-api:
+	$(compose) exec api sh
 
 ssh-app:
 	$(compose) exec app sh

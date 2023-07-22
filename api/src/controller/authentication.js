@@ -8,7 +8,7 @@ router.post("/login", async (req, res) => {
 
   const [user] = await findAllUsers({ email });
 
-  if (!user || !user.checkPassword(password)) {
+  if (!user?.checkPassword(password)) {
     return res.sendStatus(401);
   }
 
