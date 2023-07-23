@@ -11,6 +11,7 @@ import { findOneUser } from "../service/user.js";
  * @property {array: {
  *  drawnCards: number | null,
  *  powerAdded: number | null,
+ *  randomMinionsNumber : number | null,
  *  toughnessAdded: number | null,
  *  type:
  *    'drawCards' |
@@ -83,6 +84,54 @@ const DEFAULT_PLAYER = {
           drawnCards: null,
           powerAdded: 1,
           toughnessAdded: 1,
+          type: "targetAll",
+        },
+      ],
+      title: "targetAll",
+      toughness: null,
+    },
+    {
+      attacks: 0,
+      cost: 0,
+      power: null,
+      rarity: "legendary",
+      spell: [
+        {
+          drawnCards: null,
+          powerAdded: 1,
+          toughnessAdded: 1,
+          type: "targetAllAllyMinions",
+        },
+      ],
+      title: "targetAllAllyMinions",
+      toughness: null,
+    },
+    {
+      attacks: 0,
+      cost: 0,
+      power: null,
+      rarity: "legendary",
+      spell: [
+        {
+          drawnCards: null,
+          powerAdded: 1,
+          toughnessAdded: 1,
+          type: "targetAllMinions",
+        },
+      ],
+      title: "targetAllMinions",
+      toughness: null,
+    },
+    {
+      attacks: 0,
+      cost: 0,
+      power: null,
+      rarity: "legendary",
+      spell: [
+        {
+          drawnCards: null,
+          powerAdded: -1,
+          toughnessAdded: -1,
           type: "targetAllOpponentMinions",
         },
       ],
@@ -119,70 +168,6 @@ const DEFAULT_PLAYER = {
         },
       ],
       title: "targetAllyPlayer",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: null,
-          toughnessAdded: 1,
-          type: "targetAll",
-        },
-      ],
-      title: "targetAll",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: 1,
-          toughnessAdded: 1,
-          type: "targetAllAllyMinions",
-        },
-      ],
-      title: "targetAllAllyMinions",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: -1,
-          toughnessAdded: -1,
-          type: "targetAllOpponentMinions",
-        },
-      ],
-      title: "targetAllOpponentMinions",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: 1,
-          toughnessAdded: 1,
-          type: "targetAllMinions",
-        },
-      ],
-      title: "targetAllMinions",
       toughness: null,
     },
     {
@@ -269,6 +254,7 @@ const DEFAULT_PLAYER = {
       attacks: 0,
       cost: 0,
       power: null,
+      randomMinionsNumber: 3,
       rarity: "legendary",
       spell: [
         {
@@ -286,13 +272,13 @@ const DEFAULT_PLAYER = {
   id: 2,
   mana: 1,
   minions: [
-    DEFAULT_CARD,
-    DEFAULT_CARD,
-    DEFAULT_CARD,
-    DEFAULT_CARD,
-    DEFAULT_CARD,
-    DEFAULT_CARD,
-    DEFAULT_CARD,
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
   ],
   name: null,
   playing: false,
@@ -483,74 +469,119 @@ const startGame = async (team) => {
       return;
     }
 
-    spell.forEach(({ drawnCards, powerAdded, toughnessAdded, type }) => {
+    const opponent = findOpponent(player);
+
+    for (const {
+      drawnCards,
+      powerAdded,
+      toughnessAdded,
+      randomMinionsNumber,
+      type,
+    } of spell) {
       if (type === "drawCards") {
         drawCards({ amount: drawnCards, player });
       } else if (type === "targetAll") {
-        targetAll({ player, powerAdded, toughnessAdded });
+        targetAll({ opponent, player, toughnessAdded });
       } else if (type === "targetAllAllyMinions") {
         targetAllAllyMinions({ player, powerAdded, toughnessAdded });
       } else if (type === "targetAllMinions") {
-        targetAllMinions({ player, powerAdded, toughnessAdded });
+        targetAllMinions({ opponent, player, powerAdded, toughnessAdded });
       } else if (type === "targetAllOpponentMinions") {
-        targetAllOpponentMinions({ player, powerAdded, toughnessAdded });
+        targetAllOpponentMinions({
+          opponent,
+          powerAdded,
+          toughnessAdded,
+        });
       } else if (type === "targetAllyMinion") {
         targetAllyMinion({ player, powerAdded, toughnessAdded });
       } else if (type === "targetAllyPlayer") {
-        targetAllyPlayer({ player, powerAdded, toughnessAdded });
+        targetAllyPlayer({ player, toughnessAdded });
       } else if (type === "targetAny") {
-        targetAny({ player, powerAdded, toughnessAdded });
+        targetAny({ opponent, player, powerAdded, toughnessAdded });
       } else if (type === "targetOpponent") {
-        targetOpponent({ player, powerAdded, toughnessAdded });
+        targetOpponent({ opponent, toughnessAdded });
       } else if (type === "targetOpponentMinion") {
-        targetOpponentMinion({ player, powerAdded, toughnessAdded });
+        targetOpponentMinion({ opponent, powerAdded, toughnessAdded });
       } else if (type === "targetOpponentPlayer") {
-        targetOpponentPlayer({ player, powerAdded, toughnessAdded });
+        targetOpponentPlayer({ opponent, toughnessAdded });
       } else if (type === "targetMinion") {
-        targetMinion({ player, powerAdded, toughnessAdded });
+        targetMinion({ opponent, player, powerAdded, toughnessAdded });
       } else if (type === "targetRandomOpponentMinions") {
-        targetRandomOpponentMinions({ player, powerAdded, toughnessAdded });
+        targetRandomOpponentMinions({
+          opponent,
+          powerAdded,
+          randomMinionsNumber,
+          toughnessAdded,
+        });
       }
-    });
+    }
 
     // Remove mana
     player.mana -= card.cost;
 
     // Remove card from hand
-    player.hand.splice(cardIndex, 1);
+    // player.hand.splice(cardIndex, 1);
   };
 
   /**
+   * @param {Socket} opponent
+   * @param {Socket} player
+   * @param {number} toughnessAdded
+   */
+  const targetAll = ({ opponent, player, toughnessAdded }) => {
+    targetAllMinions({ opponent, player, toughnessAdded });
+    targetAllyPlayer({ player, toughnessAdded });
+    targetOpponentPlayer({ opponent, toughnessAdded });
+  };
+
+  /**
+   * @param {Socket} opponent
    * @param {Socket} player
    * @param {number} powerAdded
    * @param {number} toughnessAdded
    */
-  const targetAll = ({ player, powerAdded, toughnessAdded }) => {};
+  const targetAllAllyMinions = ({ player, powerAdded, toughnessAdded }) => {
+    for (const minion of player.minions) {
+      if (minion) {
+        minion.power += powerAdded ? powerAdded : 0;
+        minion.toughness += toughnessAdded ? toughnessAdded : 0;
+      }
+    }
+  };
 
   /**
+   * @param {Socket} opponent
    * @param {Socket} player
    * @param {number} powerAdded
    * @param {number} toughnessAdded
    */
-  const targetAllAllyMinions = ({ player, powerAdded, toughnessAdded }) => {};
+  const targetAllMinions = ({
+    opponent,
+    player,
+    powerAdded,
+    toughnessAdded,
+  }) => {
+    targetAllAllyMinions({ player, powerAdded, toughnessAdded });
+    targetAllOpponentMinions({ opponent, powerAdded, toughnessAdded });
+  };
 
   /**
-   * @param {Socket} player
-   * @param {number} powerAdded
-   * @param {number} toughnessAdded
-   */
-  const targetAllMinions = ({ player, powerAdded, toughnessAdded }) => {};
-
-  /**
-   * @param {Socket} player
+   * @param {Socket} opponent
    * @param {number} powerAdded
    * @param {number} toughnessAdded
    */
   const targetAllOpponentMinions = ({
-    player,
+    opponent,
     powerAdded,
     toughnessAdded,
-  }) => {};
+  }) => {
+    for (const minion of opponent.minions) {
+      if (minion) {
+        minion.power += powerAdded ? powerAdded : 0;
+        minion.toughness += toughnessAdded ? toughnessAdded : 0;
+      }
+    }
+  };
 
   /**
    * @param {Socket} player
@@ -561,56 +592,84 @@ const startGame = async (team) => {
 
   /**
    * @param {Socket} player
-   * @param {number} powerAdded
    * @param {number} toughnessAdded
    */
-  const targetAllyPlayer = ({ player, powerAdded, toughnessAdded }) => {};
+  const targetAllyPlayer = ({ player, toughnessAdded }) => {
+    player.health += toughnessAdded;
+  };
 
   /**
+   * @param {Socket} opponent
    * @param {Socket} player
    * @param {number} powerAdded
    * @param {number} toughnessAdded
    */
-  const targetAny = ({ player, powerAdded, toughnessAdded }) => {};
+  const targetAny = ({ opponent, player, powerAdded, toughnessAdded }) => {};
 
   /**
+   * @param {Socket} opponent
+   * @param {number} toughnessAdded
+   */
+  const targetOpponent = ({ opponent, toughnessAdded }) => {};
+
+  /**
+   * @param {Socket} opponent
+   * @param {number} powerAdded
+   * @param {number} toughnessAdded
+   */
+  const targetOpponentMinion = ({ opponent, powerAdded, toughnessAdded }) => {};
+
+  /**
+   * @param {Socket} opponent
+   * @param {number} toughnessAdded
+   */
+  const targetOpponentPlayer = ({ opponent, toughnessAdded }) => {
+    opponent.health += toughnessAdded;
+  };
+
+  /**
+   * @param {Socket} opponent
    * @param {Socket} player
    * @param {number} powerAdded
    * @param {number} toughnessAdded
    */
-  const targetOpponent = ({ player, powerAdded, toughnessAdded }) => {};
+  const targetMinion = ({ opponent, player, powerAdded, toughnessAdded }) => {};
 
   /**
-   * @param {Socket} player
+   * @param {Socket} opponent
    * @param {number} powerAdded
-   * @param {number} toughnessAdded
-   */
-  const targetOpponentMinion = ({ player, powerAdded, toughnessAdded }) => {};
-
-  /**
-   * @param {Socket} player
-   * @param {number} powerAdded
-   * @param {number} toughnessAdded
-   */
-  const targetOpponentPlayer = ({ player, powerAdded, toughnessAdded }) => {};
-
-  /**
-   * @param {Socket} player
-   * @param {number} powerAdded
-   * @param {number} toughnessAdded
-   */
-  const targetMinion = ({ player, powerAdded, toughnessAdded }) => {};
-
-  /**
-   * @param {Socket} player
-   * @param {number} powerAdded
+   * @param {number} randomMinionsNumber
    * @param {number} toughnessAdded
    */
   const targetRandomOpponentMinions = ({
-    player,
+    opponent,
     powerAdded,
+    randomMinionsNumber,
     toughnessAdded,
-  }) => {};
+  }) => {
+    const indexes = [];
+
+    const getIndex = () => {
+      const newNumber =
+        Math.floor(Math.random() * opponent.minions.filter((m) => m).length) +
+        1;
+
+      if (indexes.includes(newNumber)) {
+        getIndex();
+      } else {
+        return newNumber;
+      }
+    };
+
+    for (let i = 0; i < randomMinionsNumber; i++) {
+      indexes.push(getIndex());
+    }
+
+    for (const index of indexes) {
+      opponent.minions[index].power += powerAdded ? powerAdded : 0;
+      opponent.minions[index].toughness += toughnessAdded ? toughnessAdded : 0;
+    }
+  };
 
   const update = () => {
     for (const { socket } of team) {

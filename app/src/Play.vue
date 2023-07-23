@@ -51,6 +51,7 @@ const playSpell = (spell) => {
       "targetAll",
       "targetAllAllyMinions",
       "targetAllOpponentMinions",
+      "targetAllMinions",
       "targetAllyPlayer",
       "targetOpponentPlayer",
       "targetRandomOpponentMinions",
