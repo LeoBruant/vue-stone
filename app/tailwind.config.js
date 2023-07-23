@@ -6,17 +6,17 @@ module.exports = {
     extend: {
       keyframes: {
         allyMinionAttack: {
-          '25%': { transform: 'translateY(0)'},
-          '50%': { transform: 'translateY(-5rem)' },
-          '100%': { transform: 'translateY(0)' },
-        }
+          "25%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-5rem)" },
+          "100%": { transform: "translateY(0)" },
+        },
       },
       animation: {
-        allyMinionAttack: 'allyMinionAttack 0.5s ease-out'
-      }
-    }
+        allyMinionAttack: "allyMinionAttack 0.5s ease-out",
+      },
+    },
   },
   variants: {
-    extend: {}
-  }
+    extend: {},
+  },
 };

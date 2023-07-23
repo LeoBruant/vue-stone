@@ -35,7 +35,7 @@ export default function (connection) {
     {
       sequelize: connection,
       tableName: "cards",
-    }
+    },
   );
 
   return Card;

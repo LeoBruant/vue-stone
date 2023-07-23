@@ -101,7 +101,7 @@ export default function match(io, emitter) {
       console.log("A team is ready to play.");
 
       startGame(team);
-    }
+    },
   );
 }
 
@@ -119,7 +119,7 @@ const startGame = async (team) => {
 
   const spellMinion = (
     { minionIndex, spell: { powerAdded, toughnessAdded, type }, spellIndex },
-    socket
+    socket,
   ) => {
     console.log(
       minionIndex,
@@ -127,7 +127,7 @@ const startGame = async (team) => {
       toughnessAdded,
       socket,
       spellIndex,
-      type
+      type,
     );
   };
 
@@ -301,7 +301,7 @@ const startGame = async (team) => {
       ({ minion, minionPosition }) => {
         minionAttackPlayer(minion, minionPosition, socket);
         update();
-      }
+      },
     );
 
     socket.on(
@@ -311,7 +311,7 @@ const startGame = async (team) => {
        */
       (card) => {
         play(socket, card);
-      }
+      },
     );
 
     socket.on("disconnect", () => {

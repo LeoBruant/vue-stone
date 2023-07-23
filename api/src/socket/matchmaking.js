@@ -23,7 +23,7 @@ export default function matchmaking(io, emitter) {
           waiting.add({ jwt, socket });
 
           console.log(
-            `A new player has joined, ${waiting.size} players in waiting room.`
+            `A new player has joined, ${waiting.size} players in waiting room.`,
           );
 
           if (waiting.size >= 2) {
@@ -35,15 +35,15 @@ export default function matchmaking(io, emitter) {
               waiting.delete(member);
             }
           }
-        }
+        },
       );
 
       socket.on("disconnect", () => {
         console.log(
-          `A new player has left, ${waiting.size} players in waiting room.`
+          `A new player has left, ${waiting.size} players in waiting room.`,
         );
         waiting.delete(socket);
       });
-    }
+    },
   );
 }

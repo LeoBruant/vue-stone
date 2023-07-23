@@ -85,8 +85,8 @@ const reflect = (e) => {
       card--${side}
       card--${state}
       ${animation ? `card--${animation}` : ''} ${
-      outlined ? `card--outline card--outline-${outlineStyle}` : ''
-    }
+        outlined ? `card--outline card--outline-${outlineStyle}` : ''
+      }
       `"
     ref="cardElement"
   >

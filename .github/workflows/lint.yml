@@ -27,3 +27,6 @@ jobs:
 
       - name: Launch linting
         run: npm run lint --workspaces
+
+      - name: Tests
+        run: npm test -w api

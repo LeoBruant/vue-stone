@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 const files = await fs.readdir(path.join(__dirname, "model"));
 
 const models = await Promise.all(
-  files.map((file) => import(path.join(__dirname, "model", file)))
+  files.map((file) => import(path.join(__dirname, "model", file))),
 );
 
 for (const model of models) {
