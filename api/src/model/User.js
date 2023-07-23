@@ -6,14 +6,14 @@ export default function (connection) {
   const salt =
     process.env.SALT ??
     (console.warn(
-      "No salt provided in environment. Please consider setting an environment variable, eg. `export SALT=R4nd0M`."
+      "No salt provided in environment. Please consider setting an environment variable, eg. `export SALT=R4nd0M`.",
     ),
     "salt");
 
   const jwtSecret =
     process.env.JWT_SECRET ??
     (console.warn(
-      "No JWT secret provided in environment. Please consider setting an environment variable, eg. `export JWT_SECRET=R4nd0M`."
+      "No JWT secret provided in environment. Please consider setting an environment variable, eg. `export JWT_SECRET=R4nd0M`.",
     ),
     "secret");
 
@@ -69,7 +69,7 @@ export default function (connection) {
     {
       sequelize: connection,
       tableName: "users",
-    }
+    },
   );
 
   async function encryptPassword(user, options) {

@@ -7,7 +7,7 @@ describe("user controller", () => {
   vi.mock("../service/user.js", () => {
     return {
       createUser: vi.fn(),
-      findAllUsers: vi.fn()
+      findAllUsers: vi.fn(),
     };
   });
 
@@ -25,7 +25,11 @@ describe("user controller", () => {
 
     const response = await request(app)
       .post("/user")
-      .send({ email: "foo@example.com", password: "changeme", name: "xX_d4rkn00b_Xx" })
+      .send({
+        email: "foo@example.com",
+        password: "changeme",
+        name: "xX_d4rkn00b_Xx",
+      })
       .set("Content-Type", "application/json");
 
     expect(response.status).toEqual(201);

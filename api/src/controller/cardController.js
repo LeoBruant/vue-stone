@@ -21,7 +21,7 @@ router.post(
     const outputFolder = join(resolve(), "images");
     const body = req.body;
     res.send(await createCardImage(cardId, outputFolder, body));
-  }
+  },
 );
 
 router.get("/card", async (req, res) => {
