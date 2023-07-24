@@ -10,6 +10,7 @@ import { createServer } from "http";
 import matchmaking from "./socket/matchmaking.js";
 import { EventEmitter } from "node:events";
 import match from "./socket/match.js";
+import { createCards } from "./migration.js";
 
 const app = express();
 
@@ -35,6 +36,8 @@ app.get("/", (req, res) => {
 
 app.use(userController);
 app.use(authenticationController);
+
+createCards()
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
