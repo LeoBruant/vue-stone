@@ -37,7 +37,7 @@ app.get("/", (req, res) => {
 app.use(userController);
 app.use(authenticationController);
 
-createCards()
+createCards();
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
