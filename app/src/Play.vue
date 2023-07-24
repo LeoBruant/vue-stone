@@ -20,7 +20,10 @@ const players = ref(null);
  * @param {object} spellData All the data needed to apply a spell
  */
 const applySpell = (spellData) => {
-  socket.emit("applySpell", spellData);
+  socket.emit("playSpell", spellData);
+
+  attacking.value = null;
+  currentSpell.value = null;
 };
 
 const clearGame = () => {
@@ -31,14 +34,14 @@ const clearGame = () => {
 /**
  * @param {number} card Index of the card to play
  */
-const play = (card) => {
+const playMinion = (card) => {
   if (players.value.self.hand[card].spell) {
     playSpell(players.value.self.hand[card].spell);
 
     return;
   }
 
-  socket.emit("play", card);
+  socket.emit("playMinion", card);
 };
 
 /**
@@ -64,9 +67,13 @@ const playSpell = (spell) => {
       spell,
     });
 
+    attacking.value = null;
+    currentSpell.value = null;
+
     return;
   }
 
+  attacking.value = null;
   currentSpell.value = spell;
 };
 
@@ -79,6 +86,7 @@ const startAttack = (minion) => {
   }
 
   attacking.value = minion;
+  currentSpell.value = null;
 };
 
 socket.on("connect", () => {
@@ -131,7 +139,7 @@ socket.on("game", (data) => {
         :socket="socket"
         :spell="currentSpell"
       />
-      <Hand @play="play" :player="players.self" self />
+      <Hand @playMinion="playMinion" :player="players.self" self />
     </div>
   </div>
 </template>
