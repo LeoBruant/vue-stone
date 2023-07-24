@@ -1,12 +1,11 @@
-import express from "express";
+import express, { Router } from "express";
+import { join, resolve } from "path";
 import {
   createCard,
-  findCards,
-  findCardById,
   createCardImage,
+  findCardById,
+  findCards,
 } from "../service/cardService.js";
-import { Router } from "express";
-import { join, resolve } from "path";
 
 const router = Router();
 
@@ -22,7 +21,7 @@ router.post(
     const outputFolder = join(resolve(), "images");
     const body = req.body;
     res.send(await createCardImage(cardId, outputFolder, body));
-  }
+  },
 );
 
 router.get("/card", async (req, res) => {

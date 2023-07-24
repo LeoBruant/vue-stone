@@ -4,10 +4,6 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
-  position: {
-    type: String,
-    default: "",
-  },
   value: {
     type: Number,
     default: 1,
@@ -16,23 +12,21 @@ const props = defineProps({
 </script>
 
 <template>
-  <div
-    :class="`fixed flex gap-1 items-center right-2 ${
-      position === 'top' ? 'top-2' : 'bottom-2'
-    }`"
-  >
+  <div class="flex gap-1">
     <p
-      class="aspect-[2/1] bg-sky-400 flex font-bold h-8 items-center justify-center rounded-full text-xl text-white"
+      class="aspect-[2/1] bg-sky-500 flex font-bold h-12 items-center justify-center rounded-full text-2xl text-white"
     >
       {{ value }}/{{ max }}
     </p>
-    <div class="flex gap-1">
-      <div
-        :class="`aspect-square h-8 rounded-full ${
-          value >= i ? 'bg-sky-500' : 'bg-sky-900'
-        }`"
-        v-for="i in max"
-      ></div>
-    </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.circle {
+  @apply aspect-square bg-sky-900 h-10 rounded-full;
+
+  &.active {
+    @apply bg-sky-500;
+  }
+}
+</style>

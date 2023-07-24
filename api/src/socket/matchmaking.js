@@ -4,7 +4,7 @@
  */
 export default function matchmaking(io, emitter) {
   /**
-   * @type {Set<Socket>}
+   * @type {Set<{jwt: string, socket: Socket}>}
    */
   const waiting = new Set();
 
@@ -14,25 +14,36 @@ export default function matchmaking(io, emitter) {
      * @param {Socket} socket
      */
     (socket) => {
-      waiting.add(socket);
-      console.log(
-        `A new player has joined, ${waiting.size} players in waiting room.`
-      );
+      socket.on(
+        "setJwt",
+        /**
+         * @param {string} jwt
+         */
+        (jwt) => {
+          waiting.add({ jwt, socket });
 
-      if (waiting.size >= 2) {
-        const team = Array.from(waiting).slice(0, 2);
-        emitter.emit("teamReadyEvent", { team });
-        for (const member of team) {
-          waiting.delete(member);
-        }
-      }
+          console.log(
+            `A new player has joined, ${waiting.size} players in waiting room.`,
+          );
+
+          if (waiting.size >= 2) {
+            const team = Array.from(waiting).slice(0, 2);
+
+            emitter.emit("teamReadyEvent", { team });
+
+            for (const member of team) {
+              waiting.delete(member);
+            }
+          }
+        },
+      );
 
       socket.on("disconnect", () => {
         console.log(
-          `A new player has left, ${waiting.size} players in waiting room.`
+          `A new player has left, ${waiting.size} players in waiting room.`,
         );
         waiting.delete(socket);
       });
-    }
+    },
   );
 }

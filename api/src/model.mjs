@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
+// eslint-disable-next-line no-unused-vars
 import { Model, Sequelize } from "sequelize";
-import { fileURLToPath, pathToFileURL } from "url";
+import { fileURLToPath } from "url";
 
 const databaseUrl =
   process.env.DATABASE_URL ?? "postgres://user:password@localhost:5432/db";
@@ -19,9 +20,7 @@ const __dirname = path.dirname(__filename);
 const files = await fs.readdir(path.join(__dirname, "model"));
 
 const models = await Promise.all(
-  files.map((file) =>
-    import(pathToFileURL(path.join(__dirname, "model", file)))
-  )
+  files.map((file) => import(path.join(__dirname, "model", file))),
 );
 
 for (const model of models) {
@@ -30,6 +29,6 @@ for (const model of models) {
   db[modelInstance.name] = modelInstance;
 }
 
-await db.connection.sync({ force: true });
+await db.connection.sync();
 
 export default db;

@@ -1,19 +1,17 @@
 import cors from "cors";
 import { config } from "dotenv";
 import express from "express";
-import cardController from "./controller/cardController.js";
-import db from "./model.mjs";
+import { createServer } from "http";
+import { EventEmitter } from "node:events";
+import { Server } from "socket.io";
 import authenticationController from "./controller/authentication.js";
 import userController from "./controller/user.js";
-import { Server } from "socket.io";
-import { createServer } from "http";
-import matchmaking from "./socket/matchmaking.js";
-import { EventEmitter } from "node:events";
+import db from "./model.mjs";
 import match from "./socket/match.js";
 import { createCards } from "./migration.js";
+import matchmaking from "./socket/matchmaking.js";
 
-const app = express();
-
+export const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
@@ -27,7 +25,6 @@ await db.connection.sync({ force: true });
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
-
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -48,5 +45,3 @@ match(io, emitter);
 server.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
-
-app.use(cardController);
