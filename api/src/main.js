@@ -8,6 +8,7 @@ import authenticationController from "./controller/authentication.js";
 import userController from "./controller/user.js";
 import db from "./model.mjs";
 import match from "./socket/match.js";
+import { createCards } from "./migration.js";
 import matchmaking from "./socket/matchmaking.js";
 
 export const app = express();
@@ -32,6 +33,8 @@ app.get("/", (req, res) => {
 
 app.use(userController);
 app.use(authenticationController);
+
+createCards();
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
