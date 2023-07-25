@@ -15,6 +15,13 @@ You have to rename it to `.env`, fill out the variables with the actual values a
 docker compose -f ./docker-compose.dev.yml up postgres
 ```
 
+#### Accept Stripe webhooks
+
+```shell
+stripe login
+stripe listen --forward-to localhost:8080/webhook
+```
+
 #### In Docker
 
 ```shell

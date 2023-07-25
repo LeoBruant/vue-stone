@@ -1,12 +1,14 @@
 import express, { Router } from "express";
 import stripe from "../stripe.js";
 import authenticate from "../middleware/authenticate.js";
-import db from "../model.mjs";
+import { findPaymentFromStripeId } from "../service/paymentService.js";
+import { getRandomCards } from "../service/cardService.js";
+import {
+  addOwnedCards,
+  createStripeCheckoutSession,
+} from "../service/checkoutService.js";
 
 const router = new Router();
-
-const YOUR_DOMAIN = "http://localhost:3000";
-const PRICE_ID = "price_1NXh1MBaDFkq1eT7WgjcvIkN";
 
 router.post("/checkout", authenticate, express.json(), async (req, res) => {
   const { quantity } = req.body;
@@ -16,23 +18,7 @@ router.post("/checkout", authenticate, express.json(), async (req, res) => {
     return;
   }
 
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: PRICE_ID,
-        quantity,
-      },
-    ],
-    mode: "payment",
-    success_url: `${YOUR_DOMAIN}/#/checkout/success`,
-    cancel_url: `${YOUR_DOMAIN}/#/checkout/cancelled`,
-  });
-
-  await db.Payment.create({
-    user: req.user.id,
-    stripeId: session.id,
-  });
+  const session = createStripeCheckoutSession(req.user.id, quantity);
 
   res.send({
     sessionUrl: session.url,
@@ -57,19 +43,16 @@ router.post(
       return;
     }
 
-    // Handle the event
     switch (event.type) {
       case "checkout.session.completed":
         const paymentIntentSucceeded = event.data.object;
-        const payment = await db.Payment.findOne({
-          where: {
-            stripeId: paymentIntentSucceeded.id,
-          },
-        });
-        console.log("payment success for user: ", payment.user);
-        // Then define and call a function to handle the event payment_intent.succeeded
+        const payment = await findPaymentFromStripeId(
+          paymentIntentSucceeded.id,
+        );
+
+        const cards = await getRandomCards();
+        await addOwnedCards(payment.user, cards);
         break;
-      // ... handle other event types
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
