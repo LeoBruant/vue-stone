@@ -1,8 +1,8 @@
 import { createCards } from "./cardFixtures.js";
-import { initMongo } from "../mongodb.js";
+import { initMongoDb } from "../mongodb.js";
 import mongoose from "mongoose";
 
-await initMongo();
+await initMongoDb();
 
 try {
   await createCards();

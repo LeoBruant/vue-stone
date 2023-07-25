@@ -26,6 +26,7 @@
   },
   "description": "",
   "devDependencies": {
+    "mongodb-memory-server": "^8.13.0",
     "supertest": "^6.3.3",
     "vitest": "^0.32.2"
   }

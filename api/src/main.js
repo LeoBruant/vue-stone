@@ -9,7 +9,7 @@ import userController from "./controller/user.js";
 import db from "./model.mjs";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
-import { initMongo } from "./mongodb.js";
+import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 
 export const app = express();
 const server = createServer(app);
@@ -22,7 +22,7 @@ const io = new Server(server, {
 
 config();
 await db.connection.sync({ force: true });
-await initMongo();
+const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
@@ -44,3 +44,5 @@ match(io, emitter);
 server.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
+
+await disconnectMongoDb(mongod);
