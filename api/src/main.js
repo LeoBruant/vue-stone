@@ -23,6 +23,8 @@ const io = new Server(server, {
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
+app.use(checkoutController);
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -31,7 +33,6 @@ app.get("/", (req, res) => {
 
 app.use(userController);
 app.use(authenticationController);
-app.use(checkoutController);
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
