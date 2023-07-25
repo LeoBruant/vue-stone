@@ -14,14 +14,59 @@ import {
   targetOpponentMinion,
   targetOpponentPlayer,
   targetRandomOpponentMinions,
-} from "./functions/spell.js";
+} from "./functions/effects.js";
 
 /**
- * @typedef Spell
- * @property {number | null} drawnCards
- * @property {number | null} powerAdded
- * @property {number | null} randomMinionsNumber
- * @property {number | null} toughnessAdded
+ * @typedef Ability
+ * @property {Boolean | null} destroyMinion
+ * @property {Number | null} drawnCards
+ * @property {Number | null} minionPower
+ * @property {Number | null} minionToughness
+ * @property {Number | null} powerAdded
+ * @property {Number | null} randomMinionsNumber
+ * @property {Number | null} summonNumber
+ * @property {Boolean} switchStats
+ * @property {Number | null} toughnessAdded
+ * @property {'appear' | 'death' | null } trigger
+ * @property {
+ *  'addMinionToHand' |
+ *  'discardOpponentCards' |
+ *  'drawCards' |
+ *  'gainForEachAlly' |
+ *  'haste' |
+ *  'summon' |
+ *  'targetAllAllies' |
+ *  'targetAllAllyMinions' |
+ *  'targetAllOpponents' |
+ *  'targetAllyPlayer' |
+ *  'targetOpponentPlayer' |
+ *  'targetRandomAlly' |
+ *  'targetRandomAllyMinion' |
+ *  'targetRandomOpponent' |
+ *  'taunt'
+ * } type
+ */
+
+/**
+ * @typedef Card
+ * @property {Ability | null} ability
+ * @property {Number} attacks
+ * @property {Number} cost
+ * @property {Number} id
+ * @property {Number} power
+ * @property {String} rarity
+ * @property {Effect[] | null} spell
+ * @property {String} title
+ * @property {Number} toughness
+ */
+
+/**
+ * @typedef Effect
+ * @property {Boolean | null} destroyMinion
+ * @property {Number | null} drawnCards
+ * @property {Number | null} powerAdded
+ * @property {Number | null} randomMinionsNumber
+ * @property {Number | null} toughnessAdded
  * @property {
  *   'drawCards' |
  *   'targetAll' |
@@ -40,26 +85,14 @@ import {
  */
 
 /**
- * @typedef Card
- * @property {number} attacks
- * @property {number} cost
- * @property {number} id
- * @property {number} power
- * @property {string} rarity
- * @property {Spell[]} spell
- * @property {string} title
- * @property {number} toughness
- */
-
-/**
  * @typedef Player
  * @property {Card[]} hand
- * @property {number} health
- * @property {string} id
- * @property {number} mana
+ * @property {Number} health
+ * @property {String} id
+ * @property {Number} mana
  * @property {(Card | null)[]} minions
- * @property {string} name
- * @property {boolean} playing
+ * @property {String} name
+ * @property {Boolean} playing
  */
 
 const DEFAULT_CARD = {
@@ -76,215 +109,62 @@ const DEFAULT_CARD = {
  * @type {Player}
  */
 const DEFAULT_PLAYER = {
+  drawPile: [
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+  ],
   hand: [
     {
+      ability: {
+        destroyMinion: null,
+        drawnCards: null,
+        minionPower: 1,
+        minionToughness: null,
+        powerAdded: 1,
+        randomMinionsNumber: null,
+        summonNumber: null,
+        switchStats: false,
+        toughnessAdded: null,
+        trigger: "appear",
+        type: "addMinionToHand",
+      },
       attacks: 0,
       cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: 1,
-          powerAdded: null,
-          toughnessAdded: null,
-          type: "drawCards",
-        },
-      ],
+      power: 10,
+      rarity: "common",
+      spell: null,
+      title: "addMinionToHand",
+      toughness: 10,
+    },
+    {
+      ability: {
+        destroyMinion: null,
+        drawnCards: 2,
+        minionPower: null,
+        minionToughness: null,
+        powerAdded: null,
+        randomMinionsNumber: null,
+        summonNumber: null,
+        switchStats: false,
+        toughnessAdded: null,
+        trigger: null,
+        type: "drawCards",
+      },
+      attacks: 0,
+      cost: 0,
+      power: 10,
+      rarity: "common",
+      spell: null,
       title: "drawCards",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: 1,
-          toughnessAdded: 1,
-          type: "targetAll",
-        },
-      ],
-      title: "targetAll",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: 1,
-          toughnessAdded: 1,
-          type: "targetAllAllyMinions",
-        },
-      ],
-      title: "targetAllAllyMinions",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: 1,
-          toughnessAdded: 1,
-          type: "targetAllMinions",
-        },
-      ],
-      title: "targetAllMinions",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: -1,
-          toughnessAdded: -1,
-          type: "targetAllOpponentMinions",
-        },
-      ],
-      title: "targetAllOpponentMinions",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: 1,
-          toughnessAdded: 1,
-          type: "targetAllyMinion",
-        },
-      ],
-      title: "targetAllyMinion",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: null,
-          toughnessAdded: 1,
-          type: "targetAllyPlayer",
-        },
-      ],
-      title: "targetAllyPlayer",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: null,
-          toughnessAdded: 1,
-          type: "targetAny",
-        },
-      ],
-      title: "targetAny",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: null,
-          toughnessAdded: -1,
-          type: "targetOpponent",
-        },
-      ],
-      title: "targetOpponent",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: -1,
-          toughnessAdded: -1,
-          type: "targetOpponentMinion",
-        },
-      ],
-      title: "targetOpponentMinion",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: null,
-          toughnessAdded: -1,
-          type: "targetOpponentPlayer",
-        },
-      ],
-      title: "targetOpponentPlayer",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: 1,
-          toughnessAdded: 1,
-          type: "targetMinion",
-        },
-      ],
-      title: "targetMinion",
-      toughness: null,
-    },
-    {
-      attacks: 0,
-      cost: 0,
-      power: null,
-      rarity: "legendary",
-      spell: [
-        {
-          drawnCards: null,
-          powerAdded: -1,
-          randomMinionsNumber: 3,
-          toughnessAdded: -1,
-          type: "targetRandomOpponentMinions",
-        },
-      ],
-      title: "targetRandomOpponentMinions",
-      toughness: null,
+      toughness: 10,
     },
   ],
   health: 30,
@@ -304,8 +184,9 @@ const DEFAULT_PLAYER = {
 };
 
 const MAX_MANA = 10;
+const MAX_MINIONS = 7;
 
-const spellFunctions = {
+const effectFunctions = {
   drawCards,
   targetAll,
   targetAllAllyMinions,
@@ -356,6 +237,7 @@ const startGame = async (team) => {
    */
   const endTurn = (socket) => {
     const player = players[socket.id];
+    const opponent = findOpponent(player);
 
     // Cancel if player is not allowed to play
     if (!player.playing) {
@@ -378,6 +260,8 @@ const startGame = async (team) => {
         }
       }
     }
+
+    drawCards({ drawnCards: 1, player: opponent });
   };
 
   /**
@@ -402,7 +286,7 @@ const startGame = async (team) => {
    * @param {Number} minionPosition
    * @param {Player} socket
    */
-  const minionAttackPlayer = (minion, minionPosition, socket) => {
+  const minionAttackPlayer = ({ attackingIndex }, socket) => {
     const player = players[socket.id];
 
     // Cancel if player is not allowed to play
@@ -412,16 +296,16 @@ const startGame = async (team) => {
 
     const opponent = findOpponent(player);
 
-    opponent.health -= minion.power;
+    opponent.health -= player.minions[attackingIndex].power;
 
-    player.minions[minionPosition].attacks -= 1;
+    player.minions[attackingIndex].attacks -= 1;
   };
 
   /**
    * @param {Socket} socket
    * @param {number} cardIndex
    */
-  const playMinion = (socket, cardIndex) => {
+  const playMinion = ({ cardIndex }, socket) => {
     const player = players[socket.id];
 
     // Do nothing if not player's turn
@@ -490,7 +374,7 @@ const startGame = async (team) => {
     const opponent = findOpponent(player);
 
     for (const effect of spell) {
-      spellFunctions[effect.type]({
+      effectFunctions[effect.type]({
         ...effect,
         opponent,
         player,
@@ -502,8 +386,28 @@ const startGame = async (team) => {
     // Remove mana
     player.mana -= card.cost;
 
+    removeDead();
+
     // Remove card from hand
     // player.hand.splice(cardIndex, 1);
+  };
+
+  const removeDead = () => {
+    for (const key in players) {
+      const player = players[key];
+
+      for (const minion of player.minions) {
+        if (minion?.toughness <= 0) {
+          player.minions.splice(player.minions.indexOf(minion), 1);
+        }
+      }
+
+      const missingMinions = MAX_MINIONS - player.minions.length;
+
+      for (let i = 0; i < missingMinions; i++) {
+        player.minions.push(null);
+      }
+    }
   };
 
   const update = () => {
@@ -548,27 +452,15 @@ const startGame = async (team) => {
       update();
     });
 
-    socket.on(
-      "minionAttackPlayer",
-      /**
-       * @param {{minion: Card, minionPosition: Number}} obj
-       */
-      ({ minion, minionPosition }) => {
-        minionAttackPlayer(minion, minionPosition, socket);
-        update();
-      }
-    );
+    socket.on("minionAttackPlayer", (data) => {
+      minionAttackPlayer(data, socket);
+      update();
+    });
 
-    socket.on(
-      "playMinion",
-      /**
-       * @param {number} card Index of the card to play
-       */
-      (card) => {
-        playMinion(socket, card);
-        update();
-      }
-    );
+    socket.on("playMinion", (data) => {
+      playMinion(data, socket);
+      update();
+    });
 
     socket.on("playSpell", (data) => {
       playSpell(data, socket);

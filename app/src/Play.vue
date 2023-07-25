@@ -10,7 +10,7 @@ const currentSpell = ref(null);
 
 const socket = io("ws://localhost:8080/");
 
-const attacking = ref(null);
+const attackingIndex = ref(null);
 
 const game = ref(null);
 
@@ -22,13 +22,21 @@ const players = ref(null);
 const applySpell = (spellData) => {
   socket.emit("playSpell", spellData);
 
-  attacking.value = null;
+  attackingIndex.value = null;
   currentSpell.value = null;
 };
 
 const clearGame = () => {
   game.value = null;
   players.value = null;
+};
+
+const minionAttackPlayer = () => {
+  socket.emit("minionAttackPlayer", {
+    attackingIndex: attackingIndex.value,
+  });
+
+  attackingIndex.value = null;
 };
 
 /**
@@ -41,7 +49,7 @@ const playMinion = (card) => {
     return;
   }
 
-  socket.emit("playMinion", card);
+  socket.emit("playMinion", { card });
 };
 
 /**
@@ -67,25 +75,28 @@ const playSpell = (spell) => {
       spell,
     });
 
-    attacking.value = null;
+    attackingIndex.value = null;
     currentSpell.value = null;
 
     return;
   }
 
-  attacking.value = null;
+  attackingIndex.value = null;
   currentSpell.value = spell;
 };
 
 /**
- * @param {object} minion Minion card
+ * @param {Number} minionIndex Minion card
  */
-const startAttack = (minion) => {
-  if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
+const startAttack = (minionIndex) => {
+  if (
+    !players.value.self.playing ||
+    players.value.self.minions[minionIndex].turnPlayed >= game.value.turn
+  ) {
     return;
   }
 
-  attacking.value = minion;
+  attackingIndex.value = minionIndex;
   currentSpell.value = null;
 };
 
@@ -131,12 +142,12 @@ socket.on("game", (data) => {
       <Hand :player="players.opponent" />
       <Board
         @applySpell="applySpell"
+        @endTurn="socket.emit('endTurn')"
         @startAttack="startAttack"
-        @stopAttack="attacking = null"
-        :attacking="attacking"
+        @minionAttackPlayer="minionAttackPlayer"
+        :attackingIndex="attackingIndex"
         :game="game"
         :players="players"
-        :socket="socket"
         :spell="currentSpell"
       />
       <Hand @playMinion="playMinion" :player="players.self" self />
