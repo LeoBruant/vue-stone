@@ -20,5 +20,10 @@ services:
       file: docker-compose.dev.yml
       service: postgres
 
+  mongo:
+    extends:
+      file: docker-compose.dev.yml
+      service: mongo
+
 volumes:
   db:
