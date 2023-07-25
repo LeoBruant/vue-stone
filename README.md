@@ -3,7 +3,7 @@
 ## Environment variables
 
 An example is provided in the file `.env.example`.
-You have to rename it to `.env` and copy it to the `app` and `api` folders.
+You have to copy and rename it to `.env` and copy it to the `app` and `api` folders.
 
 ## Running the project
 
