@@ -1,7 +1,8 @@
-import db from "./model.mjs";
+import { Cards } from "../mongodb.js";
 
-export async function createCards() {
-  await db.Card.create({
+export const cards = [
+  {
+    id: 1,
     title: "Flametongue Shaman",
     cardType: "minion",
     cost: 1,
@@ -10,8 +11,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 2,
     title: "Frostweaver",
     cardType: "minion",
     cost: 2,
@@ -20,8 +22,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 3,
     title: "Ironhide Mauler",
     cardType: "minion",
     cost: 1,
@@ -30,8 +33,9 @@ export async function createCards() {
     ability: "battlecry_draw_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 4,
     title: "Arcane Trickster",
     cardType: "minion",
     cost: 2,
@@ -40,8 +44,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 5,
     title: "Bloodfang Assassin",
     cardType: "minion",
     cost: 3,
@@ -50,8 +55,9 @@ export async function createCards() {
     ability: "battlecry_buff_all_allies_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 6,
     title: "Stormrider",
     cardType: "minion",
     cost: 3,
@@ -60,8 +66,9 @@ export async function createCards() {
     ability: "haste",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 7,
     title: "Thundering Hooves",
     cardType: "minion",
     cost: 4,
@@ -70,8 +77,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 8,
     title: "Crystalweaver",
     cardType: "minion",
     cost: 4,
@@ -80,8 +88,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 9,
     title: "Plaguebearer",
     cardType: "minion",
     cost: 5,
@@ -90,8 +99,9 @@ export async function createCards() {
     ability: "battlecry_damage_enemy_hero_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 10,
     title: "Solaris Sentinel",
     cardType: "minion",
     cost: 6,
@@ -100,8 +110,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 11,
     title: "Venomfang Serpent",
     cardType: "minion",
     cost: 1,
@@ -110,8 +121,9 @@ export async function createCards() {
     ability: "battlecry_damage_any_target_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 12,
     title: "Windwhisper Druid",
     cardType: "minion",
     cost: 1,
@@ -120,8 +132,9 @@ export async function createCards() {
     ability: "battlecry_heal_any_ally_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 13,
     title: "Emberstorm Phoenix",
     cardType: "minion",
     cost: 1,
@@ -130,8 +143,9 @@ export async function createCards() {
     ability: "battlecry_heal_any_ally_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 14,
     title: "Frostbite Yeti",
     cardType: "minion",
     cost: 2,
@@ -140,8 +154,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 15,
     title: "Starforged Artificer",
     cardType: "minion",
     cost: 2,
@@ -150,8 +165,9 @@ export async function createCards() {
     ability: "battlecry_buff_any_ally_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 16,
     title: "Cursed Banshee",
     cardType: "minion",
     cost: 3,
@@ -160,8 +176,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 17,
     title: "Thunderclap Brute",
     cardType: "minion",
     cost: 4,
@@ -170,8 +187,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 18,
     title: "Astral Diviner",
     cardType: "minion",
     cost: 4,
@@ -180,8 +198,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 19,
     title: "Plundering Corsair",
     cardType: "minion",
     cost: 7,
@@ -190,8 +209,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 20,
     title: "Lunar Guardian",
     cardType: "minion",
     cost: 1,
@@ -200,8 +220,9 @@ export async function createCards() {
     ability: "haste",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 21,
     title: "Flameheart Djinn",
     cardType: "minion",
     cost: 2,
@@ -210,8 +231,9 @@ export async function createCards() {
     ability: "battlecry_buff_all_allies_2_0",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 22,
     title: "Stormcaller Shaman",
     cardType: "minion",
     cost: 5,
@@ -220,8 +242,9 @@ export async function createCards() {
     ability: "gain_1_1_for_each_ally",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 23,
     title: "Crystaline Construct",
     cardType: "minion",
     cost: 5,
@@ -230,8 +253,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 24,
     title: "Venomous Arachnid",
     cardType: "minion",
     cost: 6,
@@ -240,8 +264,9 @@ export async function createCards() {
     ability: "haste",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 25,
     title: "Shadowmancer",
     cardType: "minion",
     cost: 1,
@@ -250,8 +275,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 26,
     title: "Whispering Banshee",
     cardType: "minion",
     cost: 1,
@@ -260,8 +286,9 @@ export async function createCards() {
     ability: "battlecry_damage_your_hero_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 27,
     title: "Ironbark Colossus",
     cardType: "minion",
     cost: 2,
@@ -270,8 +297,9 @@ export async function createCards() {
     ability: "battlecry_discard_random_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 28,
     title: "Timebender Mage",
     cardType: "minion",
     cost: 4,
@@ -280,8 +308,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 29,
     title: "Soulstealer Necromancer",
     cardType: "minion",
     cost: 5,
@@ -290,8 +319,9 @@ export async function createCards() {
     ability: "battlecry_heal_all_allies_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 30,
     title: "Shimmerwing Faerie",
     cardType: "minion",
     cost: 7,
@@ -300,8 +330,9 @@ export async function createCards() {
     ability: null,
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 31,
     title: "Doomblade Assassin",
     cardType: "minion",
     cost: 1,
@@ -310,8 +341,9 @@ export async function createCards() {
     ability: "battlecry_add_minion_to_hand_1_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 32,
     title: "Celestial Herald",
     cardType: "minion",
     cost: 2,
@@ -320,8 +352,9 @@ export async function createCards() {
     ability: "rale_draw_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 33,
     title: "Thornheart Druid",
     cardType: "minion",
     cost: 2,
@@ -330,8 +363,9 @@ export async function createCards() {
     ability: "battlecry_summon_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 34,
     title: "Astral Serpent",
     cardType: "minion",
     cost: 2,
@@ -340,8 +374,9 @@ export async function createCards() {
     ability: "battlecry_damage_all_ennemies_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 35,
     title: "Frostbite Archer",
     cardType: "minion",
     cost: 1,
@@ -350,8 +385,9 @@ export async function createCards() {
     ability: "battlecry_heal_all_allies_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 36,
     title: "Magma Elemental",
     cardType: "minion",
     cost: 1,
@@ -360,8 +396,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 37,
     title: "Nightfall Shadowcaster",
     cardType: "minion",
     cost: 2,
@@ -370,8 +407,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 38,
     title: "Thunderstorm Titan",
     cardType: "minion",
     cost: 3,
@@ -380,8 +418,9 @@ export async function createCards() {
     ability: "battlecry_summon_1_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 39,
     title: "Arcane Illusionist",
     cardType: "minion",
     cost: 3,
@@ -390,8 +429,9 @@ export async function createCards() {
     ability: "battlecry_buff_any_ally_0_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 40,
     title: "Bloodmoon Berserker",
     cardType: "minion",
     cost: 4,
@@ -400,8 +440,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 41,
     title: "Solarflare Phoenix",
     cardType: "minion",
     cost: 6,
@@ -410,8 +451,9 @@ export async function createCards() {
     ability: "battlecry_buff_any_ally_0_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 42,
     title: "Voidwhisper Enchantress",
     cardType: "minion",
     cost: 3,
@@ -420,8 +462,9 @@ export async function createCards() {
     ability: "battlecry_summon_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 43,
     title: "Whirlwind Tempest",
     cardType: "minion",
     cost: 3,
@@ -430,8 +473,9 @@ export async function createCards() {
     ability: "battlecry_summon_2_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 44,
     title: "Runeblade Knight",
     cardType: "minion",
     cost: 4,
@@ -440,8 +484,9 @@ export async function createCards() {
     ability: "battlecry_summon_2_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 45,
     title: "Coral Guardian",
     cardType: "minion",
     cost: 4,
@@ -450,8 +495,9 @@ export async function createCards() {
     ability: "battlecry_summon_2_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 46,
     title: "Emberfury Demon",
     cardType: "minion",
     cost: 6,
@@ -460,8 +506,9 @@ export async function createCards() {
     ability: "battlecry_damage_any_target_4",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 47,
     title: "Timeless Chronomancer",
     cardType: "minion",
     cost: 1,
@@ -470,8 +517,9 @@ export async function createCards() {
     ability: "taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 48,
     title: "Plaguebringer Alchemist",
     cardType: "minion",
     cost: 1,
@@ -480,8 +528,9 @@ export async function createCards() {
     ability: "rale_summon_3_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 49,
     title: "Lunar Serenade Siren",
     cardType: "minion",
     cost: 1,
@@ -490,8 +539,9 @@ export async function createCards() {
     ability: "rale_summon_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 50,
     title: "Stormforge Golem",
     cardType: "minion",
     cost: 2,
@@ -500,8 +550,9 @@ export async function createCards() {
     ability: "rale_summon_2_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 51,
     title: "Radiant Arbiter",
     cardType: "minion",
     cost: 2,
@@ -510,8 +561,9 @@ export async function createCards() {
     ability: "rale_summon_4_4",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 52,
     title: "Shadowfire Warlock",
     cardType: "minion",
     cost: 2,
@@ -520,8 +572,9 @@ export async function createCards() {
     ability: "rale_summon_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 53,
     title: "Crystalwind Sprite",
     cardType: "minion",
     cost: 2,
@@ -530,8 +583,9 @@ export async function createCards() {
     ability: "battlecry_discard_random_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 54,
     title: "Thundering Stampede",
     cardType: "minion",
     cost: 3,
@@ -540,8 +594,9 @@ export async function createCards() {
     ability: "rale_summon_2_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 55,
     title: "Voodoo Hexer",
     cardType: "minion",
     cost: 3,
@@ -550,8 +605,9 @@ export async function createCards() {
     ability: "rale_summon_2_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 56,
     title: "Soulbound Guardian",
     cardType: "minion",
     cost: 4,
@@ -560,8 +616,9 @@ export async function createCards() {
     ability: "rale_summon_3_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 57,
     title: "Feral Stalker",
     cardType: "minion",
     cost: 4,
@@ -570,8 +627,9 @@ export async function createCards() {
     ability: "rale_summon_2_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 58,
     title: "Enchanted Harpist",
     cardType: "minion",
     cost: 8,
@@ -580,8 +638,9 @@ export async function createCards() {
     ability: "rale_summon_5_7",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 59,
     title: "Arcane Echoes",
     cardType: "spell",
     cost: 1,
@@ -590,8 +649,9 @@ export async function createCards() {
     ability: "damage_3_random_ennemies_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 60,
     title: "Time Warp",
     cardType: "spell",
     cost: 3,
@@ -600,8 +660,9 @@ export async function createCards() {
     ability: "draw_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 61,
     title: "Nature's Wrath",
     cardType: "spell",
     cost: 2,
@@ -610,8 +671,9 @@ export async function createCards() {
     ability: "damage_all_ennemies_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 62,
     title: "Flameburst",
     cardType: "spell",
     cost: 4,
@@ -620,8 +682,9 @@ export async function createCards() {
     ability: "damage_any_target_6",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 63,
     title: "Hex of Misfortune",
     cardType: "spell",
     cost: 4,
@@ -630,8 +693,9 @@ export async function createCards() {
     ability: "transform_any_minion_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 64,
     title: "Frostbite",
     cardType: "spell",
     cost: 1,
@@ -640,8 +704,9 @@ export async function createCards() {
     ability: "damage_any_target_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 65,
     title: "Nature's Harmony",
     cardType: "spell",
     cost: 1,
@@ -650,8 +715,9 @@ export async function createCards() {
     ability: "buff_any_target_0_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 66,
     title: "Shadowmeld",
     cardType: "spell",
     cost: 2,
@@ -660,8 +726,9 @@ export async function createCards() {
     ability: "damage_ennemy_hero_5",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 67,
     title: "Lightning Surge",
     cardType: "spell",
     cost: 2,
@@ -670,8 +737,9 @@ export async function createCards() {
     ability: "destroy_target_minion_3_or_less",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 68,
     title: "Celestial Blessing",
     cardType: "spell",
     cost: 0,
@@ -680,8 +748,9 @@ export async function createCards() {
     ability: "heal_10_target_minion",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 69,
     title: "Plundering Raid",
     cardType: "spell",
     cost: 1,
@@ -690,8 +759,9 @@ export async function createCards() {
     ability: "damage_any_target_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 70,
     title: "Arcane Insight",
     cardType: "spell",
     cost: 2,
@@ -700,8 +770,9 @@ export async function createCards() {
     ability: "buff_ally_minion_3_0",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 71,
     title: "Metaporph",
     cardType: "spell",
     cost: 3,
@@ -710,8 +781,9 @@ export async function createCards() {
     ability: "transform_any_minion_0_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 72,
     title: "Astral Projection",
     cardType: "spell",
     cost: 3,
@@ -720,8 +792,9 @@ export async function createCards() {
     ability: "damage_any_target_2_heal_your_hero_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 73,
     title: "Vortex of Shadows",
     cardType: "spell",
     cost: 3,
@@ -730,8 +803,9 @@ export async function createCards() {
     ability: "damage_all_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 74,
     title: "Fury Strike",
     cardType: "spell",
     cost: 3,
@@ -740,8 +814,9 @@ export async function createCards() {
     ability: "damage_any_minion_4",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 75,
     title: "Mystic Resonance",
     cardType: "spell",
     cost: 2,
@@ -750,8 +825,9 @@ export async function createCards() {
     ability: "damage_any_target_2_summon_1_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 76,
     title: "Arcane Barrier",
     cardType: "spell",
     cost: 2,
@@ -760,8 +836,9 @@ export async function createCards() {
     ability: "summon_2_0_2_taunt",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 77,
     title: "Inferno Bolt",
     cardType: "spell",
     cost: 2,
@@ -770,8 +847,9 @@ export async function createCards() {
     ability: "damage_any_target_4",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 78,
     title: "Plague Outbreak",
     cardType: "spell",
     cost: 6,
@@ -780,8 +858,9 @@ export async function createCards() {
     ability: "damage_all_ennemy_minions_3",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 79,
     title: "Cataclysmic Blast",
     cardType: "spell",
     cost: 7,
@@ -790,8 +869,9 @@ export async function createCards() {
     ability: "damage_all_ennemy_minions_5",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 80,
     title: "Solar Flare",
     cardType: "spell",
     cost: 10,
@@ -800,8 +880,9 @@ export async function createCards() {
     ability: "damage_any_target_10",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 81,
     title: "Healing Tide",
     cardType: "spell",
     cost: 0,
@@ -810,8 +891,9 @@ export async function createCards() {
     ability: "heal_all_4",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 82,
     title: "Void Shift",
     cardType: "spell",
     cost: 1,
@@ -820,8 +902,9 @@ export async function createCards() {
     ability: "trade_power_toughness_any_minion",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 83,
     title: "Banishing Bolt",
     cardType: "spell",
     cost: 2,
@@ -830,8 +913,9 @@ export async function createCards() {
     ability: "destroy_target_minion_5_or_more",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 84,
     title: "Eternal Balance",
     cardType: "spell",
     cost: 3,
@@ -840,8 +924,9 @@ export async function createCards() {
     ability: "damage_all_ennemies_2_heal_all_allies_2",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 85,
     title: "Astral Surge",
     cardType: "spell",
     cost: 4,
@@ -850,8 +935,9 @@ export async function createCards() {
     ability: "buff_target_minon_2_4",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 86,
     title: "Dark Sacrifice",
     cardType: "spell",
     cost: 1,
@@ -860,8 +946,9 @@ export async function createCards() {
     ability: "damage_any_target_3_lose_1_life",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 87,
     title: "Ritual of the Guardian",
     cardType: "spell",
     cost: 3,
@@ -870,8 +957,9 @@ export async function createCards() {
     ability: "summon_2_2_3_taunt_lose_6_life",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 88,
     title: "Elemental Fury",
     cardType: "spell",
     cost: 3,
@@ -880,8 +968,9 @@ export async function createCards() {
     ability: "damage_all_ennemies_3_lose_4_life",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 89,
     title: "Swarm of Minions",
     cardType: "spell",
     cost: 4,
@@ -890,8 +979,9 @@ export async function createCards() {
     ability: "summon_4_1_1",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 90,
     title: "Spirit Walk",
     cardType: "spell",
     cost: 6,
@@ -900,8 +990,9 @@ export async function createCards() {
     ability: "buff_all_allies_3_0",
     image: "",
     description: "",
-  });
-  await db.Card.create({
+  },
+  {
+    id: 91,
     title: "Apocalypse",
     cardType: "spell",
     cost: 8,
@@ -910,5 +1001,14 @@ export async function createCards() {
     ability: "destroy_all_minions",
     image: "",
     description: "",
+  },
+];
+
+export async function createCards() {
+  const inserts = cards.map((card) => {
+    const document = new Cards(card);
+    return document.save();
   });
+
+  await Promise.all(inserts);
 }

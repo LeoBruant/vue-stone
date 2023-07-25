@@ -3,11 +3,23 @@
 ## Environment variables
 
 An example is provided in the file `.env.example`.
-You have to rename it to `.env` and copy it to the `app` and `api` folders.
+You have to copy and rename it to `.env` and copy it to the `app` and `api` folders.
 
 ## Running the project
 
 ### Dev mode
+
+#### Start Postgres
+
+```shell
+docker compose -f docker-compose.dev.yml up postgres mongo
+```
+
+#### Run the migrations
+
+```shell
+npm run -w api fixtures
+```
 
 #### In Docker
 
@@ -36,10 +48,4 @@ docker compose -f docker-compose.dev.yml up --build
 
 ```shell
 docker compose up --build -d
-```
-
-#### Start Postgres
-
-```shell
-docker compose -f .\docker-compose.dev.yml up postgres
 ```

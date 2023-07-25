@@ -1,4 +1,6 @@
 import db from "../model.mjs";
+import { Users } from "../mongodb.js";
+import { defaultCards, defaultDecks } from "../fixtures/deckCardFixtures.js";
 
 /**
  * Creates a new user with the given email and password.
@@ -13,6 +15,13 @@ export async function createUser(name, email, password) {
     email,
     password,
   });
+
+  const document = new Users({
+    id: id,
+    ownedCards: defaultCards,
+    decks: defaultDecks,
+  });
+  await document.save();
 
   return { id, name, email };
 }

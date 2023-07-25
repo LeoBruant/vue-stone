@@ -8,8 +8,8 @@ import authenticationController from "./controller/authentication.js";
 import userController from "./controller/user.js";
 import db from "./model.mjs";
 import match from "./socket/match.js";
-import { createCards } from "./migration.js";
 import matchmaking from "./socket/matchmaking.js";
+import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 
 export const app = express();
 const server = createServer(app);
@@ -22,6 +22,7 @@ const io = new Server(server, {
 
 config();
 await db.connection.sync({ force: true });
+const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
@@ -34,8 +35,6 @@ app.get("/", (req, res) => {
 app.use(userController);
 app.use(authenticationController);
 
-createCards();
-
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
 
@@ -45,3 +44,5 @@ match(io, emitter);
 server.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
+
+await disconnectMongoDb(mongod);
