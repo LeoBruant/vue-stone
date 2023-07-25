@@ -48,11 +48,11 @@ import {
 /**
  * @typedef Card
  * @property {Ability | null} ability
- * @property {Number} attacks
+ * @property {Number | null} attacks
  * @property {Number} cost
- * @property {Number} id
+ * @property {String} description
  * @property {Number} power
- * @property {String} rarity
+ * @property {'common' | 'rare' | 'epic' | 'legendary'} rarity
  * @property {Effect[] | null} spell
  * @property {String} title
  * @property {Number} toughness
@@ -60,7 +60,7 @@ import {
 
 /**
  * @typedef Effect
- * @property {Boolean | null} destroyMinion
+ * @property {Boolean} destroyMinion
  * @property {Number | null} drawnCards
  * @property {Number | null} powerAdded
  * @property {Number | null} randomMinionsNumber
