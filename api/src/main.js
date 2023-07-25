@@ -12,6 +12,7 @@ import { createCards } from "./migrations/cardMigration.js";
 import { createDecks } from "./migrations/deckMigration.js";
 import createDeckCards from "./migrations/deckCardMigration.js";
 import matchmaking from "./socket/matchmaking.js";
+import { initMongo } from "./mongodb.js";
 
 export const app = express();
 const server = createServer(app);
@@ -24,6 +25,7 @@ const io = new Server(server, {
 
 config();
 await db.connection.sync({ force: true });
+await initMongo();
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
