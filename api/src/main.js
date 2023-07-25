@@ -8,9 +8,6 @@ import authenticationController from "./controller/authentication.js";
 import userController from "./controller/user.js";
 import db from "./model.mjs";
 import match from "./socket/match.js";
-import { createCards } from "./migrations/cardMigration.js";
-import { createDecks } from "./migrations/deckMigration.js";
-import createDeckCards from "./migrations/deckCardMigration.js";
 import matchmaking from "./socket/matchmaking.js";
 import { initMongo } from "./mongodb.js";
 
@@ -37,10 +34,6 @@ app.get("/", (req, res) => {
 
 app.use(userController);
 app.use(authenticationController);
-
-await createCards();
-await createDecks();
-await createDeckCards();
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
