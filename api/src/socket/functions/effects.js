@@ -1,18 +1,16 @@
+const MAX_HAND = 10;
+
 /**
  * @param {number} drawnCards
  * @param {Player} player
  */
 export const drawCards = ({ drawnCards, player }) => {
   for (let i = 0; i < drawnCards; i++) {
-    player.hand.push({
-      attacks: 0,
-      cost: 0,
-      power: 10,
-      rarity: "legendary",
-      spell: null,
-      title: "Minion",
-      toughness: 10,
-    });
+    if (player.hand.length >= MAX_HAND) {
+      player.drawPile.pop();
+    } else {
+      player.hand.push(player.drawPile.pop());
+    }
   }
 };
 
@@ -28,66 +26,93 @@ export const targetAll = ({ opponent, player, toughnessAdded }) => {
 };
 
 /**
+ * @param {boolean} destroyMinion
  * @param {Socket} opponent
  * @param {Socket} player
  * @param {number} powerAdded
  * @param {number} toughnessAdded
  */
 export const targetAllAllyMinions = ({
+  destroyMinion,
   player,
   powerAdded,
   toughnessAdded,
 }) => {
   for (const minion of player.minions) {
-    minion.power += powerAdded ? powerAdded : 0;
-    minion.toughness += toughnessAdded ? toughnessAdded : 0;
+    if (destroyMinion) {
+      player.minions = [null, null, null, null, null, null, null];
+    } else {
+      minion.power += powerAdded ? powerAdded : 0;
+      minion.toughness += toughnessAdded ? toughnessAdded : 0;
+    }
   }
 };
 
 /**
+ * @param {boolean} destroyMinion
  * @param {Socket} opponent
  * @param {Socket} player
  * @param {number} powerAdded
  * @param {number} toughnessAdded
  */
 export const targetAllMinions = ({
+  destroyMinion,
   opponent,
   player,
   powerAdded,
   toughnessAdded,
 }) => {
-  targetAllAllyMinions({ player, powerAdded, toughnessAdded });
-  targetAllOpponentMinions({ opponent, powerAdded, toughnessAdded });
+  targetAllAllyMinions({ destroyMinion, player, powerAdded, toughnessAdded });
+  targetAllOpponentMinions({
+    destroyMinion,
+    opponent,
+    powerAdded,
+    toughnessAdded,
+  });
 };
 
 /**
+ * @param {boolean} destroyMinion
  * @param {Socket} opponent
  * @param {number} powerAdded
  * @param {number} toughnessAdded
  */
 export const targetAllOpponentMinions = ({
+  destroyMinion,
   opponent,
   powerAdded,
   toughnessAdded,
 }) => {
   for (const minion of opponent.minions) {
-    minion.power += powerAdded ? powerAdded : 0;
-    minion.toughness += toughnessAdded ? toughnessAdded : 0;
+    if (destroyMinion) {
+      opponent.minions = [null, null, null, null, null, null, null];
+    } else {
+      minion.power += powerAdded ? powerAdded : 0;
+      minion.toughness += toughnessAdded ? toughnessAdded : 0;
+    }
   }
 };
 
 /**
+ * @param {boolean} destroyMinion
  * @param {number} minionIndex
  * @param {Socket} player
  * @param {number} powerAdded
  * @param {number} toughnessAdded
  */
 export const targetAllyMinion = ({
+  destroyMinion,
   minionIndex,
   player,
   powerAdded,
   toughnessAdded,
 }) => {
+  if (destroyMinion) {
+    player.minions[minionIndex].toughness = 0;
+
+    return;
+  }
+
   player.minions[minionIndex].power += powerAdded ? powerAdded : 0;
   player.minions[minionIndex].toughness += toughnessAdded ? toughnessAdded : 0;
 };
@@ -167,17 +192,25 @@ export const targetOpponent = ({
 };
 
 /**
+ * @param {boolean} destroyMinion
  * @param {number} minionIndex
  * @param {Socket} opponent
  * @param {number} powerAdded
  * @param {number} toughnessAdded
  */
 export const targetOpponentMinion = ({
+  destroyMinion,
   minionIndex,
   opponent,
   powerAdded,
   toughnessAdded,
 }) => {
+  if (destroyMinion) {
+    opponent.minions[minionIndex].toughness = 0;
+
+    return;
+  }
+
   opponent.minions[minionIndex].power += powerAdded ? powerAdded : 0;
   opponent.minions[minionIndex].toughness += toughnessAdded
     ? toughnessAdded
@@ -193,14 +226,15 @@ export const targetOpponentPlayer = ({ opponent, toughnessAdded }) => {
 };
 
 /**
+ * @param {boolean} destroyMinion
  * @param {number} minionIndex
  * @param {Socket} opponent
- * @param {Socket} player
  * @param {number} powerAdded
  * @param {string} targetPlayer
  * @param {number} toughnessAdded
  */
 export const targetMinion = ({
+  destroyMinion,
   minionIndex,
   opponent,
   player,
@@ -210,6 +244,7 @@ export const targetMinion = ({
 }) => {
   if (targetPlayer === "opponent") {
     targetOpponentMinion({
+      destroyMinion,
       minionIndex,
       opponent,
       powerAdded,
@@ -217,6 +252,7 @@ export const targetMinion = ({
     });
   } else if (targetPlayer === "self") {
     targetAllyMinion({
+      destroyMinion,
       minionIndex,
       player,
       powerAdded,
@@ -226,12 +262,14 @@ export const targetMinion = ({
 };
 
 /**
+ * @param {boolean} destroyMinion
  * @param {Socket} opponent
  * @param {number} powerAdded
  * @param {number} randomMinionsNumber
  * @param {number} toughnessAdded
  */
 export const targetRandomOpponentMinions = ({
+  destroyMinion,
   opponent,
   powerAdded,
   randomMinionsNumber,
@@ -270,7 +308,11 @@ export const targetRandomOpponentMinions = ({
   );
 
   for (const index of newIndexes) {
-    opponent.minions[index].power += powerAdded ? powerAdded : 0;
-    opponent.minions[index].toughness += toughnessAdded ? toughnessAdded : 0;
+    if (destroyMinion) {
+      opponent.minions[index].toughness = 0;
+    } else {
+      opponent.minions[index].power += powerAdded ? powerAdded : 0;
+      opponent.minions[index].toughness += toughnessAdded ? toughnessAdded : 0;
+    }
   }
 };
