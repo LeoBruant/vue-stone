@@ -1,3 +1,6 @@
+import { findOneUser } from "../service/user.js";
+import tokenLib from "jsonwebtoken";
+
 /**
  * @param {Server} io
  * @param {MatchEmitter} emitter
@@ -19,21 +22,30 @@ export default function matchmaking(io, emitter) {
         /**
          * @param {string} jwt
          */
-        (jwt) => {
-          waiting.add({ jwt, socket });
+        async (jwt) => {
+          const decodedJwt = tokenLib.decode(jwt);
+          try {
+            const user = await findOneUser(decodedJwt.id);
 
-          console.log(
-            `A new player has joined, ${waiting.size} players in waiting room.`,
-          );
+            waiting.add({ jwt, socket, user });
 
-          if (waiting.size >= 2) {
-            const team = Array.from(waiting).slice(0, 2);
+            console.log(
+              `A new player has joined, ${waiting.size} players in waiting room.`,
+            );
 
-            emitter.emit("teamReadyEvent", { team });
+            if (waiting.size >= 2) {
+              const team = Array.from(waiting).slice(0, 2);
 
-            for (const member of team) {
-              waiting.delete(member);
+              emitter.emit("teamReadyEvent", { team });
+
+              for (const member of team) {
+                waiting.delete(member);
+              }
             }
+          } catch (e) {
+            console.warn(
+              `User ${decodedJwt.id} connected but it is not registered in the database.`,
+            );
           }
         },
       );
