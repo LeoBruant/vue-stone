@@ -30,7 +30,7 @@ export default function (connection) {
     }
 
     generateToken() {
-      return jwt.sign({ id: this.id }, jwtSecret, {
+      return jwt.sign({ uuid: this.uuid }, jwtSecret, {
         expiresIn: "1y",
       });
     }
@@ -45,6 +45,11 @@ export default function (connection) {
         validate: {
           max: 25,
         },
+      },
+      uuid: {
+        type: DataTypes.UUID,
+        unique: true,
+        allowNull: false,
       },
       email: {
         type: DataTypes.STRING,
@@ -87,14 +92,20 @@ export default function (connection) {
   }
 
   User.addHook("beforeCreate", encryptPassword);
-  User.addHook("beforeCreate", async (user) => {
-    const document = new Users({
-      id: user.id,
-      ownedCards: defaultCards,
-      decks: defaultDecks,
-    });
-    await document.save();
-  });
+  User.addHook(
+    "beforeCreate",
+    /**
+     * @param {User} user
+     */
+    async (user) => {
+      const document = new Users({
+        uuid: user.uuid,
+        ownedCards: defaultCards,
+        decks: defaultDecks,
+      });
+      await document.save();
+    },
+  );
   User.addHook("beforeUpdate", encryptPassword);
 
   return User;
