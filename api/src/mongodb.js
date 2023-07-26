@@ -11,7 +11,7 @@ const abilitySchema = new Schema({
   summonNumber: { type: Number, default: null },
   switchStats: { type: Boolean, default: null },
   toughnessAdded: { type: Number, default: null },
-  trigger: { type: String, enum: ["appear", "death"], default: null },
+  trigger: { type: String, enum: ["appear", "death", "default"], default: "default" },
   type: {
     type: String,
     enum: [
