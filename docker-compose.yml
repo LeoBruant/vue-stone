@@ -19,6 +19,8 @@ services:
     #  - "8089:80"
     networks:
       - traefik
+    depends_on:
+      - api
 
   api:
     build:
@@ -27,6 +29,9 @@ services:
     expose:
       - "8080:8080"
     env_file: .env
+    depends_on:
+      - mongo
+      - postgres
 
   postgres:
     extends:
