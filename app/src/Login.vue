@@ -1,4 +1,6 @@
 <script setup>
+import Layout from "@/Layout.vue";
+
 let name = "";
 let email = "";
 let password = "";
@@ -59,14 +61,16 @@ const login = async () => {
 </script>
 
 <template>
-  <form>
-    <input type="text" v-model="name" placeholder="Nom d'utilisateur" />
-    <input type="email" v-model="email" placeholder="Adresse email" />
-    <input type="password" v-model="password" placeholder="Mot de passe" />
+  <Layout>
+    <form>
+      <input type="text" v-model="name" placeholder="Nom d'utilisateur" />
+      <input type="email" v-model="email" placeholder="Adresse email" />
+      <input type="password" v-model="password" placeholder="Mot de passe" />
 
-    <button type="button" @click="signup">S'inscrire</button>
-    <button type="button" @click="login">Se connecter</button>
+      <button type="button" @click="signup">S'inscrire</button>
+      <button type="button" @click="login">Se connecter</button>
 
-    <p>JWT is {{ jwt }}</p>
-  </form>
+      <p>JWT is {{ jwt }}</p>
+    </form>
+  </Layout>
 </template>

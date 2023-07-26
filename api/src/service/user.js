@@ -1,4 +1,5 @@
 import db from "../model.mjs";
+import crypto from "node:crypto";
 
 /**
  * Creates a new user with the given email and password.
@@ -8,13 +9,16 @@ import db from "../model.mjs";
  * @returns {User} The newly created user
  */
 export async function createUser(name, email, password) {
-  const { id } = await db.User.create({
+  const uuid = crypto.randomUUID();
+
+  await db.User.create({
     name,
     email,
     password,
+    uuid,
   });
 
-  return { id, name, email };
+  return { name, email, uuid };
 }
 
 /**
