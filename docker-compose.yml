@@ -15,6 +15,10 @@ services:
       - "traefik.http.services.matrix.loadbalancer.server.port=80"
       - "traefik.http.routers.matrix.tls.domains[0].main=vuestone.quozul.dev"
     env_file: .env
+    #ports:
+    #  - "8089:80"
+    networks:
+      - traefik
 
   api:
     build:
@@ -37,3 +41,8 @@ services:
 volumes:
   db:
   mongo:
+
+networks:
+  traefik:
+    external: true
+    name: traefik
