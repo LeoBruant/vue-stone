@@ -238,7 +238,7 @@ const startGame = async (team) => {
 
   const cards = mongoose.model("Cards", cardSchema);
 
-  // console.log(cards);
+  console.log(cards);
 
   /**
    * @param {Player} socket
