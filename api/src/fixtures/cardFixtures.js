@@ -6,7 +6,7 @@ export const cards = [
     attacks: 1,
     cost: 1,
     description: "",
-    id: 1,
+    cardId: 1,
     power: 2,
     rarity: "common",
     spell: null,
@@ -14,7 +14,7 @@ export const cards = [
     toughness: 1,
   },
   {
-    id: 2,
+    cardId: 2,
     title: "Frostweaver",
     cost: 2,
     power: 2,
@@ -26,7 +26,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 3,
+    cardId: 3,
     title: "Ironhide Mauler",
     cost: 1,
     power: 1,
@@ -50,7 +50,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 4,
+    cardId: 4,
     title: "Arcane Trickster",
     cost: 2,
     power: 3,
@@ -62,7 +62,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 5,
+    cardId: 5,
     title: "Bloodfang Assassin",
     cost: 3,
     power: 2,
@@ -86,7 +86,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 6,
+    cardId: 6,
     title: "Stormrider",
     cost: 3,
     power: 1,
@@ -110,7 +110,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 7,
+    cardId: 7,
     title: "Thundering Hooves",
     cost: 4,
     power: 2,
@@ -122,7 +122,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 8,
+    cardId: 8,
     title: "Crystalweaver",
     cost: 4,
     power: 3,
@@ -146,7 +146,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 9,
+    cardId: 9,
     title: "Plaguebearer",
     cost: 5,
     power: 4,
@@ -170,7 +170,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 10,
+    cardId: 10,
     title: "Solaris Sentinel",
     cost: 6,
     power: 6,
@@ -180,10 +180,9 @@ export const cards = [
     attacks: 1,
     rarity: "common",
     spell: null,
-
   },
   {
-    id: 11,
+    cardId: 11,
     title: "Venomfang Serpent",
     cost: 1,
     power: 1,
@@ -207,7 +206,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 12,
+    cardId: 12,
     title: "Windwhisper Druid",
     cost: 1,
     power: 1,
@@ -231,7 +230,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 13,
+    cardId: 13,
     title: "Emberstorm Phoenix",
     cost: 1,
     power: 1,
@@ -255,7 +254,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 14,
+    cardId: 14,
     title: "Frostbite Yeti",
     cost: 2,
     power: 2,
@@ -279,7 +278,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 15,
+    cardId: 15,
     title: "Starforged Artificer",
     cost: 2,
     power: 2,
@@ -303,7 +302,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 16,
+    cardId: 16,
     title: "Cursed Banshee",
     cost: 3,
     power: 1,
@@ -327,7 +326,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 17,
+    cardId: 17,
     title: "Thunderclap Brute",
     cost: 4,
     power: 4,
@@ -339,7 +338,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 18,
+    cardId: 18,
     title: "Astral Diviner",
     cost: 4,
     power: 2,
@@ -351,7 +350,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 19,
+    cardId: 19,
     title: "Plundering Corsair",
     cost: 7,
     power: 9,
@@ -363,7 +362,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 20,
+    cardId: 20,
     title: "Lunar Guardian",
     cost: 1,
     power: 1,
@@ -387,7 +386,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 21,
+    cardId: 21,
     title: "Flameheart Djinn",
     cost: 2,
     power: 0,
@@ -411,7 +410,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 22,
+    cardId: 22,
     title: "Stormcaller Shaman",
     cost: 5,
     power: 4,
@@ -435,7 +434,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 23,
+    cardId: 23,
     title: "Crystaline Construct",
     cost: 5,
     power: 5,
@@ -457,10 +456,9 @@ export const cards = [
     attacks: 1,
     rarity: "rare",
     spell: null,
-
   },
   {
-    id: 24,
+    cardId: 24,
     title: "Venomous Arachnid",
     cost: 6,
     power: 5,
@@ -484,7 +482,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 25,
+    cardId: 25,
     title: "Shadowmancer",
     cost: 1,
     power: 1,
@@ -508,7 +506,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 26,
+    cardId: 26,
     title: "Whispering Banshee",
     cost: 1,
     power: 3,
@@ -532,7 +530,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 27,
+    cardId: 27,
     title: "Ironbark Colossus",
     cost: 2,
     power: 4,
@@ -556,7 +554,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 28,
+    cardId: 28,
     title: "Timebender Mage",
     cost: 4,
     power: 5,
@@ -568,7 +566,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 29,
+    cardId: 29,
     title: "Soulstealer Necromancer",
     cost: 5,
     power: 4,
@@ -592,7 +590,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 30,
+    cardId: 30,
     title: "Shimmerwing Faerie",
     cost: 7,
     power: 7,
@@ -604,7 +602,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 31,
+    cardId: 31,
     title: "Doomblade Assassin",
     cost: 1,
     power: 1,
@@ -628,7 +626,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 32,
+    cardId: 32,
     title: "Celestial Herald",
     cost: 2,
     power: 2,
@@ -652,7 +650,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 33,
+    cardId: 33,
     title: "Thornheart Druid",
     cost: 2,
     power: 2,
@@ -676,7 +674,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 34,
+    cardId: 34,
     title: "Astral Serpent",
     cost: 2,
     power: 3,
@@ -700,7 +698,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 35,
+    cardId: 35,
     title: "Frostbite Archer",
     cost: 1,
     power: 1,
@@ -724,7 +722,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 36,
+    cardId: 36,
     title: "Magma Elemental",
     cost: 1,
     power: 0,
@@ -748,7 +746,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 37,
+    cardId: 37,
     title: "Nightfall Shadowcaster",
     cost: 2,
     power: 2,
@@ -772,7 +770,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 38,
+    cardId: 38,
     title: "Thunderstorm Titan",
     cost: 3,
     power: 1,
@@ -796,7 +794,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 39,
+    cardId: 39,
     title: "Arcane Illusionist",
     cost: 3,
     power: 3,
@@ -820,7 +818,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 40,
+    cardId: 40,
     title: "Bloodmoon Berserker",
     cost: 4,
     power: 1,
@@ -844,7 +842,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 41,
+    cardId: 41,
     title: "Solarflare Phoenix",
     cost: 6,
     power: 6,
@@ -868,7 +866,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 42,
+    cardId: 42,
     title: "Voidwhisper Enchantress",
     cost: 3,
     power: 2,
@@ -892,7 +890,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 43,
+    cardId: 43,
     title: "Whirlwind Tempest",
     cost: 3,
     power: 1,
@@ -916,7 +914,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 44,
+    cardId: 44,
     title: "Runeblade Knight",
     cost: 4,
     power: 2,
@@ -940,7 +938,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 45,
+    cardId: 45,
     title: "Coral Guardian",
     cost: 4,
     power: 2,
@@ -964,7 +962,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 46,
+    cardId: 46,
     title: "Emberfury Demon",
     cost: 6,
     power: 6,
@@ -988,7 +986,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 47,
+    cardId: 47,
     title: "Timeless Chronomancer",
     cost: 1,
     power: 3,
@@ -1010,10 +1008,9 @@ export const cards = [
     attacks: 1,
     rarity: "epic",
     spell: null,
-
   },
   {
-    id: 48,
+    cardId: 48,
     title: "Plaguebringer Alchemist",
     cost: 1,
     power: 1,
@@ -1037,7 +1034,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 49,
+    cardId: 49,
     title: "Lunar Serenade Siren",
     cost: 1,
     power: 1,
@@ -1061,7 +1058,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 50,
+    cardId: 50,
     title: "Stormforge Golem",
     cost: 2,
     power: 2,
@@ -1085,7 +1082,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 51,
+    cardId: 51,
     title: "Radiant Arbiter",
     cost: 2,
     power: 1,
@@ -1109,7 +1106,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 52,
+    cardId: 52,
     title: "Shadowfire Warlock",
     cost: 2,
     power: 1,
@@ -1133,7 +1130,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 53,
+    cardId: 53,
     title: "Crystalwind Sprite",
     cost: 2,
     power: 4,
@@ -1157,7 +1154,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 54,
+    cardId: 54,
     title: "Thundering Stampede",
     cost: 3,
     power: 2,
@@ -1181,7 +1178,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 55,
+    cardId: 55,
     title: "Voodoo Hexer",
     cost: 3,
     power: 3,
@@ -1205,7 +1202,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 56,
+    cardId: 56,
     title: "Soulbound Guardian",
     cost: 4,
     power: 3,
@@ -1229,7 +1226,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 57,
+    cardId: 57,
     title: "Feral Stalker",
     cost: 4,
     power: 2,
@@ -1253,7 +1250,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 58,
+    cardId: 58,
     title: "Enchanted Harpist",
     cost: 8,
     power: 5,
@@ -1277,7 +1274,7 @@ export const cards = [
     spell: null,
   },
   {
-    id: 59,
+    cardId: 59,
     title: "Arcane Echoes",
     cost: 1,
     power: null,
@@ -1298,7 +1295,7 @@ export const cards = [
     ],
   },
   {
-    id: 60,
+    cardId: 60,
     title: "Time Warp",
     cost: 3,
     power: null,
@@ -1319,7 +1316,7 @@ export const cards = [
     ],
   },
   {
-    id: 61,
+    cardId: 61,
     title: "Nature's Wrath",
     cost: 2,
     power: null,
@@ -1340,7 +1337,7 @@ export const cards = [
     ],
   },
   {
-    id: 62,
+    cardId: 62,
     title: "Flameburst",
     cost: 4,
     power: null,
@@ -1361,7 +1358,7 @@ export const cards = [
     ],
   },
   {
-    id: 63,
+    cardId: 63,
     title: "Hex of Misfortune",
     cost: 4,
     power: null,
@@ -1382,7 +1379,7 @@ export const cards = [
     ],
   },
   {
-    id: 64,
+    cardId: 64,
     title: "Frostbite",
     cost: 1,
     power: null,
@@ -1403,7 +1400,7 @@ export const cards = [
     ],
   },
   {
-    id: 65,
+    cardId: 65,
     title: "Nature's Harmony",
     cost: 1,
     power: null,
@@ -1424,7 +1421,7 @@ export const cards = [
     ],
   },
   {
-    id: 66,
+    cardId: 66,
     title: "Shadowmeld",
     cost: 2,
     power: null,
@@ -1445,7 +1442,7 @@ export const cards = [
     ],
   },
   {
-    id: 67,
+    cardId: 67,
     title: "Lightning Surge",
     cost: 2,
     power: null,
@@ -1466,7 +1463,7 @@ export const cards = [
     ],
   },
   {
-    id: 68,
+    cardId: 68,
     title: "Celestial Blessing",
     cost: 0,
     power: null,
@@ -1487,7 +1484,7 @@ export const cards = [
     ],
   },
   {
-    id: 69,
+    cardId: 69,
     title: "Plundering Raid",
     cost: 1,
     power: null,
@@ -1508,7 +1505,7 @@ export const cards = [
     ],
   },
   {
-    id: 70,
+    cardId: 70,
     title: "Arcane Insight",
     cost: 2,
     power: null,
@@ -1529,7 +1526,7 @@ export const cards = [
     ],
   },
   {
-    id: 71,
+    cardId: 71,
     title: "Metaporph",
     cost: 3,
     power: null,
@@ -1550,7 +1547,7 @@ export const cards = [
     ],
   },
   {
-    id: 72,
+    cardId: 72,
     title: "Astral Projection",
     cost: 3,
     power: null,
@@ -1579,7 +1576,7 @@ export const cards = [
     ],
   },
   {
-    id: 73,
+    cardId: 73,
     title: "Vortex of Shadows",
     cost: 3,
     power: null,
@@ -1600,7 +1597,7 @@ export const cards = [
     ],
   },
   {
-    id: 74,
+    cardId: 74,
     title: "Fury Strike",
     cost: 3,
     power: null,
@@ -1621,7 +1618,7 @@ export const cards = [
     ],
   },
   {
-    id: 75,
+    cardId: 75,
     title: "Mystic Resonance",
     cost: 2,
     power: null,
@@ -1642,7 +1639,7 @@ export const cards = [
     ],
   },
   {
-    id: 76,
+    cardId: 76,
     title: "Arcane Barrier",
     cost: 2,
     power: null,
@@ -1663,7 +1660,7 @@ export const cards = [
     ],
   },
   {
-    id: 77,
+    cardId: 77,
     title: "Inferno Bolt",
     cost: 2,
     power: null,
@@ -1684,7 +1681,7 @@ export const cards = [
     ],
   },
   {
-    id: 78,
+    cardId: 78,
     title: "Plague Outbreak",
     cost: 6,
     power: null,
@@ -1705,7 +1702,7 @@ export const cards = [
     ],
   },
   {
-    id: 79,
+    cardId: 79,
     title: "Cataclysmic Blast",
     cost: 7,
     power: null,
@@ -1726,7 +1723,7 @@ export const cards = [
     ],
   },
   {
-    id: 80,
+    cardId: 80,
     title: "Solar Flare",
     cost: 10,
     power: null,
@@ -1747,7 +1744,7 @@ export const cards = [
     ],
   },
   {
-    id: 81,
+    cardId: 81,
     title: "Healing Tide",
     cost: 0,
     power: null,
@@ -1768,7 +1765,7 @@ export const cards = [
     ],
   },
   {
-    id: 82,
+    cardId: 82,
     title: "Void Shift",
     cost: 1,
     power: null,
@@ -1789,7 +1786,7 @@ export const cards = [
     ],
   },
   {
-    id: 83,
+    cardId: 83,
     title: "Banishing Bolt",
     cost: 2,
     power: null,
@@ -1810,7 +1807,7 @@ export const cards = [
     ],
   },
   {
-    id: 84,
+    cardId: 84,
     title: "Eternal Balance",
     cost: 3,
     power: null,
@@ -1839,7 +1836,7 @@ export const cards = [
     ],
   },
   {
-    id: 85,
+    cardId: 85,
     title: "Astral Surge",
     cost: 4,
     power: null,
@@ -1860,7 +1857,7 @@ export const cards = [
     ],
   },
   {
-    id: 86,
+    cardId: 86,
     title: "Dark Sacrifice",
     cost: 1,
     power: null,
@@ -1889,7 +1886,7 @@ export const cards = [
     ],
   },
   {
-    id: 87,
+    cardId: 87,
     title: "Ritual of the Guardian",
     cost: 5,
     power: null,
@@ -1918,7 +1915,7 @@ export const cards = [
     ],
   },
   {
-    id: 88,
+    cardId: 88,
     title: "Elemental Fury",
     cost: 3,
     power: null,
@@ -1939,7 +1936,7 @@ export const cards = [
     ],
   },
   {
-    id: 89,
+    cardId: 89,
     title: "Swarm of Minions",
     cost: 4,
     power: null,
@@ -1960,7 +1957,7 @@ export const cards = [
     ],
   },
   {
-    id: 90,
+    cardId: 90,
     title: "Spirit Walk",
     cost: 6,
     power: null,
@@ -1984,7 +1981,7 @@ export const cards = [
     ability: null,
     cost: 8,
     description: "",
-    id: 91,
+    cardId: 91,
     power: null,
     title: "Apocalypse",
     toughness: null,
@@ -2004,7 +2001,7 @@ export const cards = [
 ];
 
 export async function createCards() {
-  const inserts = cards.map(({id,...card}) => {
+  const inserts = cards.map(({ id, ...card }) => {
     const document = new Cards(card);
     return document.save();
   });

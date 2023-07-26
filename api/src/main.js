@@ -50,9 +50,11 @@ const emitter = new MatchEmitter();
 matchmaking(io, emitter);
 match(io, emitter);
 
-server.listen(port, () => {
-  console.log(`listening on *:${port}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  server.listen(port, () => {
+    console.log(`listening on *:${port}`);
+  });
+}
 
 server.on("close", async () => {
   await disconnectMongoDb(mongod);

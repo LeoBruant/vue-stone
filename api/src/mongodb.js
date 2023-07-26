@@ -11,7 +11,11 @@ const abilitySchema = new Schema({
   summonNumber: { type: Number, default: null },
   switchStats: { type: Boolean, default: null },
   toughnessAdded: { type: Number, default: null },
-  trigger: { type: String, enum: ["appear", "death", "default"], default: "default" },
+  trigger: {
+    type: String,
+    enum: ["appear", "death", "default"],
+    default: "default",
+  },
   type: {
     type: String,
     enum: [
@@ -61,6 +65,7 @@ const effectSchema = new Schema({
 });
 
 const cardSchema = new Schema({
+  cardId: { type: Number },
   ability: abilitySchema,
   attacks: { type: Number, default: 1 },
   cost: { type: Number },
@@ -82,7 +87,7 @@ export const Users = mongoose.model(
     uuid: { type: String },
     ownedCards: [cardSchema],
     decks: [[cardSchema]],
-  })
+  }),
 );
 
 export const Cards = mongoose.model("Cards", cardSchema);

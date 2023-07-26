@@ -21,13 +21,11 @@ export const decks = [
 
 export const defaultCards = decks
   .flat()
-  .map((id) => cards.find((card) => card.id === id))
-  // eslint-disable-next-line no-unused-vars
-  .map(({ id, ...card }) => card);
+  .map((id) => cards.find((card) => card.cardId === id))
+  .map((card) => card);
 
 export const defaultDecks = decks.map((deck) =>
   deck
-    .map((id) => cards.find((card) => card.id === id))
-    // eslint-disable-next-line no-unused-vars
-    .map(({ id, ...card }) => card),
+    .map((id) => cards.find((card) => card.cardId === id))
+    .map((card) => card),
 );
