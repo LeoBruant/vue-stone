@@ -6,13 +6,10 @@ import { io } from "socket.io-client";
 import { ref } from "vue";
 import Dots from "./components/Dots.vue";
 
-<<<<<<< HEAD
-const currentSpell = ref(null);
-=======
-const socket = io(import.meta.env.VITE_SOCKET_URL);
->>>>>>> master
 
-const socket = io("ws://localhost:8080/");
+const currentSpell = ref(null);
+
+const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 const attackingIndex = ref(null);
 
