@@ -27,13 +27,14 @@ const mongod = await initMongoDb();
 const port = process.env.PORT ?? 8080;
 app.use(cors());
 app.use(express.json());
+app.use(express.static("static"));
 
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use(userController);
-app.use(authenticationController);
+app.use("/api", userController);
+app.use("/api", authenticationController);
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();

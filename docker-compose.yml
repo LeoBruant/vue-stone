@@ -1,32 +1,15 @@
 version: "3.8"
 
 services:
-  app:
+  api:
+    hostname: api
     build:
-      context: app
+      context: .
       target: prod
       args:
         VITE_API_URI: ${VITE_API_URI}
         VITE_STRIPE_PK: ${VITE_STRIPE_PK}
-    labels:
-      - "traefik.http.routers.vuestone.rule=Host(`vuestone.quozul.dev`)"
-      - "traefik.http.routers.vuestone.tls=true"
-      - "traefik.http.routers.vuestone.tls.certresolver=myresolver"
-      - "traefik.http.services.vuestone.loadbalancer.server.port=80"
-      - "traefik.http.routers.vuestone.tls.domains[0].main=vuestone.quozul.dev"
-    env_file: .env
-    #ports:
-    #  - "8089:80"
-    networks:
-      - traefik
-    depends_on:
-      - api
-
-  api:
-    build:
-      context: api
-      target: prod
-    expose:
+    ports:
       - "8080:8080"
     env_file: .env
     depends_on:
@@ -34,8 +17,15 @@ services:
       - postgres
     networks:
       - traefik
+    labels:
+      - "traefik.http.routers.vuestone.rule=Host(`vuestone.quozul.dev`)"
+      - "traefik.http.routers.vuestone.tls=true"
+      - "traefik.http.routers.vuestone.tls.certresolver=myresolver"
+      - "traefik.http.services.vuestone.loadbalancer.server.port=80"
+      - "traefik.http.routers.vuestone.tls.domains[0].main=vuestone.quozul.dev"
 
   postgres:
+    hostname: postgres
     extends:
       file: docker-compose.dev.yml
       service: postgres
@@ -43,6 +33,7 @@ services:
       - traefik
 
   mongo:
+    hostname: mongo
     extends:
       file: docker-compose.dev.yml
       service: mongo
