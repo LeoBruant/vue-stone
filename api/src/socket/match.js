@@ -100,8 +100,6 @@ import {
  * @property {Boolean} playing
  */
 
-import mongoose from "mongoose";
-
 const DEFAULT_CARD = {
   attacks: 0,
   cost: 0,
@@ -170,10 +168,10 @@ const DEFAULT_PLAYER = {
     { ...DEFAULT_CARD },
     { ...DEFAULT_CARD },
     { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
+    null,
+    null,
+    null,
+    null,
   ],
   name: null,
   playing: false,
@@ -235,10 +233,6 @@ const startGame = async (team) => {
 
   let turn = 1;
   let turnMaxMana = 1;
-
-  const cards = mongoose.model("Cards", cardSchema);
-
-  console.log(cards);
 
   /**
    * @param {Player} socket
@@ -428,7 +422,7 @@ const startGame = async (team) => {
     removeDead();
 
     // Remove card from hand
-    // player.hand.splice(cardIndex, 1);
+    player.hand.splice(cardIndex, 1);
   };
 
   const removeDead = () => {
@@ -478,6 +472,10 @@ const startGame = async (team) => {
      * @type {Player}
      */
     const player = structuredClone(DEFAULT_PLAYER);
+
+    if (!user) {
+      return;
+    }
 
     player.id = socket.id;
     player.name = user.name;

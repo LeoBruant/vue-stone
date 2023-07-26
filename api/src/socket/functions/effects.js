@@ -1,11 +1,27 @@
+import { shuffle } from "./utils.js";
+
 const MAX_HAND = 10;
+const MAX_MINIONS = 7;
 
 /**
  * @param {Number} minionPower
  * @param {Number} minionToughness
  * @param {Socket} player
  */
-export const addMinionToHand = ({ minionPower, minionToughness, player }) => {};
+export const addMinionToHand = ({ minionPower, minionToughness, player }) => {
+  if (player.hand.length <= MAX_HAND) {
+    player.hand.push({
+      ability: null,
+      attacks: 0,
+      cost: 1,
+      power: minionPower,
+      rarity: "common",
+      spell: null,
+      title: "Invocation",
+      toughness: minionToughness,
+    });
+  }
+};
 
 /**
  * @param {Number} drawnCards
@@ -26,7 +42,12 @@ export const drawCards = ({ drawnCards, player }) => {
  * @param {Number} powerAdded
  * @param {Number} toughnessAdded
  */
-export const gainForEachAlly = ({ player, powerAdded, toughnessAdded }) => {};
+export const gainForEachAlly = ({ player, powerAdded, toughnessAdded }) => {
+  player.minions[player.minions.length - 1].power +=
+    powerAdded * player.minions.length - 1;
+  player.minions[player.minions.length - 1].toughness +=
+    toughnessAdded * player.minions.length - 1;
+};
 
 /**
  * @param {Number} minionPower
@@ -39,7 +60,22 @@ export const summon = ({
   minionToughness,
   player,
   summonNumber,
-}) => {};
+}) => {
+  for (let i = 0; i < summonNumber; i++) {
+    if (player.minions.length < MAX_MINIONS) {
+      player.minions.push({
+        ability: null,
+        attacks: 0,
+        cost: 0,
+        power: minionPower,
+        rarity: "common",
+        spell: null,
+        title: "Invocation",
+        toughness: minionToughness,
+      });
+    }
+  }
+};
 
 /**
  * @param {Socket} opponent
@@ -309,7 +345,13 @@ export const targetMinion = ({
  * @param {Socket} player
  * @param {Number} toughnessAdded
  */
-export const targetRandomAlly = ({ player, toughnessAdded }) => {};
+export const targetRandomAlly = ({ player, toughnessAdded }) => {
+  if (Math.round(Math.random())) {
+    targetRandomAllyMinion({ player, toughnessAdded });
+  } else {
+    targetAllyPlayer({ player, toughnessAdded });
+  }
+};
 
 /**
  * @param {Boolean} destroyMinion
@@ -322,13 +364,37 @@ export const targetRandomAllyMinion = ({
   player,
   powerAdded,
   toughnessAdded,
-}) => {};
+}) => {
+  const indexes = [];
+  const minionsNumber = player.minions.filter((m) => m).length;
+
+  for (let i = 0; i < minionsNumber; i++) {
+    indexes.push(i);
+  }
+
+  const newIndexes = shuffle(indexes);
+
+  for (const index of newIndexes) {
+    if (destroyMinion) {
+      player.minions[index].toughness = 0;
+    } else {
+      player.minions[index].power += powerAdded ? powerAdded : 0;
+      player.minions[index].toughness += toughnessAdded ? toughnessAdded : 0;
+    }
+  }
+};
 
 /**
  * @param {Socket} opponent
  * @param {Number} toughnessAdded
  */
-export const targetRandomOpponent = ({ opponent, toughnessAdded }) => {};
+export const targetRandomOpponent = ({ opponent, toughnessAdded }) => {
+  if (Math.round(Math.random())) {
+    targetRandomOpponentMinions({ opponent, toughnessAdded });
+  } else {
+    targetOpponentPlayer({ opponent, toughnessAdded });
+  }
+};
 
 /**
  * @param {Boolean} destroyMinion
@@ -344,26 +410,6 @@ export const targetRandomOpponentMinions = ({
   randomMinionsNumber,
   toughnessAdded,
 }) => {
-  const shuffle = (array) => {
-    let counter = array.length;
-
-    // While there are elements in the array
-    while (counter > 0) {
-      // Pick a random index
-      let index = Math.floor(Math.random() * counter);
-
-      // Decrease counter by 1
-      counter--;
-
-      // And swap the last element with it
-      let temp = array[counter];
-      array[counter] = array[index];
-      array[index] = temp;
-    }
-
-    return array;
-  };
-
   const indexes = [];
   const minionsNumber = opponent.minions.filter((m) => m).length;
 

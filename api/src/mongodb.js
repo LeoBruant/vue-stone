@@ -80,14 +80,13 @@ export const cardSchema = new Schema({
   toughness: { type: Number },
 });
 
-export const Users = mongoose.model(
-  "Users",
-  new Schema({
-    uuid: { type: String },
-    ownedCards: [cardSchema],
-    decks: [[cardSchema]],
-  })
-);
+export const userSchema = new Schema({
+  uuid: { type: String },
+  ownedCards: [cardSchema],
+  decks: [[cardSchema]],
+});
+
+export const Users = mongoose.model("Users", new Schema(userSchema));
 
 export const Cards = mongoose.model("Cards", cardSchema);
 
