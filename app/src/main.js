@@ -1,13 +1,15 @@
 import App from "@/App.vue";
 import Home from "@/Home.vue";
-import Play from "@/Play.vue";
 import Login from "@/Login.vue";
+import Play from "@/Play.vue";
+import Cancelled from "@/checkout/Cancelled.vue";
 import Shop from "@/checkout/Shop.vue";
 import Success from "@/checkout/Success.vue";
-import Cancelled from "@/checkout/Cancelled.vue";
 import "@/scss/main.scss";
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 const routes = [
   { path: "/", component: Home },
@@ -26,5 +28,6 @@ const router = createRouter({
 const app = createApp(App);
 
 app.use(router);
+app.use(Toast);
 
 app.mount("#app");

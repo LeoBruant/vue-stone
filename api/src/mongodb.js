@@ -64,9 +64,9 @@ const effectSchema = new Schema({
   },
 });
 
-export const cardSchema = new Schema({
+const cardSchema = new Schema({
   ability: abilitySchema,
-  attacks: { type: Number, default: 1 },
+  attacks: { type: Number, default: 0 },
   cost: { type: Number },
   description: { type: String },
   power: { type: Number },
@@ -80,13 +80,14 @@ export const cardSchema = new Schema({
   toughness: { type: Number },
 });
 
-export const userSchema = new Schema({
-  uuid: { type: String },
-  ownedCards: [cardSchema],
-  decks: [[cardSchema]],
-});
-
-export const Users = mongoose.model("Users", new Schema(userSchema));
+export const Users = mongoose.model(
+  "Users",
+  new Schema({
+    uuid: { type: String },
+    ownedCards: [cardSchema],
+    decks: [[cardSchema]],
+  }),
+);
 
 export const Cards = mongoose.model("Cards", cardSchema);
 

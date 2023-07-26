@@ -1,3 +1,5 @@
+import tokenLib from "jsonwebtoken";
+import { Users } from "../mongodb.js";
 import {
   addMinionToHand,
   drawCards,
@@ -21,6 +23,7 @@ import {
   targetRandomOpponent,
   targetRandomOpponentMinions,
 } from "./functions/effects.js";
+import { shuffle } from "./functions/utils.js";
 
 /**
  * @typedef Ability
@@ -100,79 +103,16 @@ import {
  * @property {Boolean} playing
  */
 
-const DEFAULT_CARD = {
-  attacks: 0,
-  cost: 0,
-  power: 10,
-  rarity: "common",
-  spell: null,
-  title: "Minion",
-  toughness: 10,
-};
-
 /**
  * @type {Player}
  */
 const DEFAULT_PLAYER = {
-  drawPile: [{ ...DEFAULT_CARD }, { ...DEFAULT_CARD }, { ...DEFAULT_CARD }],
-  hand: [
-    {
-      ability: {
-        destroyMinion: null,
-        drawnCards: null,
-        minionPower: 1,
-        minionToughness: null,
-        powerAdded: 1,
-        randomMinionsNumber: null,
-        summonNumber: null,
-        switchStats: false,
-        toughnessAdded: null,
-        trigger: "appear",
-        type: "addMinionToHand",
-      },
-      attacks: 0,
-      cost: 0,
-      power: 10,
-      rarity: "common",
-      spell: null,
-      title: "addMinionToHand",
-      toughness: 10,
-    },
-    {
-      ability: {
-        destroyMinion: null,
-        drawnCards: 2,
-        minionPower: null,
-        minionToughness: null,
-        powerAdded: null,
-        randomMinionsNumber: null,
-        summonNumber: null,
-        switchStats: false,
-        toughnessAdded: null,
-        trigger: null,
-        type: "drawCards",
-      },
-      attacks: 0,
-      cost: 0,
-      power: 10,
-      rarity: "common",
-      spell: null,
-      title: "drawCards",
-      toughness: 10,
-    },
-  ],
+  drawPile: [],
+  hand: [],
   health: 30,
-  id: 2,
+  id: null,
   mana: 1,
-  minions: [
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    null,
-    null,
-    null,
-    null,
-  ],
+  minions: [null, null, null, null, null, null, null],
   name: null,
   playing: false,
 };
@@ -218,7 +158,7 @@ export default function match(io, emitter) {
       console.log("A team is ready to play.");
 
       startGame(team);
-    }
+    },
   );
 }
 
@@ -367,10 +307,8 @@ const startGame = async (team) => {
     player.mana -= card.cost;
 
     // Put card on board
-    player.minions[emptySlotIndex] = {
-      ...card,
-      turnPlayed: turn,
-    };
+    card.turnPlayed = turn;
+    player.minions[emptySlotIndex] = card;
 
     // Remove card from hand
     player.hand.splice(cardIndex, 1);
@@ -385,7 +323,7 @@ const startGame = async (team) => {
    */
   const playSpell = (
     { cardIndex, minionIndex, spell, targetPlayer },
-    socket
+    socket,
   ) => {
     const player = players[socket.id];
 
@@ -467,7 +405,7 @@ const startGame = async (team) => {
 
   let playing = true;
 
-  for (const { socket, user } of team) {
+  for (const { jwt, socket, user } of team) {
     /**
      * @type {Player}
      */
@@ -480,12 +418,21 @@ const startGame = async (team) => {
     player.id = socket.id;
     player.name = user.name;
 
+    const currentUser = await Users.find({ uuid: tokenLib.decode(jwt).uuid });
+    const deck = currentUser[0].decks[0];
+
+    // Set deck
+    player.drawPile = shuffle(deck);
+
     // Sets the first player as playing
     player.playing = playing;
     playing = false;
 
     // Update player
     players[player.id] = player;
+
+    // Draw cards
+    drawCards({ drawnCards: 4, player: players[player.id] });
 
     socket.on("endTurn", () => {
       endTurn(socket);

@@ -81,7 +81,7 @@ const playSpell = (spell) => {
   ) {
     socket.emit("playSpell", {
       cardIndex: players.value.self.hand.indexOf(
-        players.value.self.hand.find((card) => card?.spell === spell)
+        players.value.self.hand.find((card) => card?.spell === spell),
       ),
       spell,
     });

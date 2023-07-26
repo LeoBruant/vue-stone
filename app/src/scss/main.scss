@@ -7,3 +7,31 @@
 body {
   font-family: "Averia Serif Libre", cursive;
 }
+
+// Form
+
+.form-row {
+  @apply gap-1.5 grid mx-auto w-fit;
+}
+
+form {
+  @apply grid gap-6;
+}
+
+label {
+  @apply mr-auto text-lg;
+}
+
+input {
+  &[type="text"],
+  &[type="email"],
+  &[type="password"] {
+    @apply bg-slate-50 px-3 py-2.5 rounded-md shadow shadow-slate-300 text-lg;
+  }
+}
+
+// Components
+
+.button {
+  @apply bg-sky-500 cursor-pointer font-semibold grow px-6 py-3 rounded-md text-center text-lg text-white transition-colors hover:bg-opacity-90;
+}
