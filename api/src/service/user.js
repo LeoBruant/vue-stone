@@ -37,13 +37,13 @@ export async function findAllUsers(criteria, options = {}) {
 
 /**
  * Finds user by id.
- * @param id
+ * @param {string} uuid
  * @param options
  * @returns {Promise<User>}
  */
-export async function findOneUser(id, options = {}) {
+export async function findOneUser(uuid, options = {}) {
   return db.User.findOne({
-    where: { id },
+    where: { uuid },
     ...options,
     order: Object.entries(options.order || {}),
   });

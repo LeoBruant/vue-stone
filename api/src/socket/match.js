@@ -1,5 +1,3 @@
-import tokenLib from "jsonwebtoken";
-import { findOneUser } from "../service/user.js";
 import {
   drawCards,
   targetAll,
@@ -216,12 +214,12 @@ export default function match(io, emitter) {
       console.log("A team is ready to play.");
 
       startGame(team);
-    }
+    },
   );
 }
 
 /**
- * @param {{jwt: string, socket: Socket}[]} team
+ * @param {{jwt: string, socket: Socket, user: User}[]} team
  */
 const startGame = async (team) => {
   /**
@@ -352,7 +350,7 @@ const startGame = async (team) => {
    */
   const playSpell = (
     { cardIndex, minionIndex, spell, targetPlayer },
-    socket
+    socket,
   ) => {
     const player = players[socket.id];
 
@@ -430,12 +428,11 @@ const startGame = async (team) => {
 
   let playing = true;
 
-  for (const { jwt, socket } of team) {
+  for (const { socket, user } of team) {
     /**
      * @type {Player}
      */
     const player = structuredClone(DEFAULT_PLAYER);
-    const user = await findOneUser(tokenLib.decode(jwt).id);
 
     player.id = socket.id;
     player.name = user.name;

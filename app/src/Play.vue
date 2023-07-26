@@ -6,8 +6,8 @@ import { io } from "socket.io-client";
 import { ref } from "vue";
 import Dots from "./components/Dots.vue";
 
-
 const currentSpell = ref(null);
+const jwt = window.localStorage.getItem("jwt");
 
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
@@ -71,7 +71,7 @@ const playSpell = (spell) => {
   ) {
     socket.emit("playSpell", {
       cardIndex: players.value.self.hand.indexOf(
-        players.value.self.hand.find((card) => card?.spell === spell)
+        players.value.self.hand.find((card) => card?.spell === spell),
       ),
       spell,
     });
@@ -102,7 +102,9 @@ const startAttack = (minionIndex) => {
 };
 
 socket.on("connect", () => {
-  socket.emit("setJwt", localStorage.getItem("jwt"));
+  if (jwt) {
+    socket.emit("setJwt", jwt);
+  }
 });
 
 socket.on("endGame", clearGame);
