@@ -22,4 +22,7 @@ RUN npm install
 COPY api .
 COPY --from=app_builder /app/dist ./static
 
+ENV PORT 8080
+EXPOSE $PORT
+
 CMD npm start
