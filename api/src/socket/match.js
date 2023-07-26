@@ -1,9 +1,14 @@
 import {
+  addMinionToHand,
   drawCards,
+  gainForEachAlly,
+  summon,
   targetAll,
+  targetAllAllies,
   targetAllAllyMinions,
   targetAllMinions,
   targetAllOpponentMinions,
+  targetAllOpponents,
   targetAllyMinion,
   targetAllyPlayer,
   targetAny,
@@ -11,6 +16,9 @@ import {
   targetOpponent,
   targetOpponentMinion,
   targetOpponentPlayer,
+  targetRandomAlly,
+  targetRandomAllyMinion,
+  targetRandomOpponent,
   targetRandomOpponentMinions,
 } from "./functions/effects.js";
 
@@ -28,7 +36,6 @@ import {
  * @property {'appear' | 'death' | null } trigger
  * @property {
  *  'addMinionToHand' |
- *  'discardOpponentCards' |
  *  'drawCards' |
  *  'gainForEachAlly' |
  *  'haste' |
@@ -93,11 +100,13 @@ import {
  * @property {Boolean} playing
  */
 
+import mongoose from "mongoose";
+
 const DEFAULT_CARD = {
   attacks: 0,
   cost: 0,
   power: 10,
-  rarity: "legendary",
+  rarity: "common",
   spell: null,
   title: "Minion",
   toughness: 10,
@@ -107,18 +116,7 @@ const DEFAULT_CARD = {
  * @type {Player}
  */
 const DEFAULT_PLAYER = {
-  drawPile: [
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-  ],
+  drawPile: [{ ...DEFAULT_CARD }, { ...DEFAULT_CARD }, { ...DEFAULT_CARD }],
   hand: [
     {
       ability: {
@@ -185,11 +183,16 @@ const MAX_MANA = 10;
 const MAX_MINIONS = 7;
 
 const effectFunctions = {
+  addMinionToHand,
   drawCards,
+  gainForEachAlly,
+  summon,
   targetAll,
+  targetAllAllies,
   targetAllAllyMinions,
   targetAllMinions,
   targetAllOpponentMinions,
+  targetAllOpponents,
   targetAllyMinion,
   targetAllyPlayer,
   targetAny,
@@ -197,6 +200,9 @@ const effectFunctions = {
   targetOpponentMinion,
   targetOpponentPlayer,
   targetMinion,
+  targetRandomAlly,
+  targetRandomAllyMinion,
+  targetRandomOpponent,
   targetRandomOpponentMinions,
 };
 
@@ -229,6 +235,10 @@ const startGame = async (team) => {
 
   let turn = 1;
   let turnMaxMana = 1;
+
+  const cards = mongoose.model("Cards", cardSchema);
+
+  // console.log(cards);
 
   /**
    * @param {Player} socket
@@ -297,6 +307,37 @@ const startGame = async (team) => {
     opponent.health -= player.minions[attackingIndex].power;
 
     player.minions[attackingIndex].attacks -= 1;
+  };
+
+  /**
+   * @param {Number} allyMinionIndex
+   * @param {Number} opponentMinionIndex
+   * @param {Player} socket
+   */
+  const minionsTrade = ({ allyMinionIndex, opponentMinionIndex }, socket) => {
+    const player = players[socket.id];
+
+    // Cancel if player is not allowed to play
+    if (!player.playing) {
+      return;
+    }
+
+    const allyMinion = player.minions[allyMinionIndex];
+
+    // Cancel if minion can't attack
+    if (allyMinion.attacks <= 0) {
+      return;
+    }
+
+    const opponent = findOpponent(player);
+    const opponentMinion = opponent.minions[opponentMinionIndex];
+
+    allyMinion.attacks -= 1;
+
+    allyMinion.toughness -= opponentMinion.power;
+    opponentMinion.toughness -= allyMinion.power;
+
+    removeDead();
   };
 
   /**
@@ -396,6 +437,10 @@ const startGame = async (team) => {
 
       for (const minion of player.minions) {
         if (minion?.toughness <= 0) {
+          if (minion.ability?.trigger === "death") {
+            effectFunctions[minion.ability.type]();
+          }
+
           player.minions.splice(player.minions.indexOf(minion), 1);
         }
       }
@@ -451,6 +496,11 @@ const startGame = async (team) => {
 
     socket.on("minionAttackPlayer", (data) => {
       minionAttackPlayer(data, socket);
+      update();
+    });
+
+    socket.on("minionsTrade", (data) => {
+      minionsTrade(data, socket);
       update();
     });
 

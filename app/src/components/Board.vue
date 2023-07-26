@@ -9,6 +9,7 @@ const emit = defineEmits([
   "applySpell",
   "endTurn",
   "minionAttackPlayer",
+  "minionsTrade",
   "startAttack",
 ]);
 
@@ -35,14 +36,18 @@ const minionInfo = ref(null);
 
 let minionsAnimation = ref([null, null, null, null, null, null, null]);
 
-const attackPlayer = () => {
+const animateMinion = () => {
   minionsAnimation.value[props.attackingIndex] = "attack";
-
-  emit("minionAttackPlayer");
 
   setTimeout(() => {
     minionsAnimation.value = [null, null, null, null, null, null, null];
   }, 500);
+};
+
+const attackPlayer = () => {
+  emit("minionAttackPlayer");
+
+  animateMinion();
 };
 
 /**
@@ -78,18 +83,25 @@ const clickAllyMinion = (index) => {
  * @param {Number} minionIndex
  */
 const clickOpponentMinion = (minionIndex) => {
-  if (!canSpellOpponent.value) {
-    return;
-  }
+  if (canSpellOpponent.value) {
+    // Spell Target
+    emit("applySpell", {
+      cardIndex: props.players.self.hand.indexOf(
+        props.players.self.hand.find((card) => card?.spell === props.spell)
+      ),
+      minionIndex,
+      spell: props.spell,
+      targetPlayer: "opponent",
+    });
+  } else if (props.attackingIndex !== null) {
+    // Attack target
+    emit("minionsTrade", {
+      allyMinionIndex: props.attackingIndex,
+      opponentMinionIndex: minionIndex,
+    });
 
-  emit("applySpell", {
-    cardIndex: props.players.self.hand.indexOf(
-      props.players.self.hand.find((card) => card?.spell === props.spell)
-    ),
-    minionIndex,
-    spell: props.spell,
-    targetPlayer: "opponent",
-  });
+    animateMinion();
+  }
 
   minionInfo.value = null;
 };
@@ -132,6 +144,9 @@ const endTurn = () => {
   emit("endTurn");
 };
 
+/**
+ * @param {Number} minionIndex
+ */
 const startAttack = (minionIndex) => {
   if (!canAttack(props.players.self.minions[minionIndex])) {
     return;
@@ -189,7 +204,7 @@ const canSpellPlayerSelf = computed(() => {
             @mouseenter="minionInfo = minion"
             @mouseleave="minionInfo = null"
             :card="minion"
-            :outlined="canSpellOpponent"
+            :outlined="canSpellOpponent || attackingIndex !== null"
             outlineStyle="attack"
             state="board"
           />
@@ -224,7 +239,7 @@ const canSpellPlayerSelf = computed(() => {
       </div>
       <div
         :class="`hp-opponent ${
-          attackingIndex || canSpellPlayerOpponent ? 'outlined' : ''
+          attackingIndex !== null || canSpellPlayerOpponent ? 'outlined' : ''
         }`"
       >
         <Health

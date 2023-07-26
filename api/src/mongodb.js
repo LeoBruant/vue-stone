@@ -11,7 +11,11 @@ const abilitySchema = new Schema({
   summonNumber: { type: Number, default: null },
   switchStats: { type: Boolean, default: null },
   toughnessAdded: { type: Number, default: null },
-  trigger: { type: String, enum: ["appear", "death"], default: null },
+  trigger: {
+    type: String,
+    enum: ["appear", "death", "default"],
+    default: "default",
+  },
   type: {
     type: String,
     enum: [
@@ -60,7 +64,7 @@ const effectSchema = new Schema({
   },
 });
 
-const cardSchema = new Schema({
+export const cardSchema = new Schema({
   ability: abilitySchema,
   attacks: { type: Number, default: 1 },
   cost: { type: Number },

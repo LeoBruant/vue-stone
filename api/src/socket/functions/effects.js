@@ -1,7 +1,14 @@
 const MAX_HAND = 10;
 
 /**
- * @param {number} drawnCards
+ * @param {Number} minionPower
+ * @param {Number} minionToughness
+ * @param {Socket} player
+ */
+export const addMinionToHand = ({ minionPower, minionToughness, player }) => {};
+
+/**
+ * @param {Number} drawnCards
  * @param {Player} player
  */
 export const drawCards = ({ drawnCards, player }) => {
@@ -15,22 +22,50 @@ export const drawCards = ({ drawnCards, player }) => {
 };
 
 /**
+ * @param {Socket} player
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
+ */
+export const gainForEachAlly = ({ player, powerAdded, toughnessAdded }) => {};
+
+/**
+ * @param {Number} minionPower
+ * @param {Number} minionToughness
+ * @param {Socket} player
+ * @param {Number} summonNumber
+ */
+export const summon = ({
+  minionPower,
+  minionToughness,
+  player,
+  summonNumber,
+}) => {};
+
+/**
  * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAll = ({ opponent, player, toughnessAdded }) => {
-  targetAllMinions({ opponent, player, toughnessAdded });
-  targetAllyPlayer({ player, toughnessAdded });
-  targetOpponentPlayer({ opponent, toughnessAdded });
+  targetAllAllies({ player, toughnessAdded });
+  targetAllOpponents({ opponent, toughnessAdded });
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Socket} player
+ * @param {Number} toughnessAdded
+ */
+export const targetAllAllies = ({ player, toughnessAdded }) => {
+  targetAllAllyMinions({ player, toughnessAdded });
+  targetAllyPlayer({ player, toughnessAdded });
+};
+
+/**
+ * @param {Boolean} destroyMinion
  * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllAllyMinions = ({
   destroyMinion,
@@ -49,11 +84,11 @@ export const targetAllAllyMinions = ({
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Boolean} destroyMinion
  * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllMinions = ({
   destroyMinion,
@@ -72,10 +107,10 @@ export const targetAllMinions = ({
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Boolean} destroyMinion
  * @param {Socket} opponent
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllOpponentMinions = ({
   destroyMinion,
@@ -94,11 +129,20 @@ export const targetAllOpponentMinions = ({
 };
 
 /**
- * @param {boolean} destroyMinion
- * @param {number} minionIndex
+ * @param {Socket} opponent
+ * @param {Number} toughnessAdded
+ */
+export const targetAllOpponents = ({ opponent, toughnessAdded }) => {
+  targetAllOpponentMinions({ opponent, toughnessAdded });
+  targetOpponentPlayer({ opponent, toughnessAdded });
+};
+
+/**
+ * @param {Boolean} destroyMinion
+ * @param {Number} minionIndex
  * @param {Socket} player
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllyMinion = ({
   destroyMinion,
@@ -119,19 +163,19 @@ export const targetAllyMinion = ({
 
 /**
  * @param {Socket} player
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllyPlayer = ({ player, toughnessAdded }) => {
   player.health += toughnessAdded;
 };
 
 /**
- * @param {number} minionIndex
+ * @param {Number} minionIndex
  * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} powerAdded
+ * @param {Number} powerAdded
  * @param {string} targetPlayer
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAny = ({
   minionIndex,
@@ -167,10 +211,10 @@ export const targetAny = ({
 };
 
 /**
- * @param {number} minionIndex
+ * @param {Number} minionIndex
  * @param {Socket} opponent
  * @param {string} targetPlayer
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetOpponent = ({
   minionIndex,
@@ -192,11 +236,11 @@ export const targetOpponent = ({
 };
 
 /**
- * @param {boolean} destroyMinion
- * @param {number} minionIndex
+ * @param {Boolean} destroyMinion
+ * @param {Number} minionIndex
  * @param {Socket} opponent
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetOpponentMinion = ({
   destroyMinion,
@@ -219,19 +263,19 @@ export const targetOpponentMinion = ({
 
 /**
  * @param {Socket} opponent
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetOpponentPlayer = ({ opponent, toughnessAdded }) => {
   opponent.health += toughnessAdded;
 };
 
 /**
- * @param {boolean} destroyMinion
- * @param {number} minionIndex
+ * @param {Boolean} destroyMinion
+ * @param {Number} minionIndex
  * @param {Socket} opponent
- * @param {number} powerAdded
+ * @param {Number} powerAdded
  * @param {string} targetPlayer
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetMinion = ({
   destroyMinion,
@@ -262,11 +306,36 @@ export const targetMinion = ({
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Socket} player
+ * @param {Number} toughnessAdded
+ */
+export const targetRandomAlly = ({ player, toughnessAdded }) => {};
+
+/**
+ * @param {Boolean} destroyMinion
+ * @param {Socket} player
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
+ */
+export const targetRandomAllyMinion = ({
+  destroyMinion,
+  player,
+  powerAdded,
+  toughnessAdded,
+}) => {};
+
+/**
  * @param {Socket} opponent
- * @param {number} powerAdded
- * @param {number} randomMinionsNumber
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
+ */
+export const targetRandomOpponent = ({ opponent, toughnessAdded }) => {};
+
+/**
+ * @param {Boolean} destroyMinion
+ * @param {Socket} opponent
+ * @param {Number} powerAdded
+ * @param {Number} randomMinionsNumber
+ * @param {Number} toughnessAdded
  */
 export const targetRandomOpponentMinions = ({
   destroyMinion,
