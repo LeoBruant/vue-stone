@@ -5,6 +5,9 @@ services:
     build:
       context: app
       target: dev
+      args:
+        VITE_API_URI: ${VITE_API_URI}
+        VITE_STRIPE_PK: ${VITE_STRIPE_PK}
     env_file:
       - ./app/.env
     network_mode: "host"
