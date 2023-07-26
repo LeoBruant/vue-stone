@@ -11,7 +11,7 @@ const abilitySchema = new Schema({
   summonNumber: { type: Number, default: null },
   switchStats: { type: Boolean, default: null },
   toughnessAdded: { type: Number, default: null },
-  trigger: { type: String, enum: ["appear", "death", null], default: null },
+  trigger: { type: String, enum: ["appear", "death"], default: null },
   type: {
     type: String,
     enum: [
@@ -41,7 +41,7 @@ const effectSchema = new Schema({
   randomMinionsNumber: { type: Number, default: null },
   toughnessAdded: { type: Number, default: null },
   type: {
-    type: Array,
+    type: String,
     enum: [
       "drawCards",
       "targetAll",
