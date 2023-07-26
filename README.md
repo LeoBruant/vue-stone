@@ -3,7 +3,7 @@
 ## Environment variables
 
 An example is provided in the file `.env.example`.
-You have to rename it to `.env`, fill out the variables with the actual values and copy it to the `app` and `api` folders.
+You have to copy and rename it to `.env` and copy it to the `app` and `api` folders.
 
 ## Running the project
 
@@ -20,6 +20,12 @@ docker compose -f ./docker-compose.dev.yml up postgres
 ```shell
 stripe login
 stripe listen --forward-to localhost:8080/webhook
+```
+
+#### Run the migrations
+
+```shell
+npm run -w api fixtures
 ```
 
 #### In Docker

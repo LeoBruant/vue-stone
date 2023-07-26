@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 import { ref } from "vue";
 import Dots from "./components/Dots.vue";
 
-const socket = io("ws://localhost:8080/");
+const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 const spell = ref(null);
 

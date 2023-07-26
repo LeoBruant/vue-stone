@@ -5,6 +5,9 @@ services:
     build:
       context: app
       target: dev
+      args:
+        VITE_API_URI: ${VITE_API_URI}
+        VITE_STRIPE_PK: ${VITE_STRIPE_PK}
     env_file:
       - ./app/.env
     network_mode: "host"
@@ -32,5 +35,16 @@ services:
       POSTGRES_USER: user
       POSTGRES_DB: db
 
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo:/data/db
+
 volumes:
   db:
+  mongo:

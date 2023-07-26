@@ -9,6 +9,7 @@ import userController from "./controller/user.js";
 import checkoutController from "./controller/checkoutController.js";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
+import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 
 config();
 
@@ -21,18 +22,22 @@ const io = new Server(server, {
   },
 });
 
+await db.connection.sync({ force: true });
+const mongod = await initMongoDb();
+
 const port = process.env.PORT ?? 8080;
 app.use(cors());
 app.use(checkoutController);
 
 app.use(express.json());
+app.use(express.static("static"));
 
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use(userController);
-app.use(authenticationController);
+app.use("/api", userController);
+app.use("/api", authenticationController);
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
@@ -44,4 +49,6 @@ server.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
 
-app.post("", (req, res, next) => {});
+server.on("close", async () => {
+  await disconnectMongoDb(mongod);
+});
