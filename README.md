@@ -9,10 +9,17 @@ You have to copy and rename it to `.env` and copy it to the `app` and `api` fold
 
 ### Dev mode
 
-#### Start Postgres
+#### Start the databases
 
 ```shell
 docker compose -f docker-compose.dev.yml up postgres mongo
+```
+
+#### Accept Stripe webhooks
+
+```shell
+stripe login
+stripe listen --forward-to localhost:8080/webhook
 ```
 
 #### Run the migrations

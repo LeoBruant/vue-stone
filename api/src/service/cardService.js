@@ -1,6 +1,7 @@
 import db from "../model.mjs";
 import fs from "fs/promises";
 import { join } from "path";
+import { Sequelize } from "sequelize";
 
 export async function createCard(body) {
   return await db.Card.create(body);
@@ -34,5 +35,17 @@ export async function findCardById(id) {
     where: {
       id: id,
     },
+  });
+}
+
+/**
+ * Get an array of random cards
+ * @param {number} limit
+ * @returns {Promise<Model[]>}
+ */
+export async function getRandomCards(limit = 5) {
+  return await db.Card.findAll({
+    order: Sequelize.literal("rand()"),
+    limit,
   });
 }
