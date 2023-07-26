@@ -304,7 +304,7 @@ export const targetRandomOpponentMinions = ({
 
   const newIndexes = shuffle(indexes).slice(
     0,
-    Math.min(randomMinionsNumber, minionsNumber)
+    Math.min(randomMinionsNumber, minionsNumber),
   );
 
   for (const index of newIndexes) {

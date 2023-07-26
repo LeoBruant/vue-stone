@@ -59,7 +59,7 @@ const clickAllyMinion = (index) => {
   if (canSpellAlly.value) {
     emit("applySpell", {
       cardIndex: props.players.self.hand.indexOf(
-        props.players.self.hand.find((card) => card?.spell === props.spell)
+        props.players.self.hand.find((card) => card?.spell === props.spell),
       ),
       minionIndex: index,
       spell: props.spell,
@@ -84,7 +84,7 @@ const clickOpponentMinion = (minionIndex) => {
 
   emit("applySpell", {
     cardIndex: props.players.self.hand.indexOf(
-      props.players.self.hand.find((card) => card?.spell === props.spell)
+      props.players.self.hand.find((card) => card?.spell === props.spell),
     ),
     minionIndex,
     spell: props.spell,
@@ -98,7 +98,7 @@ const clickPlayerOpponent = () => {
   if (canSpellPlayerOpponent.value) {
     emit("applySpell", {
       cardIndex: props.players.self.hand.indexOf(
-        props.players.self.hand.find((card) => card?.spell === props.spell)
+        props.players.self.hand.find((card) => card?.spell === props.spell),
       ),
       spell: props.spell,
       targetPlayer: "opponent",
@@ -117,7 +117,7 @@ const clickPlayerSelf = () => {
 
   emit("applySpell", {
     cardIndex: props.players.self.hand.indexOf(
-      props.players.self.hand.find((card) => card?.spell === props.spell)
+      props.players.self.hand.find((card) => card?.spell === props.spell),
     ),
     spell: props.spell,
     targetPlayer: "self",
@@ -144,7 +144,7 @@ const canSpellAlly = computed(() => {
   return (
     props.spell &&
     ["targetAllyMinion", "targetAny", "targetMinion"].includes(
-      props.spell[0].type
+      props.spell[0].type,
     )
   );
 });
