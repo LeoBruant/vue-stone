@@ -9,6 +9,7 @@ COPY app .
 
 ARG VITE_API_URI
 ARG VITE_STRIPE_PK
+ARG VITE_SOCKET_URL
 
 RUN npm run build
 
