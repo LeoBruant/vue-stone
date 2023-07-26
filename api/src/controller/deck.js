@@ -1,7 +1,7 @@
 import router from "./cardController.js";
 import authenticate from "../middleware/authenticate.js";
 import { Users } from "../mongodb.js";
-import { createDeck, getOwnedCards } from "../service/deck.js";
+import { createDeck } from "../service/deck.js";
 
 router.get("/deck", authenticate, async (req, res) => {
   const user = await Users.findOne({ uuid: req.user.uuid });

@@ -2001,7 +2001,7 @@ export const cards = [
 ];
 
 export async function createCards() {
-  const inserts = cards.map(({ id, ...card }) => {
+  const inserts = cards.map((card) => {
     const document = new Cards(card);
     return document.save();
   });
