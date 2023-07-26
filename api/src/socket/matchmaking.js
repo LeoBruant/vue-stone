@@ -17,6 +17,10 @@ export default function matchmaking(io, emitter) {
      * @param {Socket} socket
      */
     (socket) => {
+      console.log(
+        `A new player has joined, waiting for their authorization token.`,
+      );
+
       socket.on(
         "setJwt",
         /**
@@ -24,8 +28,18 @@ export default function matchmaking(io, emitter) {
          */
         async (jwt) => {
           const decodedJwt = tokenLib.decode(jwt);
+
           try {
-            const user = await findOneUser(decodedJwt.id);
+            if (!jwt) {
+              throw Error("JWT is not defined");
+            }
+
+            console.log(`User ${decodedJwt?.uuid} is connected`);
+            const user = await findOneUser(decodedJwt.uuid);
+
+            if (user === null) {
+              throw Error("User is not found");
+            }
 
             waiting.add({ jwt, socket, user });
 
@@ -44,7 +58,7 @@ export default function matchmaking(io, emitter) {
             }
           } catch (e) {
             console.warn(
-              `User ${decodedJwt.id} connected but it is not registered in the database.`,
+              `User ${decodedJwt?.uuid} connected but it is not registered in the database.`,
             );
           }
         },
@@ -54,7 +68,11 @@ export default function matchmaking(io, emitter) {
         console.log(
           `A new player has left, ${waiting.size} players in waiting room.`,
         );
-        waiting.delete(socket);
+        for (const element of waiting) {
+          if (element.socket === socket) {
+            waiting.delete(element);
+          }
+        }
       });
     },
   );
