@@ -6,6 +6,8 @@ import { EventEmitter } from "node:events";
 import { Server } from "socket.io";
 import authenticationController from "./controller/authentication.js";
 import userController from "./controller/user.js";
+import cardController from "./controller/cardController.js";
+import deckController from "./controller/deck.js";
 import db from "./model.mjs";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
@@ -35,6 +37,8 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api", userController);
 app.use("/api", authenticationController);
+app.use("/api", cardController);
+app.use("/api", deckController);
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();

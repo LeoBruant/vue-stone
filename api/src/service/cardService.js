@@ -1,6 +1,8 @@
 import db from "../model.mjs";
 import fs from "fs/promises";
 import { join } from "path";
+import {Cards} from "../mongodb.js";
+
 
 export async function createCard(body) {
   return await db.Card.create(body);
@@ -25,8 +27,8 @@ export async function createCardImage(id, outputFolder, body) {
   }
 }
 
-export async function findCards(filter) {
-  return await db.Card.findAll({ where: filter });
+export async function findCards() {
+  return await Cards.find()
 }
 
 export async function findCardById(id) {
