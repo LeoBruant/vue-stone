@@ -8,8 +8,6 @@ services:
       args:
         VITE_API_URI: ${VITE_API_URI}
         VITE_STRIPE_PK: ${VITE_STRIPE_PK}
-    ports:
-      - "80:80"
     labels:
       - "traefik.http.routers.matrix.rule=Host(`vuestone.quozul.dev`)"
       - "traefik.http.routers.matrix.tls=true"
