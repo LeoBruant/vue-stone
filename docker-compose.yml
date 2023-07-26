@@ -8,8 +8,8 @@ services:
       args:
         VITE_API_URI: ${VITE_API_URI}
         VITE_STRIPE_PK: ${VITE_STRIPE_PK}
-    ports:
-      - "8080:8080"
+    expose:
+      - 8080
     env_file: .env
     depends_on:
       - mongo
@@ -22,14 +22,21 @@ services:
       - "traefik.http.services.vuestone.loadbalancer.server.port=8080"
 
   postgres:
-    extends:
-      file: docker-compose.dev.yml
-      service: postgres
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: db
+    volumes:
+      - "db:/var/lib/postgresql/data"
 
   mongo:
-    extends:
-      file: docker-compose.dev.yml
-      service: mongo
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo:/data/db
 
 volumes:
   db:
