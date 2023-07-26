@@ -44,7 +44,7 @@ router.post(
     }
 
     switch (event.type) {
-      case "checkout.session.completed":
+      case "checkout.session.completed": {
         const paymentIntentSucceeded = event.data.object;
         const payment = await findPaymentFromStripeId(
           paymentIntentSucceeded.id,
@@ -53,6 +53,7 @@ router.post(
         const cards = await getRandomCards();
         await addOwnedCards(payment.user, cards);
         break;
+      }
       default:
         console.log(`Unhandled event type ${event.type}`);
     }

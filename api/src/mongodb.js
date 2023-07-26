@@ -15,7 +15,7 @@ const cardSchema = new Schema({
 export const Users = mongoose.model(
   "Users",
   new Schema({
-    id: { type: Number },
+    uuid: { type: String },
     ownedCards: [cardSchema],
     decks: [[cardSchema]],
   }),

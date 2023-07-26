@@ -10,6 +10,7 @@ import checkoutController from "./controller/checkoutController.js";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
 import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
+import db from "./model.mjs";
 
 config();
 
@@ -27,7 +28,6 @@ const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;
 app.use(cors());
-app.use(checkoutController);
 
 app.use(express.json());
 app.use(express.static("static"));
@@ -38,6 +38,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api", userController);
 app.use("/api", authenticationController);
+app.use("/api", checkoutController);
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();

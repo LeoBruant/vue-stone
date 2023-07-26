@@ -12,7 +12,7 @@ You have to copy and rename it to `.env` and copy it to the `app` and `api` fold
 #### Start the databases
 
 ```shell
-docker compose -f ./docker-compose.dev.yml up postgres
+docker compose -f docker-compose.dev.yml up postgres mongo
 ```
 
 #### Accept Stripe webhooks

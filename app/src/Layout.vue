@@ -5,9 +5,9 @@
       <router-link class="button" to="/play">Go to Play</router-link>
       <router-link class="button" to="/shop">Go to shop</router-link>
       <router-link class="button" to="/login">Go to Login</router-link>
-      <router-link class="button" to="/matchmaking"
-        >Go to Matchmaking</router-link
-      >
+      <router-link class="button" to="/matchmaking">
+        Go to Matchmaking
+      </router-link>
     </header>
 
     <main class="main">
