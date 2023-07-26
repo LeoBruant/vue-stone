@@ -32,16 +32,22 @@ services:
     depends_on:
       - mongo
       - postgres
+    networks:
+      - traefik
 
   postgres:
     extends:
       file: docker-compose.dev.yml
       service: postgres
+    networks:
+      - traefik
 
   mongo:
     extends:
       file: docker-compose.dev.yml
       service: mongo
+    networks:
+      - traefik
 
 volumes:
   db:
