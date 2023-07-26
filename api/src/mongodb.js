@@ -2,7 +2,6 @@ import mongoose, { Schema } from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
 const cardSchema = new Schema({
-  id: { type: Number, unique: true },
   title: { type: String },
   cardType: { type: String },
   cost: { type: Number },
@@ -16,7 +15,7 @@ const cardSchema = new Schema({
 export const Users = mongoose.model(
   "Users",
   new Schema({
-    id: { type: Number, unique: true },
+    id: { type: Number },
     ownedCards: [cardSchema],
     decks: [[cardSchema]],
   }),
@@ -29,7 +28,7 @@ export const Cards = mongoose.model("Cards", cardSchema);
  */
 export async function initMongoDb() {
   try {
-    let dbUrl = "mongodb://root:password@localhost:27017/";
+    let dbUrl = process.env.MONGO_URL;
     let mongod = null;
     if (process.env.NODE_ENV === "test") {
       mongod = await MongoMemoryServer.create();
@@ -58,6 +57,7 @@ export async function disconnectMongoDb(mongod) {
     if (mongod) {
       await mongod.stop();
     }
+    console.log("MongoDB disconnected");
   } catch (err) {
     console.log(err);
     process.exit(1);

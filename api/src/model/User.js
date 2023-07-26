@@ -1,6 +1,8 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { DataTypes, Model } from "sequelize";
+import { Users } from "../mongodb.js";
+import { defaultCards, defaultDecks } from "../fixtures/deckCardFixtures.js";
 
 export default function (connection) {
   const salt =
@@ -85,6 +87,14 @@ export default function (connection) {
   }
 
   User.addHook("beforeCreate", encryptPassword);
+  User.addHook("beforeCreate", async (user) => {
+    const document = new Users({
+      id: user.id,
+      ownedCards: defaultCards,
+      decks: defaultDecks,
+    });
+    await document.save();
+  });
   User.addHook("beforeUpdate", encryptPassword);
 
   return User;

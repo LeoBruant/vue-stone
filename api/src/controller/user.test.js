@@ -16,7 +16,7 @@ describe("user controller", () => {
   });
 
   it("should return bad request", async () => {
-    const response = await request(app).post("/user");
+    const response = await request(app).post("/api/user");
     expect(response.status).toEqual(400);
   });
 
@@ -24,7 +24,7 @@ describe("user controller", () => {
     const spy = vi.spyOn(userService, "createUser");
 
     const response = await request(app)
-      .post("/user")
+      .post("/api/user")
       .send({
         email: "foo@example.com",
         password: "changeme",
