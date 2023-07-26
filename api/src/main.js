@@ -45,4 +45,6 @@ server.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
 
-await disconnectMongoDb(mongod);
+server.on("close", async () => {
+  await disconnectMongoDb(mongod);
+});

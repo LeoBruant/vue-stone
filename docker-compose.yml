@@ -5,15 +5,26 @@ services:
     build:
       context: app
       target: prod
+      args:
+        VITE_API_URI: ${VITE_API_URI}
+        VITE_STRIPE_PK: ${VITE_STRIPE_PK}
     ports:
       - "80:80"
+    labels:
+      - "traefik.http.routers.matrix.rule=Host(`vuestone.quozul.dev`)"
+      - "traefik.http.routers.matrix.tls=true"
+      - "traefik.http.routers.matrix.tls.certresolver=myresolver"
+      - "traefik.http.services.matrix.loadbalancer.server.port=80"
+      - "traefik.http.routers.matrix.tls.domains[0].main=vuestone.quozul.dev"
+    env_file: .env
 
   api:
     build:
       context: api
       target: prod
-    ports:
+    expose:
       - "8080:8080"
+    env_file: .env
 
   postgres:
     extends:
@@ -27,3 +38,4 @@ services:
 
 volumes:
   db:
+  mongo:
