@@ -1,6 +1,3 @@
-import tokenLib from "jsonwebtoken";
-import { findOneUser } from "../service/user.js";
-
 /**
  * @typedef Card
  * @property {number} attacks
@@ -106,7 +103,7 @@ export default function match(io, emitter) {
 }
 
 /**
- * @param {{jwt: string, socket: Socket}[]} team
+ * @param {{jwt: string, socket: Socket, user: User}[]} team
  */
 const startGame = async (team) => {
   /**
@@ -266,12 +263,11 @@ const startGame = async (team) => {
 
   let playing = true;
 
-  for (const { jwt, socket } of team) {
+  for (const { socket, user } of team) {
     /**
      * @type {Player}
      */
     const player = structuredClone(DEFAULT_PLAYER);
-    const user = await findOneUser(tokenLib.decode(jwt).id);
 
     player.id = socket.id;
     player.name = user.name;

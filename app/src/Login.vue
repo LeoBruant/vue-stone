@@ -4,7 +4,7 @@ import Layout from "@/Layout.vue";
 let name = "";
 let email = "";
 let password = "";
-let jwt = "";
+let jwt = window.localStorage.getItem("jwt");
 
 const signup = async () => {
   try {
