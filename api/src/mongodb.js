@@ -1,15 +1,84 @@
-import mongoose, { Schema } from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose, { Schema } from "mongoose";
+
+const abilitySchema = new Schema({
+  destroyMininon: { type: Boolean, default: null },
+  drawnCards: { type: Number, default: null },
+  minionPower: { type: Number, default: null },
+  minionToughness: { type: Number, default: null },
+  powerAdded: { type: Number, default: null },
+  randomMinionsNumber: { type: Number, default: null },
+  summonNumber: { type: Number, default: null },
+  switchStats: { type: Boolean, default: null },
+  toughnessAdded: { type: Number, default: null },
+  trigger: {
+    type: String,
+    enum: ["appear", "death", "default"],
+    default: "default",
+  },
+  type: {
+    type: String,
+    enum: [
+      "addMinionToHand",
+      "discardOpponentCards",
+      "drawCards",
+      "gainForEachAlly",
+      "haste",
+      "summon",
+      "targetAllAllies",
+      "targetAllAllyMinions",
+      "targetAllOpponents",
+      "targetAllyPlayer",
+      "targetOpponentPlayer",
+      "targetRandomAlly",
+      "targetRandomAllyMinion",
+      "targetRandomOpponent",
+      "taunt",
+    ],
+  },
+});
+
+const effectSchema = new Schema({
+  destroyMinion: { type: Boolean, default: false },
+  drawnCards: { type: Number, default: null },
+  powerAdded: { type: Number, default: null },
+  randomMinionsNumber: { type: Number, default: null },
+  toughnessAdded: { type: Number, default: null },
+  type: {
+    type: String,
+    enum: [
+      "drawCards",
+      "targetAll",
+      "targetAllAllyMinions",
+      "targetAllMinions",
+      "targetAllOpponentMinions",
+      "targetAllyMinion",
+      "targetAllyPlayer",
+      "targetAny",
+      "targetOpponent",
+      "targetOpponentMinion",
+      "targetOpponentPlayer",
+      "targetMinion",
+      "targetRandomOpponentMinions",
+    ],
+  },
+});
 
 const cardSchema = new Schema({
-  title: { type: String },
-  cardType: { type: String },
+  cardId: { type: Number },
+  ability: abilitySchema,
+  attacks: { type: Number, default: 1 },
   cost: { type: Number },
-  power: { type: Number },
-  toughness: { type: Number },
-  ability: { type: String },
-  image: { type: String },
   description: { type: String },
+  power: { type: Number },
+  rarity: {
+    type: String,
+    enum: ["common", "rare", "epic", "legendary"],
+    default: "common",
+  },
+  spell: [effectSchema],
+  title: { type: String, default: "" },
+  toughness: { type: Number },
 });
 
 export const Users = mongoose.model(

@@ -1,88 +1,204 @@
+import {
+  drawCards,
+  targetAll,
+  targetAllAllyMinions,
+  targetAllMinions,
+  targetAllOpponentMinions,
+  targetAllyMinion,
+  targetAllyPlayer,
+  targetAny,
+  targetMinion,
+  targetOpponent,
+  targetOpponentMinion,
+  targetOpponentPlayer,
+  targetRandomOpponentMinions,
+} from "./functions/effects.js";
+
+/**
+ * @typedef Ability
+ * @property {Boolean | null} destroyMinion
+ * @property {Number | null} drawnCards
+ * @property {Number | null} minionPower
+ * @property {Number | null} minionToughness
+ * @property {Number | null} powerAdded
+ * @property {Number | null} randomMinionsNumber
+ * @property {Number | null} summonNumber
+ * @property {Boolean} switchStats
+ * @property {Number | null} toughnessAdded
+ * @property {'appear' | 'death' | null } trigger
+ * @property {
+ *  'addMinionToHand' |
+ *  'discardOpponentCards' |
+ *  'drawCards' |
+ *  'gainForEachAlly' |
+ *  'haste' |
+ *  'summon' |
+ *  'targetAllAllies' |
+ *  'targetAllAllyMinions' |
+ *  'targetAllOpponents' |
+ *  'targetAllyPlayer' |
+ *  'targetOpponentPlayer' |
+ *  'targetRandomAlly' |
+ *  'targetRandomAllyMinion' |
+ *  'targetRandomOpponent' |
+ *  'taunt'
+ * } type
+ */
+
 /**
  * @typedef Card
- * @property {number} attacks
- * @property {number} cost
- * @property {number} id
- * @property {number} power
- * @property {string} rarity
- * @property {obj: {
- *  drawnCards: number | null,
- *  powerAdded: number | null,
- *  toughnessAdded: number | null,
- *  type: string
- * } | null} spell
- * @property {string} title
- * @property {number} toughness
+ * @property {Ability | null} ability
+ * @property {Number | null} attacks
+ * @property {Number} cost
+ * @property {String} description
+ * @property {Number} power
+ * @property {'common' | 'rare' | 'epic' | 'legendary'} rarity
+ * @property {Effect[] | null} spell
+ * @property {String} title
+ * @property {Number} toughness
+ */
+
+/**
+ * @typedef Effect
+ * @property {Boolean} destroyMinion
+ * @property {Number | null} drawnCards
+ * @property {Number | null} powerAdded
+ * @property {Number | null} randomMinionsNumber
+ * @property {Number | null} toughnessAdded
+ * @property {
+ *   'drawCards' |
+ *   'targetAll' |
+ *   'targetAllAllyMinions' |
+ *   'targetAllMinions' |
+ *   'targetAllOpponentMinions' |
+ *   'targetAllyMinion' |
+ *   'targetAllyPlayer' |
+ *   'targetAny' |
+ *   'targetOpponent' |
+ *   'targetOpponentMinion' |
+ *   'targetOpponentPlayer' |
+ *   'targetMinion' |
+ *   'targetRandomOpponentMinions'
+ *  } type
  */
 
 /**
  * @typedef Player
  * @property {Card[]} hand
- * @property {number} health
- * @property {string} id
- * @property {number} mana
+ * @property {Number} health
+ * @property {String} id
+ * @property {Number} mana
  * @property {(Card | null)[]} minions
- * @property {string} name
- * @property {boolean} playing
+ * @property {String} name
+ * @property {Boolean} playing
  */
+
+const DEFAULT_CARD = {
+  attacks: 0,
+  cost: 0,
+  power: 10,
+  rarity: "legendary",
+  spell: null,
+  title: "Minion",
+  toughness: 10,
+};
 
 /**
  * @type {Player}
  */
 const DEFAULT_PLAYER = {
+  drawPile: [
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+  ],
   hand: [
     {
-      attacks: 0,
-      cost: 1,
-      id: 1,
-      power: 1,
-      rarity: "common",
-      title: "Card 1",
-      toughness: 1,
-    },
-    {
-      attacks: 0,
-      cost: 2,
-      id: 2,
-      power: 2,
-      rarity: "rare",
-      title: "Card 2",
-      toughness: 2,
-    },
-    {
-      attacks: 0,
-      cost: 3,
-      id: 3,
-      power: 3,
-      rarity: "epic",
-      title: "Card 3",
-      toughness: 3,
-    },
-    {
-      attacks: 0,
-      cost: 4,
-      id: 4,
-      power: null,
-      rarity: "legendary",
-      spell: {
+      ability: {
+        destroyMinion: null,
         drawnCards: null,
-        powerAdded: 4,
-        toughnessAdded: 4,
-        type: "targetOpponentMinion",
+        minionPower: 1,
+        minionToughness: null,
+        powerAdded: 1,
+        randomMinionsNumber: null,
+        summonNumber: null,
+        switchStats: false,
+        toughnessAdded: null,
+        trigger: "appear",
+        type: "addMinionToHand",
       },
-      title: "Card 4",
-      toughness: null,
+      attacks: 0,
+      cost: 0,
+      power: 10,
+      rarity: "common",
+      spell: null,
+      title: "addMinionToHand",
+      toughness: 10,
+    },
+    {
+      ability: {
+        destroyMinion: null,
+        drawnCards: 2,
+        minionPower: null,
+        minionToughness: null,
+        powerAdded: null,
+        randomMinionsNumber: null,
+        summonNumber: null,
+        switchStats: false,
+        toughnessAdded: null,
+        trigger: null,
+        type: "drawCards",
+      },
+      attacks: 0,
+      cost: 0,
+      power: 10,
+      rarity: "common",
+      spell: null,
+      title: "drawCards",
+      toughness: 10,
     },
   ],
   health: 30,
   id: 2,
   mana: 1,
-  minions: [null, null, null, null, null, null, null],
+  minions: [
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+    { ...DEFAULT_CARD },
+  ],
   name: null,
   playing: false,
 };
 
 const MAX_MANA = 10;
+const MAX_MINIONS = 7;
+
+const effectFunctions = {
+  drawCards,
+  targetAll,
+  targetAllAllyMinions,
+  targetAllMinions,
+  targetAllOpponentMinions,
+  targetAllyMinion,
+  targetAllyPlayer,
+  targetAny,
+  targetOpponent,
+  targetOpponentMinion,
+  targetOpponentPlayer,
+  targetMinion,
+  targetRandomOpponentMinions,
+};
 
 /**
  * @param {Server} io
@@ -114,45 +230,12 @@ const startGame = async (team) => {
   let turn = 1;
   let turnMaxMana = 1;
 
-  const spellMinion = (
-    { minionIndex, spell: { powerAdded, toughnessAdded, type }, spellIndex },
-    socket,
-  ) => {
-    console.log(
-      minionIndex,
-      powerAdded,
-      toughnessAdded,
-      socket,
-      spellIndex,
-      type,
-    );
-  };
-
-  /**
-   * @param {Card} minion
-   * @param {Number} minionPosition
-   * @param {Player} socket
-   */
-  const minionAttackPlayer = (minion, minionPosition, socket) => {
-    const player = players[socket.id];
-
-    // Cancel if player is not allowed to play
-    if (!player.playing) {
-      return;
-    }
-
-    const opponent = findOpponent(player);
-
-    opponent.health -= minion.power;
-
-    player.minions[minionPosition].attacks -= 1;
-  };
-
   /**
    * @param {Player} socket
    */
   const endTurn = (socket) => {
     const player = players[socket.id];
+    const opponent = findOpponent(player);
 
     // Cancel if player is not allowed to play
     if (!player.playing) {
@@ -175,6 +258,8 @@ const startGame = async (team) => {
         }
       }
     }
+
+    drawCards({ drawnCards: 1, player: opponent });
   };
 
   /**
@@ -195,10 +280,30 @@ const startGame = async (team) => {
   };
 
   /**
+   * @param {Card} minion
+   * @param {Number} minionPosition
+   * @param {Player} socket
+   */
+  const minionAttackPlayer = ({ attackingIndex }, socket) => {
+    const player = players[socket.id];
+
+    // Cancel if player is not allowed to play
+    if (!player.playing) {
+      return;
+    }
+
+    const opponent = findOpponent(player);
+
+    opponent.health -= player.minions[attackingIndex].power;
+
+    player.minions[attackingIndex].attacks -= 1;
+  };
+
+  /**
    * @param {Socket} socket
    * @param {number} cardIndex
    */
-  const play = (socket, cardIndex) => {
+  const playMinion = ({ cardIndex }, socket) => {
     const player = players[socket.id];
 
     // Do nothing if not player's turn
@@ -210,11 +315,6 @@ const startGame = async (team) => {
      * @type {Card}
      */
     const card = player.hand[cardIndex];
-
-    // If card does not exist, cancel
-    // if (!card) {
-    //   return;
-    // }
 
     // Do nothing if not enough mana
     if (player.mana < card.cost) {
@@ -239,8 +339,73 @@ const startGame = async (team) => {
 
     // Remove card from hand
     player.hand.splice(cardIndex, 1);
+  };
 
-    update();
+  /**
+   * @param {number} cardIndex
+   * @param {number} minionIndex
+   * @param {Spell} spell
+   * @param {'opponnent' | 'self'} targetPlayer
+   * @param {Socket} socket
+   */
+  const playSpell = (
+    { cardIndex, minionIndex, spell, targetPlayer },
+    socket,
+  ) => {
+    const player = players[socket.id];
+
+    // Cancel if player is not allowed to play
+    if (!player.playing) {
+      return;
+    }
+
+    /**
+     * @type {Card}
+     */
+    const card = player.hand[cardIndex];
+
+    // Do nothing if not enough mana
+    if (player.mana < card.cost) {
+      return;
+    }
+
+    const opponent = findOpponent(player);
+
+    for (const effect of spell) {
+      effectFunctions[effect.type]({
+        ...effect,
+        opponent,
+        player,
+        minionIndex,
+        targetPlayer,
+      });
+    }
+
+    // Remove mana
+    player.mana -= card.cost;
+
+    removeDead();
+
+    // Remove card from hand
+    // player.hand.splice(cardIndex, 1);
+  };
+
+  const removeDead = () => {
+    for (const key in players) {
+      const player = players[key];
+
+      for (const minion of player.minions) {
+        if (minion?.toughness <= 0) {
+          player.minions.splice(player.minions.indexOf(minion), 1);
+        }
+      }
+
+      const missingMinions = MAX_MINIONS - player.minions.length;
+
+      for (let i = 0; i < missingMinions; i++) {
+        player.minions.push(null);
+      }
+    }
   };
 
   const update = () => {
@@ -279,36 +444,25 @@ const startGame = async (team) => {
     // Update player
     players[player.id] = player;
 
-    socket.on("spellMinion", (data) => {
-      spellMinion(data, socket);
-      update();
-    });
-
     socket.on("endTurn", () => {
       endTurn(socket);
       update();
     });
 
-    socket.on(
-      "minionAttackPlayer",
-      /**
-       * @param {{minion: Card, minionPosition: Number}} obj
-       */
-      ({ minion, minionPosition }) => {
-        minionAttackPlayer(minion, minionPosition, socket);
-        update();
-      },
-    );
+    socket.on("minionAttackPlayer", (data) => {
+      minionAttackPlayer(data, socket);
+      update();
+    });
 
-    socket.on(
-      "play",
-      /**
-       * @param {number} card Index of the card to play
-       */
-      (card) => {
-        play(socket, card);
-      },
-    );
+    socket.on("playMinion", (data) => {
+      playMinion(data, socket);
+      update();
+    });
+
+    socket.on("playSpell", (data) => {
+      playSpell(data, socket);
+      update();
+    });
 
     socket.on("disconnect", () => {
       console.log("One player disconnected, ending game.");

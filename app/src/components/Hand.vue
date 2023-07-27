@@ -21,7 +21,7 @@ const props = defineProps({
       :outlined="self && player.playing && player.mana >= card.cost"
       :side="!self ? 'back' : 'front'"
       state="hand"
-      @click="$emit('play', index)"
+      @click="$emit('playMinion', index)"
     />
   </div>
 </template>

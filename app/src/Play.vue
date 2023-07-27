@@ -6,26 +6,25 @@ import { io } from "socket.io-client";
 import { ref } from "vue";
 import Dots from "./components/Dots.vue";
 
+const currentSpell = ref(null);
 const jwt = window.localStorage.getItem("jwt");
 
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
-const spell = ref(null);
-
-const attacking = ref(null);
+const attackingIndex = ref(null);
 
 const game = ref(null);
 
 const players = ref(null);
 
-const applySpell = ({ minionIndex, spell, spellIndex }) => {
-  if (spell.type === "targetOpponentMinion") {
-    socket.emit("spellMinion", {
-      minionIndex,
-      spell,
-      spellIndex,
-    });
-  }
+/**
+ * @param {object} spellData All the data needed to apply a spell
+ */
+const applySpell = (spellData) => {
+  socket.emit("playSpell", spellData);
+
+  attackingIndex.value = null;
+  currentSpell.value = null;
 };
 
 const clearGame = () => {
@@ -33,31 +32,73 @@ const clearGame = () => {
   players.value = null;
 };
 
-const startAttack = (minion) => {
-  if (!players.value.self.playing || minion.turnPlayed >= game.value.turn) {
-    return;
-  }
+const minionAttackPlayer = () => {
+  socket.emit("minionAttackPlayer", {
+    attackingIndex: attackingIndex.value,
+  });
 
-  attacking.value = minion;
-};
-
-const playSpell = (card) => {
-  if (card.spell.type === "targetOpponentMinion") {
-    spell.value = card;
-  }
+  attackingIndex.value = null;
 };
 
 /**
  * @param {number} card Index of the card to play
  */
-const play = (card) => {
+const playMinion = (card) => {
   if (players.value.self.hand[card].spell) {
-    playSpell(players.value.self.hand[card]);
+    playSpell(players.value.self.hand[card].spell);
 
     return;
   }
 
-  socket.emit("play", card);
+  socket.emit("playMinion", { card });
+};
+
+/**
+ * @param {object} spell Spell property of a card
+ */
+const playSpell = (spell) => {
+  if (
+    [
+      "drawCards",
+      "targetAll",
+      "targetAllAllyMinions",
+      "targetAllOpponentMinions",
+      "targetAllMinions",
+      "targetAllyPlayer",
+      "targetOpponentPlayer",
+      "targetRandomOpponentMinions",
+    ].includes(spell[0].type)
+  ) {
+    socket.emit("playSpell", {
+      cardIndex: players.value.self.hand.indexOf(
+        players.value.self.hand.find((card) => card?.spell === spell),
+      ),
+      spell,
+    });
+
+    attackingIndex.value = null;
+    currentSpell.value = null;
+
+    return;
+  }
+
+  attackingIndex.value = null;
+  currentSpell.value = spell;
+};
+
+/**
+ * @param {Number} minionIndex Minion card
+ */
+const startAttack = (minionIndex) => {
+  if (
+    !players.value.self.playing ||
+    players.value.self.minions[minionIndex].turnPlayed >= game.value.turn
+  ) {
+    return;
+  }
+
+  attackingIndex.value = minionIndex;
+  currentSpell.value = null;
 };
 
 socket.on("connect", () => {
@@ -104,15 +145,15 @@ socket.on("game", (data) => {
       <Hand :player="players.opponent" />
       <Board
         @applySpell="applySpell"
+        @endTurn="socket.emit('endTurn')"
         @startAttack="startAttack"
-        @stopAttack="attacking = null"
-        :attacking="attacking"
+        @minionAttackPlayer="minionAttackPlayer"
+        :attackingIndex="attackingIndex"
         :game="game"
         :players="players"
-        :socket="socket"
-        :spell="spell"
+        :spell="currentSpell"
       />
-      <Hand @play="play" :player="players.self" self />
+      <Hand @playMinion="playMinion" :player="players.self" self />
     </div>
   </div>
 </template>

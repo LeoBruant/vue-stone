@@ -3,13 +3,18 @@ import Card from "@/components/Card.vue";
 import Health from "@/components/Health.vue";
 import Mana from "@/components/Mana.vue";
 import PlayerName from "@/components/PlayerName.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
-const emit = defineEmits(["startAttack", "stopAttack"]);
+const emit = defineEmits([
+  "applySpell",
+  "endTurn",
+  "minionAttackPlayer",
+  "startAttack",
+]);
 
 const props = defineProps({
-  attacking: {
-    type: Object,
+  attackingIndex: {
+    type: Number,
     default: null,
   },
   game: {
@@ -20,47 +25,103 @@ const props = defineProps({
     type: Object,
     default: null,
   },
-  socket: {
-    type: Object,
-    default: null,
-  },
   spell: {
-    type: Object,
+    type: Array,
     default: null,
   },
 });
 
 const minionInfo = ref(null);
 
-let minionsAnimation = {};
+let minionsAnimation = ref([null, null, null, null, null, null, null]);
 
-const attackPlayer = (minion) => {
-  minionsAnimation[props.attacking.id] = "attack";
+const attackPlayer = () => {
+  minionsAnimation.value[props.attackingIndex] = "attack";
 
-  props.socket.emit("minionAttackPlayer", {
-    minion,
-    minionPosition: props.players.self.minions.indexOf(minion),
-  });
-
-  emit("stopAttack");
+  emit("minionAttackPlayer");
 
   setTimeout(() => {
-    minionsAnimation = {};
+    minionsAnimation.value = [null, null, null, null, null, null, null];
   }, 500);
 };
 
+/**
+ * @param {Object} minion
+ */
 const canAttack = (minion) => {
   return props.players.self.playing && minion?.attacks > 0;
 };
 
-const clickOpponentMinion = (minionIndex) => {
-  if (props.spell && props.spell.spell?.type === "targetOpponentMinion") {
+/**
+ * @param {Number} index
+ */
+const clickAllyMinion = (index) => {
+  if (canSpellAlly.value) {
     emit("applySpell", {
-      minionIndex,
-      spell: props.spell.spell,
-      spellIndex: props.players.self.hand.indexOf(props.spell),
+      cardIndex: props.players.self.hand.indexOf(
+        props.players.self.hand.find((card) => card?.spell === props.spell),
+      ),
+      minionIndex: index,
+      spell: props.spell,
+      targetPlayer: "self",
     });
+
+    minionInfo.value = null;
+
+    return;
   }
+
+  startAttack(index);
+};
+
+/**
+ * @param {Number} minionIndex
+ */
+const clickOpponentMinion = (minionIndex) => {
+  if (!canSpellOpponent.value) {
+    return;
+  }
+
+  emit("applySpell", {
+    cardIndex: props.players.self.hand.indexOf(
+      props.players.self.hand.find((card) => card?.spell === props.spell),
+    ),
+    minionIndex,
+    spell: props.spell,
+    targetPlayer: "opponent",
+  });
+
+  minionInfo.value = null;
+};
+
+const clickPlayerOpponent = () => {
+  if (canSpellPlayerOpponent.value) {
+    emit("applySpell", {
+      cardIndex: props.players.self.hand.indexOf(
+        props.players.self.hand.find((card) => card?.spell === props.spell),
+      ),
+      spell: props.spell,
+      targetPlayer: "opponent",
+    });
+
+    return;
+  }
+
+  attackPlayer();
+};
+
+const clickPlayerSelf = () => {
+  if (!canSpellPlayerOpponent.value) {
+    return;
+  }
+
+  emit("applySpell", {
+    cardIndex: props.players.self.hand.indexOf(
+      props.players.self.hand.find((card) => card?.spell === props.spell),
+    ),
+    spell: props.spell,
+    targetPlayer: "self",
+  });
 };
 
 const endTurn = () => {
@@ -68,16 +129,47 @@ const endTurn = () => {
     return;
   }
 
-  props.socket.emit("endTurn");
+  emit("endTurn");
 };
 
-const startAttack = (minion) => {
-  if (!canAttack(minion)) {
+const startAttack = (minionIndex) => {
+  if (!canAttack(props.players.self.minions[minionIndex])) {
     return;
   }
 
-  emit("startAttack", minion);
+  emit("startAttack", minionIndex);
 };
+
+const canSpellAlly = computed(() => {
+  return (
+    props.spell &&
+    ["targetAllyMinion", "targetAny", "targetMinion"].includes(
+      props.spell[0].type,
+    )
+  );
+});
+
+const canSpellOpponent = computed(() => {
+  return (
+    props.spell &&
+    [
+      "targetAny",
+      "targetMinion",
+      "targetOpponent",
+      "targetOpponentMinion",
+    ].includes(props.spell[0].type)
+  );
+});
+
+const canSpellPlayerOpponent = computed(() => {
+  return (
+    props.spell && ["targetAny", "targetOpponent"].includes(props.spell[0].type)
+  );
+});
+
+const canSpellPlayerSelf = computed(() => {
+  return props.spell && ["targetAny"].includes(props.spell[0].type);
+});
 </script>
 
 <template>
@@ -97,28 +189,29 @@ const startAttack = (minion) => {
             @mouseenter="minionInfo = minion"
             @mouseleave="minionInfo = null"
             :card="minion"
-            :outlined="
-              players.self.mana >= spell?.cost
-                ? spell?.spell.type === 'targetOpponentMinion'
-                : false
-            "
+            :outlined="canSpellOpponent"
             outlineStyle="attack"
             state="board"
           />
         </transition>
       </div>
       <div class="flex flex-1 gap-7 items-start">
-        <transition v-for="minion in players.self.minions" name="minion-self">
+        <transition
+          v-for="(minion, index) in players.self.minions"
+          name="minion-self"
+        >
           <Card
             v-show="minion"
-            @click="startAttack(minion)"
+            @click="clickAllyMinion(index)"
             @mouseenter="minionInfo = minion"
             @mouseleave="minionInfo = null"
-            :animation="minionsAnimation[minion?.id]"
+            :animation="minionsAnimation[index]"
             :card="minion"
             state="board"
-            :outlined="canAttack(minion)"
-            :outlineStyle="attacking === minion ? 'attack' : 'play'"
+            :outlined="canAttack(minion) || canSpellAlly"
+            :outlineStyle="
+              attackingIndex === index || canSpellAlly ? 'attack' : 'play'
+            "
           />
         </transition>
       </div>
@@ -129,17 +222,21 @@ const startAttack = (minion) => {
       <div class="name-opponent">
         <PlayerName :name="players.opponent.name" />
       </div>
-      <div :class="`hp-opponent ${attacking ? 'outlined' : ''}`">
+      <div
+        :class="`hp-opponent ${
+          attackingIndex || canSpellPlayerOpponent ? 'outlined' : ''
+        }`"
+      >
         <Health
-          @click="attackPlayer(attacking)"
+          @click="clickPlayerOpponent"
           :health="players.opponent.health"
         ></Health>
       </div>
       <div class="mana-opponent">
         <Mana :max="game.turnMaxMana" :value="players.opponent.mana" />
       </div>
-      <div class="hp-self">
-        <Health :health="players.self.health"></Health>
+      <div :class="`hp-self ${canSpellPlayerSelf ? 'outlined' : ''}`">
+        <Health @click="clickPlayerSelf" :health="players.self.health"></Health>
       </div>
       <div class="name-self">
         <PlayerName :name="players.self.name" />
@@ -162,7 +259,7 @@ const startAttack = (minion) => {
     <transition name="minion-info">
       <div
         v-if="minionInfo"
-        class="absolute left-6 origin-left pointer-events-none scale-[2.5] top-1/2 -translate-y-1/2 z-10"
+        class="fixed left-6 origin-left pointer-events-none scale-[2.5] top-1/2 -translate-y-1/2 z-10"
       >
         <Card :card="minionInfo" state="hand" />
       </div>
@@ -209,9 +306,13 @@ const startAttack = (minion) => {
 }
 
 .hp-self {
-  @apply mb-20 self-end;
+  @apply mb-20 rounded-full self-end;
 
   grid-area: hp-self;
+
+  &.outlined {
+    @apply cursor-pointer outline outline-4 outline-orange-400;
+  }
 }
 
 .mana-self {

@@ -1,6 +1,7 @@
 import db from "../model.mjs";
 import fs from "fs/promises";
 import { join } from "path";
+import { Cards } from "../mongodb.js";
 import { Sequelize } from "sequelize";
 
 export async function createCard(body) {
@@ -26,8 +27,8 @@ export async function createCardImage(id, outputFolder, body) {
   }
 }
 
-export async function findCards(filter) {
-  return await db.Card.findAll({ where: filter });
+export async function findCards() {
+  return await Cards.find();
 }
 
 export async function findCardById(id) {

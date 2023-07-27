@@ -25,8 +25,8 @@ router.post(
 );
 
 router.get("/card", async (req, res) => {
-  const { ...filter } = req.query; // récupère tous les critères dans le query
-  res.send(await findCards(filter));
+  // const { ...filter } = req.query; // récupère tous les critères dans le query
+  res.send(await findCards());
 });
 
 router.get("/card/:cardId", async (req, res) => {
