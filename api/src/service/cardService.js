@@ -2,10 +2,10 @@ import db from "../model.mjs";
 import fs from "fs/promises";
 import { join } from "path";
 import { Cards } from "../mongodb.js";
-import { Sequelize } from "sequelize";
 
 export async function createCard(body) {
-  return await db.Card.create(body);
+  const document = new Cards(body);
+  return await document.save();
 }
 
 export async function createCardImage(id, outputFolder, body) {
@@ -28,25 +28,18 @@ export async function createCardImage(id, outputFolder, body) {
 }
 
 export async function findCards() {
-  return await Cards.find();
+  return Cards.find();
 }
 
-export async function findCardById(id) {
-  return await db.Card.findAll({
-    where: {
-      id: id,
-    },
-  });
+export async function findCardById(cardId) {
+  return Cards.findOne({ cardId });
 }
 
 /**
  * Get an array of random cards
- * @param {number} limit
- * @returns {Promise<Model[]>}
+ * @param {number} size
+ * @returns {Promise<Cards[]>}
  */
-export async function getRandomCards(limit = 5) {
-  return await db.Card.findAll({
-    order: Sequelize.literal("rand()"),
-    limit,
-  });
+export async function getRandomCards(size = 5) {
+  return Cards.aggregate([{ $sample: { size } }]);
 }

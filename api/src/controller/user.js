@@ -1,10 +1,10 @@
-import { Router } from "express";
+import express, { Router } from "express";
 import { ValidationError } from "sequelize";
 import { createUser } from "../service/user.js";
 
 const router = Router();
 
-router.post("/user", async (req, res) => {
+router.post("/user", express.json(), async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!email || !password || !name) {

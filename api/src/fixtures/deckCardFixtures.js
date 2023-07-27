@@ -21,11 +21,8 @@ export const decks = [
 
 export const defaultCards = decks
   .flat()
-  .map((id) => cards.find((card) => card.cardId === id))
-  .map((card) => card);
+  .map((id) => cards.find((card) => card.cardId === id));
 
 export const defaultDecks = decks.map((deck) =>
-  deck
-    .map((id) => cards.find((card) => card.cardId === id))
-    .map((card) => card),
+  deck.map((id) => cards.find((card) => card.cardId === id)),
 );
