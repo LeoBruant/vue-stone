@@ -50,7 +50,6 @@ describe("deck controller", () => {
 
   it("should return 400 when not owning a card", async () => {
     const wantedCards = [1, 42, 69];
-    const ownedCards = [42, 49].map((cardId) => ({ cardId }));
 
     const createDeckSpy = vi
       .spyOn(deckService, "createDeck")
