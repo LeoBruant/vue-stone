@@ -6,8 +6,9 @@ import Shop from "@/checkout/Shop.vue";
 import Success from "@/checkout/Success.vue";
 import Cancelled from "@/checkout/Cancelled.vue";
 import DeckSelector from "@/DeckSelector.vue";
-import Admin from "@/Profile.vue";
+import Profile from "@/Profile.vue";
 import CreateDeck from "@/CreateDeck.vue";
+import Admin from "@/Admin.vue";
 import "@/scss/main.scss";
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
@@ -23,9 +24,10 @@ const routes = [
   { path: "/shop", component: Shop },
   { path: "/checkout/success", component: Success },
   { path: "/checkout/cancelled", component: Cancelled },
-  { path: "/profile", component: Admin },
+  { path: "/profile", component: Profile },
   { path: "/profile/createDeck", component: CreateDeck },
   { path: "/profile/deckSelector", component: DeckSelector },
+  { path: "/admin", component: Admin },
   { path: "/profile/boosterPack", component: OpenPack },
 ];
 
