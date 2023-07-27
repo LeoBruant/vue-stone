@@ -14,7 +14,6 @@ import db from "./model.mjs";
 import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
-import authenticate from "./middleware/authenticate.js";
 
 config();
 
@@ -37,10 +36,6 @@ app.use(express.static("static"));
 
 app.get("/api/health", (req, res) => {
   res.send("Hello World!");
-});
-
-app.get("/api/isAuthenticated", authenticate, (req, res) => {
-  res.send();
 });
 
 app.use("/api", userController);

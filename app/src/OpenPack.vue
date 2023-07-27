@@ -10,9 +10,10 @@ const cards = ref([]);
 const packs = ref(0);
 
 async function getPacks() {
-  const response = await fetch(`${import.meta.env.VITE_API_URI}/boosterPack`, {
-    ...getOptions("GET"),
-  });
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URI}/boosterPack`,
+    getOptions("GET"),
+  );
 
   if (response.ok) {
     const json = await response.json();
