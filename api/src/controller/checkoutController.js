@@ -60,15 +60,10 @@ router.post(
         });
         console.log(`UUID of User: ${user.uuid}`);
 
-        const cards = await getRandomCards();
-        try {
-          await addOwnedCards(user.uuid, cards);
-        } catch (e) {
-          console.error(e);
-          res.status(500);
-          res.send(e);
-          return;
-        }
+        await user.update({
+          boosterPacksAvailable: user.boosterPacksAvailable + payment.packs,
+        });
+
         break;
       }
       default:
@@ -79,5 +74,6 @@ router.post(
     res.send();
   },
 );
+
 
 export default router;

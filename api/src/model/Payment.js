@@ -21,6 +21,10 @@ export default function (connection) {
           key: "id",
         },
       },
+      packs: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       sequelize: connection,

@@ -9,10 +9,12 @@ import cardController from "./controller/cardController.js";
 import checkoutController from "./controller/checkoutController.js";
 import deckController from "./controller/deck.js";
 import userController from "./controller/user.js";
+import boosterPackController from "./controller/boosterPackController.js";
 import db from "./model.mjs";
 import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
+import authenticate from "./middleware/authenticate.js";
 
 config();
 
@@ -25,7 +27,7 @@ const io = new Server(server, {
   },
 });
 
-await db.connection.sync({ force: true });
+await db.connection.sync();
 const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;
@@ -37,11 +39,16 @@ app.get("/api/health", (req, res) => {
   res.send("Hello World!");
 });
 
+app.get("/api/isAuthenticated", authenticate, (req, res) => {
+  res.send();
+});
+
 app.use("/api", userController);
 app.use("/api", authenticationController);
 app.use("/api", cardController);
 app.use("/api", deckController);
 app.use("/api", checkoutController);
+app.use("/api", boosterPackController);
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();
