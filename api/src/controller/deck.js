@@ -1,19 +1,21 @@
-import router from "./cardController.js";
 import authenticate from "../middleware/authenticate.js";
 import { Users } from "../mongodb.js";
 import { createDeck } from "../service/deck.js";
+import express, { Router } from "express";
 
-router.get("/deck", authenticate, async (req, res) => {
+const router = new Router();
+
+router.get("/deck", authenticate, express.json(), async (req, res) => {
   const user = await Users.findOne({ uuid: req.user.uuid });
   res.send(user.decks);
 });
 
-router.get("/ownedCards", authenticate, async (req, res) => {
+router.get("/ownedCards", authenticate, express.json(), async (req, res) => {
   const user = await Users.findOne({ uuid: req.user.uuid });
   res.send(user.ownedCards);
 });
 
-router.post("/deck", authenticate, async (req, res) => {
+router.post("/deck", authenticate, express.json(), async (req, res) => {
   if (
     !req.body ||
     !Array.isArray(req.body) ||

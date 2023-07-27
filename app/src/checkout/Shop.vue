@@ -11,8 +11,6 @@ async function handleClick() {
     quantity: quantity.value,
   });
 
-  console.log(body);
-
   const response = await fetch(`${import.meta.env.VITE_API_URI}/checkout`, {
     method: "POST",
     mode: "cors",
@@ -23,8 +21,12 @@ async function handleClick() {
     body,
   });
 
-  const { sessionUrl } = await response.json();
-  window.location.href = sessionUrl;
+  if (!response.ok) {
+    alert("Impossible d'acheter, vérifiez que vous êtes bien connecté");
+  } else {
+    const { sessionUrl } = await response.json();
+    window.location.href = sessionUrl;
+  }
 }
 </script>
 
