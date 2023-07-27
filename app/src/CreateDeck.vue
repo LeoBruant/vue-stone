@@ -1,53 +1,49 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import Card from "@/components/Card.vue";
 import Layout from "@/Layout.vue";
+import { useToast } from "vue-toastification";
+import { getOptions } from "@/getOptions";
+
+const toast = useToast();
+
 let ownedCards = ref();
 let newDeckCards = ref([]);
+
 const getOwnedCards = async () => {
-  const jwt = window.localStorage.getItem("jwt");
-  const response = await fetch(`${import.meta.env.VITE_API_URI}/ownedCards`, {
-    method: "GET",
-    mode: "cors",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${jwt}`,
-    },
-  });
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URI}/ownedCards`,
+    getOptions("GET"),
+  );
   const cards = await response.json();
 
   return cards;
 };
 
 const createDeck = async (deck) => {
-  deck = deck.map(({ cardId }) => cardId);
-  const body = JSON.stringify(deck);
+  const body = JSON.stringify(deck.map(({ cardId }) => cardId));
 
-  const jwt = window.localStorage.getItem("jwt");
   const response = await fetch(`${import.meta.env.VITE_API_URI}/deck`, {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${jwt}`,
-    },
+    ...getOptions("POST"),
     body: body,
   });
-  const cards = await response.json();
 
-  return cards;
+  if (!response.ok) {
+    toast.error("Deck not created!");
+  } else {
+    toast.success("Deck created!");
+    newDeckCards.value = [];
+  }
 };
 
 const addCardToDeck = (card) => {
   if (newDeckCards.value.length < 30) {
     newDeckCards.value.push(card);
   }
-  console.log(newDeckCards);
 };
 
 onMounted(async () => {
   ownedCards.value = await getOwnedCards();
-  console.log(getOwnedCards());
 });
 </script>
 
@@ -65,9 +61,9 @@ onMounted(async () => {
         </transition>
       </div>
       <div>
-        <div @click="createDeck(newDeckCards), (newDeckCards = [])">
+        <button class="button" @click="createDeck(newDeckCards)">
           Create Deck
-        </div>
+        </button>
         <div
           class="gap-7 grid grid-cols-[repeat(2,max-content)] justify-center auto-rows-max"
         >

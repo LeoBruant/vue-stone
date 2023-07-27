@@ -2,18 +2,10 @@
 import Layout from "@/Layout.vue";
 import { onMounted, ref } from "vue";
 import Card from "@/components/Card.vue";
+import { getOptions } from "@/getOptions";
 
 let decks = ref([]);
 let selectedDeck = ref(0);
-
-const getOptions = (method = "GET") => ({
-  method: method,
-  mode: "cors",
-  headers: {
-    "content-type": "application/json",
-    authorization: `Bearer ${window.localStorage.getItem("jwt")}`,
-  },
-});
 
 async function refreshDecks() {
   {
@@ -75,17 +67,11 @@ async function handleDeleteDeck(deckId) {
       </div>
 
       <div class="flex justify-center gap-6">
-        <button
-          @click="handleSelectDeck(i)"
-          class="active:scale-95 transition-transform p-6 rounded bg-cyan-300 my-6"
-        >
+        <button @click="handleSelectDeck(i)" class="button">
           Select deck N°{{ i }}
         </button>
 
-        <button
-          @click="handleDeleteDeck(i)"
-          class="active:scale-95 transition-transform p-6 rounded bg-red-300 my-6"
-        >
+        <button @click="handleDeleteDeck(i)" class="button bg-red-300">
           Delete deck N°{{ i }}
         </button>
       </div>

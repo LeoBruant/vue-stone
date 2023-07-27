@@ -36,13 +36,8 @@ router.delete(
       res.status(400);
       return res.send("Cannot delete your last deck");
     }
-    if (user.deckToUse === req.body.deckId) {
-      user.deckToUse = Math.min(
-        Math.max(0, user.deckToUse - 1),
-        user.decks.length,
-      );
-    }
     user.decks.splice(req.body.deckId, 1);
+    user.deckToUse = Math.min(Math.max(0, user.deckToUse), user.decks.length);
     await user.save();
     res.send();
   },
