@@ -310,6 +310,8 @@ const startGame = async (team) => {
     card.turnPlayed = turn;
     player.minions[emptySlotIndex] = card;
 
+    removeDead();
+
     // Remove card from hand
     player.hand.splice(cardIndex, 1);
   };
@@ -365,12 +367,14 @@ const startGame = async (team) => {
 
   const removeDead = () => {
     for (const key in players) {
+      let deathTrigger = false;
       const player = players[key];
 
       for (const minion of player.minions) {
         if (minion?.toughness <= 0) {
           if (minion.ability?.trigger === "death") {
-            effectFunctions[minion.ability.type]();
+            deathTrigger = true;
+            effectFunctions[minion.ability.type]({ ...minion.ability, player });
           }
 
           player.minions.splice(player.minions.indexOf(minion), 1);
@@ -381,6 +385,10 @@ const startGame = async (team) => {
 
       for (let i = 0; i < missingMinions; i++) {
         player.minions.push(null);
+      }
+
+      if (deathTrigger) {
+        removeDead();
       }
     }
   };

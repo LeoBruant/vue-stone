@@ -109,7 +109,7 @@ export const targetAllAllyMinions = ({
   powerAdded,
   toughnessAdded,
 }) => {
-  for (const minion of player.minions) {
+  for (const minion of player.minions.filter((m) => m)) {
     if (destroyMinion) {
       player.minions = [null, null, null, null, null, null, null];
     } else {
@@ -154,7 +154,7 @@ export const targetAllOpponentMinions = ({
   powerAdded,
   toughnessAdded,
 }) => {
-  for (const minion of opponent.minions) {
+  for (const minion of opponent.minions.filter((m) => m)) {
     if (destroyMinion) {
       opponent.minions = [null, null, null, null, null, null, null];
     } else {
@@ -419,7 +419,7 @@ export const targetRandomOpponentMinions = ({
 
   const newIndexes = shuffle(indexes).slice(
     0,
-    Math.min(randomMinionsNumber, minionsNumber)
+    Math.min(randomMinionsNumber, minionsNumber),
   );
 
   for (const index of newIndexes) {
