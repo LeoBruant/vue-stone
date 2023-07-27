@@ -425,7 +425,7 @@ const startGame = async (team) => {
     player.id = socket.id;
     player.name = user.name;
 
-    const currentUser = await Users.find({ uuid: user.uuid });
+    const currentUser = await Users.findOne({ uuid: user.uuid });
     const deck = currentUser.decks[currentUser.deckToUse];
 
     // Set deck
