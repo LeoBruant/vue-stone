@@ -2,7 +2,6 @@ import App from "@/App.vue";
 import Home from "@/Home.vue";
 import Login from "@/Login.vue";
 import Play from "@/Play.vue";
-import Cancelled from "@/checkout/Cancelled.vue";
 import Shop from "@/checkout/Shop.vue";
 import Success from "@/checkout/Success.vue";
 import Cancelled from "@/checkout/Cancelled.vue";
