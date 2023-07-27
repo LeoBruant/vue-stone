@@ -112,7 +112,7 @@ const DEFAULT_PLAYER = {
   health: 30,
   id: null,
   mana: 1,
-  minions: [null, null, null, null, null, null, null],
+  minions: [],
   name: null,
   playing: false,
 };

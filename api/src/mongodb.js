@@ -65,6 +65,7 @@ const effectSchema = new Schema({
 });
 
 const cardSchema = new Schema({
+  cardId: { type: Number },
   ability: abilitySchema,
   attacks: { type: Number, default: 0 },
   cost: { type: Number },

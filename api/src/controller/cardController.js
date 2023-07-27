@@ -9,7 +9,7 @@ import {
 
 const router = Router();
 
-router.post("/card", async (req, res) => {
+router.post("/card", express.json(), async (req, res) => {
   const card = await createCard(req.body);
   res.send(card);
 });
@@ -24,12 +24,12 @@ router.post(
   },
 );
 
-router.get("/card", async (req, res) => {
-  const { ...filter } = req.query; // récupère tous les critères dans le query
-  res.send(await findCards(filter));
+router.get("/card", express.json(), async (req, res) => {
+  // const { ...filter } = req.query; // récupère tous les critères dans le query
+  res.send(await findCards());
 });
 
-router.get("/card/:cardId", async (req, res) => {
+router.get("/card/:cardId", express.json(), async (req, res) => {
   const id = req.params.cardId;
   const card = await findCardById(id);
   res.send(card);

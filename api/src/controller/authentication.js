@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express, { Router } from "express";
 import { findAllUsers } from "../service/user.js";
 
 const router = Router();
 
-router.post("/login", async (req, res) => {
+router.post("/login", express.json(), async (req, res) => {
   const { email, password } = req.body;
 
   const [user] = await findAllUsers({ email });
