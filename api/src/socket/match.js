@@ -427,7 +427,7 @@ const startGame = async (team) => {
     player.name = user.name;
 
     const currentUser = await Users.find({ uuid: tokenLib.decode(jwt).uuid });
-    const deck = currentUser[0].decks[0];
+    const deck = currentUser[0].decks[currentUser.deckToUse];
 
     // Set deck
     player.drawPile = shuffle(deck);
