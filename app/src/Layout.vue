@@ -1,51 +1,16 @@
 <template>
-  <div class="page-container">
-    <header class="header">
-      <router-link class="button" to="/">Go to home</router-link>
-      <router-link class="button" to="/play">Go to play</router-link>
-      <router-link class="button" to="/shop">Go to shop</router-link>
-      <router-link class="button" to="/login">Go to login</router-link>
-      <router-link class="button" to="/profile/deckSelector">
-        Go to deck selector
-      </router-link>
+  <div class="flex flex-col justify-between min-h-screen">
+    <header class="flex flex-wrap gap-2.5 p-2.5">
+      <router-link class="button" to="/">Home</router-link>
+      <router-link class="button" to="/play">Play</router-link>
+      <router-link class="button" to="/shop">Shop</router-link>
+      <router-link class="button" to="/login">Login</router-link>
+      <router-link class="button" to="/profile">Profile</router-link>
     </header>
-
-    <main class="main">
+    <main class="container | mx-auto">
       <slot />
     </main>
-
-    <footer class="footer">© 2023 Copyright VueStone</footer>
+    <footer class="px-3.5 py-2.5">© 2023 Copyright VueStone</footer>
   </div>
 </template>
 <script setup></script>
-
-<style lang="scss" scoped>
-.page-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100vh;
-  gap: 20px;
-
-  .header,
-  .footer {
-    padding: 10px;
-  }
-
-  .header {
-    display: flex;
-    gap: 10px;
-
-    .button {
-      padding: 15px 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      background-color: aqua;
-    }
-  }
-
-  .main {
-    flex-grow: 1;
-  }
-}
-</style>

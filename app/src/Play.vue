@@ -6,8 +6,9 @@ import { io } from "socket.io-client";
 import { ref } from "vue";
 import Dots from "./components/Dots.vue";
 
-const currentSpell = ref(null);
 const jwt = window.localStorage.getItem("jwt");
+
+const currentSpell = ref(null);
 
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
@@ -18,7 +19,7 @@ const game = ref(null);
 const players = ref(null);
 
 /**
- * @param {object} spellData All the data needed to apply a spell
+ * @param {object} spellData
  */
 const applySpell = (spellData) => {
   socket.emit("playSpell", spellData);
@@ -41,16 +42,25 @@ const minionAttackPlayer = () => {
 };
 
 /**
- * @param {number} card Index of the card to play
+ * @param {object} indexes
  */
-const playMinion = (card) => {
-  if (players.value.self.hand[card].spell) {
-    playSpell(players.value.self.hand[card].spell);
+const minionsTrade = (indexes) => {
+  socket.emit("minionsTrade", indexes);
+
+  attackingIndex.value = null;
+};
+
+/**
+ * @param {number} cardIndex
+ */
+const playMinion = (cardIndex) => {
+  if (players.value.self.hand[cardIndex].spell) {
+    playSpell(players.value.self.hand[cardIndex].spell);
 
     return;
   }
 
-  socket.emit("playMinion", { card });
+  socket.emit("playMinion", { cardIndex });
 };
 
 /**
@@ -148,6 +158,7 @@ socket.on("game", (data) => {
         @endTurn="socket.emit('endTurn')"
         @startAttack="startAttack"
         @minionAttackPlayer="minionAttackPlayer"
+        @minionsTrade="minionsTrade"
         :attackingIndex="attackingIndex"
         :game="game"
         :players="players"
