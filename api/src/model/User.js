@@ -72,6 +72,11 @@ export default function (connection) {
           is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?])/,
         },
       },
+      isAdmin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
     },
     {
       sequelize: connection,
