@@ -336,7 +336,7 @@ const startGame = async (team) => {
     // Remove card from hand
     player.hand.splice(cardIndex, 1);
 
-    if (card.ability?.type === "appear") {
+    if (card.ability?.trigger === "appear") {
       effectFunctions[card.ability.type]({
         ...card.ability.toJSON(),
         opponent: findOpponent(player),
