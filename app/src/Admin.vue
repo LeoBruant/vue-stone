@@ -4,8 +4,8 @@ import Layout from "@/Layout.vue";
 
 <template>
   <Layout>
-    <router-link class="button" to="/profile/createDeck"
-      >Create a deck</router-link
-    >
+    <router-link class="button" to="/profile/createDeck">
+      Create a deck
+    </router-link>
   </Layout>
 </template>
