@@ -51,6 +51,11 @@ export default function (connection) {
         unique: true,
         allowNull: false,
       },
+      boosterPacksAvailable: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       email: {
         type: DataTypes.STRING,
         unique: true,
