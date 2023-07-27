@@ -1,18 +1,18 @@
-import { config } from "dotenv";
 import cors from "cors";
+import { config } from "dotenv";
 import express from "express";
 import { createServer } from "http";
 import { EventEmitter } from "node:events";
 import { Server } from "socket.io";
 import authenticationController from "./controller/authentication.js";
-import userController from "./controller/user.js";
 import cardController from "./controller/cardController.js";
-import deckController from "./controller/deck.js";
 import checkoutController from "./controller/checkoutController.js";
+import deckController from "./controller/deck.js";
+import userController from "./controller/user.js";
+import db from "./model.mjs";
+import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
-import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
-import db from "./model.mjs";
 
 config();
 
@@ -25,7 +25,7 @@ const io = new Server(server, {
   },
 });
 
-await db.connection.sync();
+await db.connection.sync({ force: true });
 const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;

@@ -8,18 +8,20 @@ import Dots from "./components/Dots.vue";
 
 const jwt = window.localStorage.getItem("jwt");
 
-const currentSpell = ref(null);
-
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 const attackingIndex = ref(null);
+
+const currentSpell = ref(null);
 
 const game = ref(null);
 
 const players = ref(null);
 
+const winner = ref(null);
+
 /**
- * @param {object} spellData
+ * @param {Object} spellData
  */
 const applySpell = (spellData) => {
   socket.emit("playSpell", spellData);
@@ -42,7 +44,7 @@ const minionAttackPlayer = () => {
 };
 
 /**
- * @param {object} indexes
+ * @param {Object} indexes
  */
 const minionsTrade = (indexes) => {
   socket.emit("minionsTrade", indexes);
@@ -51,7 +53,7 @@ const minionsTrade = (indexes) => {
 };
 
 /**
- * @param {number} cardIndex
+ * @param {Number} cardIndex
  */
 const playMinion = (cardIndex) => {
   if (players.value.self.hand[cardIndex].spell) {
@@ -64,7 +66,7 @@ const playMinion = (cardIndex) => {
 };
 
 /**
- * @param {object} spell Spell property of a card
+ * @param {Object} spell Spell property of a card
  */
 const playSpell = (spell) => {
   if (
@@ -131,27 +133,30 @@ socket.on("game", (data) => {
     opponent,
   };
 });
+
+/**
+ * @param {String} winner
+ */
+socket.on("end", ({ winnerName }) => {
+  winner.value = winnerName;
+});
 </script>
 
 <template>
   <div class="bg-[url('/img/wooden-table.jpeg')] bg-center flex min-h-screen">
     <div
-      v-if="!game || !players"
+      v-if="!game || !players || winner"
       class="bg-black/50 flex justify-center items-center relative w-full"
     >
-      <button
-        v-if="!socket.active"
-        class="absolute left-2 text-white top-2"
-        v-on:click="socket.connect()"
-      >
-        Reconnect
-      </button>
-      <div class="flex gap-4 text-5xl text-white">
+      <div class="animate-bounce" v-if="winner">
+        <p class="text-8xl text-white">Gagnant : {{ winner }}</p>
+      </div>
+      <div v-else class="flex gap-4 text-5xl text-white">
         <p>Waiting for an opponent</p>
         <Dots />
       </div>
     </div>
-    <div v-if="players && game" class="w-full">
+    <div v-if="players && game && !winner" class="w-full">
       <Hand :player="players.opponent" />
       <Board
         @applySpell="applySpell"
