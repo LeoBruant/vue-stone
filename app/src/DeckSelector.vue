@@ -71,7 +71,7 @@ async function handleDeleteDeck(deckId) {
           Select deck N°{{ i }}
         </button>
 
-        <button @click="handleDeleteDeck(i)" class="button bg-red-300">
+        <button @click="handleDeleteDeck(i)" class="button !bg-red-300">
           Delete deck N°{{ i }}
         </button>
       </div>
