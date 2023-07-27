@@ -13,6 +13,17 @@ ARG VITE_SOCKET_URL
 
 RUN npm run build
 
+FROM node:18-alpine AS fixtures
+WORKDIR /api
+
+COPY api/package.json ./
+
+RUN npm install
+
+COPY api .
+
+CMD npm run fixtures
+
 FROM node:18-alpine AS prod
 WORKDIR /api
 
