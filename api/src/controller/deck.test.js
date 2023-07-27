@@ -7,7 +7,7 @@ import crypto from "node:crypto";
 
 describe("deck controller", () => {
   const uuid = crypto.randomUUID();
-  const jwt = jsonwebtoken.sign({ uuid }, process.env.JWT_SECRET, {
+  const jwt = jsonwebtoken.sign({ uuid }, process.env.JWT_SECRET ?? "secret", {
     expiresIn: "1y",
   });
 
