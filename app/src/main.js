@@ -15,6 +15,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import slug from "./plugins/slug";
+import OpenPack from "@/OpenPack.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -27,6 +28,7 @@ const routes = [
   { path: "/profile/createDeck", component: CreateDeck },
   { path: "/profile/deckSelector", component: DeckSelector },
   { path: "/admin", component: Admin },
+  { path: "/profile/boosterPack", component: OpenPack },
 ];
 
 const router = createRouter({
