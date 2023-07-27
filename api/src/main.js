@@ -5,11 +5,11 @@ import { createServer } from "http";
 import { EventEmitter } from "node:events";
 import { Server } from "socket.io";
 import authenticationController from "./controller/authentication.js";
+import boosterPackController from "./controller/boosterPackController.js";
 import cardController from "./controller/cardController.js";
 import checkoutController from "./controller/checkoutController.js";
 import deckController from "./controller/deck.js";
 import userController from "./controller/user.js";
-import boosterPackController from "./controller/boosterPackController.js";
 import db from "./model.mjs";
 import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 import match from "./socket/match.js";
@@ -26,7 +26,7 @@ const io = new Server(server, {
   },
 });
 
-await db.connection.sync();
+await db.connection.sync({ force: true });
 const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;

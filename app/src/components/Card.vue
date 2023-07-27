@@ -120,7 +120,7 @@ const reflect = (e) => {
               <div v-for="(property, index) in Object.values(card.ability)">
                 <p
                   v-if="property && Object.keys(card.ability)[index] !== '_id'"
-                  class="leading-none text-[9px]"
+                  class="leading-none"
                 >
                   <span class="font-bold"
                     >{{ Object.keys(card.ability)[index] }} :</span
@@ -134,7 +134,7 @@ const reflect = (e) => {
                 <div v-for="(property, index) in Object.values(effect)">
                   <p
                     v-if="property && Object.keys(effect)[index] !== '_id'"
-                    class="leading-none text-[9px]"
+                    class="leading-none"
                   >
                     <span class="font-bold"
                       >{{ Object.keys(effect)[index] }} :</span
@@ -180,7 +180,7 @@ const reflect = (e) => {
   &__cost,
   &__power,
   &__toughness {
-    @apply absolute aspect-square border-2 border-neutral-700 flex font-black justify-center h-10 items-center pointer-events-none rounded-full shadow-xl text-white text-2xl z-10;
+    @apply absolute aspect-square border-2 border-neutral-700 flex font-black justify-center h-[21%] items-center pointer-events-none rounded-full shadow-xl text-white text-2xl transition-all z-10;
   }
 
   &__cost {
@@ -212,11 +212,11 @@ const reflect = (e) => {
   }
 
   &__title-content {
-    @apply bg-orange-200 font-black leading-none py-1 shadow-lg text-center text-sm w-full;
+    @apply bg-orange-200 font-black leading-none py-[0.25em] shadow-lg text-center text-sm transition-all w-full;
   }
 
   &__description {
-    @apply pt-[18px] text-xs;
+    @apply pt-[18px] text-[9px] transition-all;
   }
 
   &--attack {
@@ -282,6 +282,8 @@ const reflect = (e) => {
   }
 
   &--hand {
+    @apply mt-auto;
+
     & ~ .card {
       @apply -mx-2;
     }
@@ -290,7 +292,7 @@ const reflect = (e) => {
       &:hover {
         @apply z-20;
 
-        transform: translateY(-14rem) scale(2.5) perspective(500px)
+        transform: translateY(-4.5rem) perspective(500px)
           rotateX(var(--rotateX)) rotateY(var(--rotateY));
 
         .card__border--common {
@@ -299,6 +301,8 @@ const reflect = (e) => {
 
         .card {
           &__content {
+            @apply w-[360px];
+
             &::after {
               @apply absolute inset-0 rounded-[inherit] transition-opacity;
 
@@ -311,17 +315,39 @@ const reflect = (e) => {
             }
           }
 
-          &__border::before {
-            @apply absolute inset-0 rounded-lg;
+          &__title-content {
+            @apply text-3xl;
+          }
 
-            --opacity: 1;
+          &__cost,
+          &__power,
+          &__toughness {
+            @apply border-4 text-6xl;
+          }
 
-            background: radial-gradient(
-              200px circle at var(--mouse-x) var(--mouse-y),
-              rgb(255, 255, 255),
-              transparent 100%
-            );
-            content: "";
+          &__border {
+            @apply -inset-3;
+
+            &::before {
+              @apply absolute inset-0 rounded-lg;
+
+              --opacity: 1;
+
+              background: radial-gradient(
+                200px circle at var(--mouse-x) var(--mouse-y),
+                rgb(255, 255, 255),
+                transparent 100%
+              );
+              content: "";
+            }
+
+            &::after {
+              @apply -inset-36;
+            }
+          }
+
+          &__description {
+            @apply pt-10 text-2xl;
           }
         }
       }
