@@ -103,7 +103,12 @@ const reflect = (e) => {
         <!-- Content -->
         <div class="card__container">
           <div class="card__image-container">
-            <div class="card__image"></div>
+            <div
+              class="card__image"
+              :style="`background-image: url(/img/cards/${$slug(
+                card.title,
+              )}.png)`"
+            ></div>
           </div>
           <div class="card__title">
             <p class="card__title-content">
@@ -111,7 +116,34 @@ const reflect = (e) => {
             </p>
           </div>
           <div class="card__description">
-            <p>Lorem, ipsum dolor.</p>
+            <div v-if="card.ability">
+              <div v-for="(property, index) in Object.values(card.ability)">
+                <p
+                  v-if="property && Object.keys(card.ability)[index] !== '_id'"
+                  class="leading-none text-[9px]"
+                >
+                  <span class="font-bold"
+                    >{{ Object.keys(card.ability)[index] }} :</span
+                  >
+                  {{ property }}
+                </p>
+              </div>
+            </div>
+            <div v-if="card.spell">
+              <div v-for="effect in card.spell">
+                <div v-for="(property, index) in Object.values(effect)">
+                  <p
+                    v-if="property && Object.keys(effect)[index] !== '_id'"
+                    class="leading-none text-[9px]"
+                  >
+                    <span class="font-bold"
+                      >{{ Object.keys(effect)[index] }} :</span
+                    >
+                    {{ property }}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -121,12 +153,12 @@ const reflect = (e) => {
         </div>
 
         <!-- Power -->
-        <div v-if="card.power" class="card__power">
+        <div v-if="card.power !== null" class="card__power">
           {{ card.power }}
         </div>
 
         <!-- Toughness -->
-        <div v-if="card.toughness" class="card__toughness">
+        <div v-if="card.toughness !== null" class="card__toughness">
           {{ card.toughness }}
         </div>
       </div>
@@ -172,7 +204,7 @@ const reflect = (e) => {
   }
 
   &__image {
-    @apply aspect-square bg-center bg-cover bg-[url('https://loremflickr.com/200/300/cat')] h-full mx-auto;
+    @apply aspect-square bg-center bg-cover h-full mx-auto;
   }
 
   &__title {
@@ -180,11 +212,11 @@ const reflect = (e) => {
   }
 
   &__title-content {
-    @apply bg-orange-200 font-black shadow-lg text-center w-full;
+    @apply bg-orange-200 font-black leading-none py-1 shadow-lg text-center text-sm w-full;
   }
 
   &__description {
-    @apply pt-5 text-xs;
+    @apply pt-[18px] text-xs;
   }
 
   &--attack {

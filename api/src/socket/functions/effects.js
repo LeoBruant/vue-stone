@@ -1,7 +1,30 @@
+import { shuffle } from "./utils.js";
+
 const MAX_HAND = 10;
+const MAX_MINIONS = 7;
 
 /**
- * @param {number} drawnCards
+ * @param {Number} minionPower
+ * @param {Number} minionToughness
+ * @param {Socket} player
+ */
+export const addMinionToHand = ({ minionPower, minionToughness, player }) => {
+  if (player.hand.length <= MAX_HAND) {
+    player.hand.push({
+      ability: null,
+      attacks: 0,
+      cost: 1,
+      power: minionPower,
+      rarity: "common",
+      spell: null,
+      title: "Invocation",
+      toughness: minionToughness,
+    });
+  }
+};
+
+/**
+ * @param {Number} drawnCards
  * @param {Player} player
  */
 export const drawCards = ({ drawnCards, player }) => {
@@ -15,22 +38,70 @@ export const drawCards = ({ drawnCards, player }) => {
 };
 
 /**
- * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
-export const targetAll = ({ opponent, player, toughnessAdded }) => {
-  targetAllMinions({ opponent, player, toughnessAdded });
-  targetAllyPlayer({ player, toughnessAdded });
-  targetOpponentPlayer({ opponent, toughnessAdded });
+export const gainForEachAlly = ({ player, powerAdded, toughnessAdded }) => {
+  player.minions[player.minions.length - 1].power +=
+    powerAdded * player.minions.length - 1;
+  player.minions[player.minions.length - 1].toughness +=
+    toughnessAdded * player.minions.length - 1;
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Number} minionPower
+ * @param {Number} minionToughness
+ * @param {Socket} player
+ * @param {Number} summonNumber
+ */
+export const summon = ({
+  minionPower,
+  minionToughness,
+  player,
+  summonNumber,
+}) => {
+  for (let i = 0; i < summonNumber; i++) {
+    if (player.minions.length < MAX_MINIONS) {
+      player.minions.push({
+        ability: null,
+        attacks: 0,
+        cost: 0,
+        power: minionPower,
+        rarity: "common",
+        spell: null,
+        title: "Invocation",
+        toughness: minionToughness,
+      });
+    }
+  }
+};
+
+/**
  * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
+ */
+export const targetAll = ({ opponent, player, toughnessAdded }) => {
+  targetAllAllies({ player, toughnessAdded });
+  targetAllOpponents({ opponent, toughnessAdded });
+};
+
+/**
+ * @param {Socket} player
+ * @param {Number} toughnessAdded
+ */
+export const targetAllAllies = ({ player, toughnessAdded }) => {
+  targetAllAllyMinions({ player, toughnessAdded });
+  targetAllyPlayer({ player, toughnessAdded });
+};
+
+/**
+ * @param {Boolean} destroyMinion
+ * @param {Socket} opponent
+ * @param {Socket} player
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllAllyMinions = ({
   destroyMinion,
@@ -38,7 +109,7 @@ export const targetAllAllyMinions = ({
   powerAdded,
   toughnessAdded,
 }) => {
-  for (const minion of player.minions) {
+  for (const minion of player.minions.filter((m) => m)) {
     if (destroyMinion) {
       player.minions = [null, null, null, null, null, null, null];
     } else {
@@ -49,11 +120,11 @@ export const targetAllAllyMinions = ({
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Boolean} destroyMinion
  * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllMinions = ({
   destroyMinion,
@@ -72,10 +143,10 @@ export const targetAllMinions = ({
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Boolean} destroyMinion
  * @param {Socket} opponent
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllOpponentMinions = ({
   destroyMinion,
@@ -83,7 +154,7 @@ export const targetAllOpponentMinions = ({
   powerAdded,
   toughnessAdded,
 }) => {
-  for (const minion of opponent.minions) {
+  for (const minion of opponent.minions.filter((m) => m)) {
     if (destroyMinion) {
       opponent.minions = [null, null, null, null, null, null, null];
     } else {
@@ -94,11 +165,20 @@ export const targetAllOpponentMinions = ({
 };
 
 /**
- * @param {boolean} destroyMinion
- * @param {number} minionIndex
+ * @param {Socket} opponent
+ * @param {Number} toughnessAdded
+ */
+export const targetAllOpponents = ({ opponent, toughnessAdded }) => {
+  targetAllOpponentMinions({ opponent, toughnessAdded });
+  targetOpponentPlayer({ opponent, toughnessAdded });
+};
+
+/**
+ * @param {Boolean} destroyMinion
+ * @param {Number} minionIndex
  * @param {Socket} player
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllyMinion = ({
   destroyMinion,
@@ -119,19 +199,19 @@ export const targetAllyMinion = ({
 
 /**
  * @param {Socket} player
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAllyPlayer = ({ player, toughnessAdded }) => {
   player.health += toughnessAdded;
 };
 
 /**
- * @param {number} minionIndex
+ * @param {Number} minionIndex
  * @param {Socket} opponent
  * @param {Socket} player
- * @param {number} powerAdded
+ * @param {Number} powerAdded
  * @param {string} targetPlayer
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetAny = ({
   minionIndex,
@@ -167,10 +247,10 @@ export const targetAny = ({
 };
 
 /**
- * @param {number} minionIndex
+ * @param {Number} minionIndex
  * @param {Socket} opponent
  * @param {string} targetPlayer
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetOpponent = ({
   minionIndex,
@@ -192,11 +272,11 @@ export const targetOpponent = ({
 };
 
 /**
- * @param {boolean} destroyMinion
- * @param {number} minionIndex
+ * @param {Boolean} destroyMinion
+ * @param {Number} minionIndex
  * @param {Socket} opponent
- * @param {number} powerAdded
- * @param {number} toughnessAdded
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
  */
 export const targetOpponentMinion = ({
   destroyMinion,
@@ -219,19 +299,19 @@ export const targetOpponentMinion = ({
 
 /**
  * @param {Socket} opponent
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetOpponentPlayer = ({ opponent, toughnessAdded }) => {
   opponent.health += toughnessAdded;
 };
 
 /**
- * @param {boolean} destroyMinion
- * @param {number} minionIndex
+ * @param {Boolean} destroyMinion
+ * @param {Number} minionIndex
  * @param {Socket} opponent
- * @param {number} powerAdded
+ * @param {Number} powerAdded
  * @param {string} targetPlayer
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
  */
 export const targetMinion = ({
   destroyMinion,
@@ -262,11 +342,66 @@ export const targetMinion = ({
 };
 
 /**
- * @param {boolean} destroyMinion
+ * @param {Socket} player
+ * @param {Number} toughnessAdded
+ */
+export const targetRandomAlly = ({ player, toughnessAdded }) => {
+  if (Math.round(Math.random())) {
+    targetRandomAllyMinion({ player, toughnessAdded });
+  } else {
+    targetAllyPlayer({ player, toughnessAdded });
+  }
+};
+
+/**
+ * @param {Boolean} destroyMinion
+ * @param {Socket} player
+ * @param {Number} powerAdded
+ * @param {Number} toughnessAdded
+ */
+export const targetRandomAllyMinion = ({
+  destroyMinion,
+  player,
+  powerAdded,
+  toughnessAdded,
+}) => {
+  const indexes = [];
+  const minionsNumber = player.minions.filter((m) => m).length;
+
+  for (let i = 0; i < minionsNumber; i++) {
+    indexes.push(i);
+  }
+
+  const newIndexes = shuffle(indexes);
+
+  for (const index of newIndexes) {
+    if (destroyMinion) {
+      player.minions[index].toughness = 0;
+    } else {
+      player.minions[index].power += powerAdded ? powerAdded : 0;
+      player.minions[index].toughness += toughnessAdded ? toughnessAdded : 0;
+    }
+  }
+};
+
+/**
  * @param {Socket} opponent
- * @param {number} powerAdded
- * @param {number} randomMinionsNumber
- * @param {number} toughnessAdded
+ * @param {Number} toughnessAdded
+ */
+export const targetRandomOpponent = ({ opponent, toughnessAdded }) => {
+  if (Math.round(Math.random())) {
+    targetRandomOpponentMinions({ opponent, toughnessAdded });
+  } else {
+    targetOpponentPlayer({ opponent, toughnessAdded });
+  }
+};
+
+/**
+ * @param {Boolean} destroyMinion
+ * @param {Socket} opponent
+ * @param {Number} powerAdded
+ * @param {Number} randomMinionsNumber
+ * @param {Number} toughnessAdded
  */
 export const targetRandomOpponentMinions = ({
   destroyMinion,
@@ -275,26 +410,6 @@ export const targetRandomOpponentMinions = ({
   randomMinionsNumber,
   toughnessAdded,
 }) => {
-  const shuffle = (array) => {
-    let counter = array.length;
-
-    // While there are elements in the array
-    while (counter > 0) {
-      // Pick a random index
-      let index = Math.floor(Math.random() * counter);
-
-      // Decrease counter by 1
-      counter--;
-
-      // And swap the last element with it
-      let temp = array[counter];
-      array[counter] = array[index];
-      array[index] = temp;
-    }
-
-    return array;
-  };
-
   const indexes = [];
   const minionsNumber = opponent.minions.filter((m) => m).length;
 
