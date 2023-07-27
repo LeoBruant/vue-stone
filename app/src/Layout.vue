@@ -5,6 +5,7 @@
       <router-link class="button" to="/play">Play</router-link>
       <router-link class="button" to="/shop">Shop</router-link>
       <router-link class="button" to="/login">Login</router-link>
+      <router-link class="button" to="/profile">Profile</router-link>
     </header>
     <main class="container | mx-auto">
       <slot />
