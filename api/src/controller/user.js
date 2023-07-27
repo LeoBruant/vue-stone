@@ -7,7 +7,6 @@ import authenticate from "../middleware/authenticate.js";
 const router = Router();
 
 router.get("/user", express.json(), authenticate, async (req, res) => {
-  console.log(req.user);
   if (req.user.isAdmin) {
     const user = await db.User.findAll();
     res.send(user);
@@ -17,7 +16,6 @@ router.get("/user", express.json(), authenticate, async (req, res) => {
 });
 
 router.delete("/user/:id", express.json(), authenticate, async (req, res) => {
-  console.log(req.user);
   const { id } = req.params;
   if (req.user.isAdmin) {
     const user = await db.User.findOne({ where: { id } });

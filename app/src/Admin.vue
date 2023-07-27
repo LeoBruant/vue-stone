@@ -16,9 +16,7 @@ const getUsers = async () => {
 const deleteUser = async (user) => {
   const response = await fetch(
     `${import.meta.env.VITE_API_URI}/user/${user.id}`,
-    {
-      ...getOptions("DELETE"),
-    },
+    getOptions("DELETE"),
   );
   await getUsers();
 };
