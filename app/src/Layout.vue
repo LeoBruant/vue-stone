@@ -1,12 +1,12 @@
 <template>
   <div class="page-container">
     <header class="header">
-      <router-link class="button" to="/">Go to Home</router-link>
-      <router-link class="button" to="/play">Go to Play</router-link>
+      <router-link class="button" to="/">Go to home</router-link>
+      <router-link class="button" to="/play">Go to play</router-link>
       <router-link class="button" to="/shop">Go to shop</router-link>
-      <router-link class="button" to="/login">Go to Login</router-link>
-      <router-link class="button" to="/matchmaking">
-        Go to Matchmaking
+      <router-link class="button" to="/login">Go to login</router-link>
+      <router-link class="button" to="/profile/deckSelector">
+        Go to deck selector
       </router-link>
     </header>
 
