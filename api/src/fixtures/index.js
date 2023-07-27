@@ -1,9 +1,10 @@
-import { createCards } from "./cardFixtures.js";
-import { initMongoDb } from "../mongodb.js";
-import mongoose from "mongoose";
 import { config } from "dotenv";
+import mongoose from "mongoose";
+import { initMongoDb } from "../mongodb.js";
+import { createCards } from "./cardFixtures.js";
 
 config();
+
 await initMongoDb();
 
 try {

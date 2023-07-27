@@ -1,10 +1,12 @@
 <script setup>
 import Layout from "@/Layout.vue";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 let name = "";
 let email = "";
 let password = "";
-let jwt = window.localStorage.getItem("jwt");
 
 const signup = async () => {
   try {
@@ -21,13 +23,12 @@ const signup = async () => {
       }),
     });
     if (response.status === 201) {
-      alert("Utilisateur créé!");
+      toast.success("Utilisateur créé!");
     } else {
-      alert("Utilisateur pas créé! " + response.status);
+      toast.success(`Utilisateur créé! ${response.status}`);
     }
   } catch (e) {
-    console.error(e);
-    alert("Erreur");
+    toast.error(`Erreur : ${e}`);
   }
 };
 
@@ -49,13 +50,12 @@ const login = async () => {
 
       localStorage.setItem("jwt", token);
 
-      alert("Connecté!");
+      toast.success("Connecté!");
     } else {
-      alert("Pas connecté! " + response.status);
+      toast.error(`Pas connecté! : ${response.status}`);
     }
   } catch (e) {
-    console.error(e);
-    alert("Erreur");
+    toast.error(`Erreur : ${e}`);
   }
 };
 </script>
@@ -63,14 +63,24 @@ const login = async () => {
 <template>
   <Layout>
     <form>
-      <input type="text" v-model="name" placeholder="Nom d'utilisateur" />
-      <input type="email" v-model="email" placeholder="Adresse email" />
-      <input type="password" v-model="password" placeholder="Mot de passe" />
-
-      <button type="button" @click="signup">S'inscrire</button>
-      <button type="button" @click="login">Se connecter</button>
-
-      <p>JWT is {{ jwt }}</p>
+      <div class="form-row">
+        <label for="name">Nom d'utilisateur</label>
+        <input id="name" type="text" v-model="name" />
+      </div>
+      <div class="form-row">
+        <label for="email">Adresse email</label>
+        <input id="email" type="email" v-model="email" />
+      </div>
+      <div class="form-row">
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" v-model="password" />
+      </div>
+      <div class="form-row | grid-cols-2 mx-auto w-max">
+        <button class="button" type="button" @click="signup">S'inscrire</button>
+        <button class="button" type="button" @click="login">
+          Se connecter
+        </button>
+      </div>
     </form>
   </Layout>
 </template>

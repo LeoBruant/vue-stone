@@ -1,9 +1,16 @@
+import tokenLib from "jsonwebtoken";
+import { Users } from "../mongodb.js";
 import {
+  addMinionToHand,
   drawCards,
+  gainForEachAlly,
+  summon,
   targetAll,
+  targetAllAllies,
   targetAllAllyMinions,
   targetAllMinions,
   targetAllOpponentMinions,
+  targetAllOpponents,
   targetAllyMinion,
   targetAllyPlayer,
   targetAny,
@@ -11,8 +18,12 @@ import {
   targetOpponent,
   targetOpponentMinion,
   targetOpponentPlayer,
+  targetRandomAlly,
+  targetRandomAllyMinion,
+  targetRandomOpponent,
   targetRandomOpponentMinions,
 } from "./functions/effects.js";
+import { shuffle } from "./functions/utils.js";
 
 /**
  * @typedef Ability
@@ -28,7 +39,6 @@ import {
  * @property {'appear' | 'death' | null } trigger
  * @property {
  *  'addMinionToHand' |
- *  'discardOpponentCards' |
  *  'drawCards' |
  *  'gainForEachAlly' |
  *  'haste' |
@@ -93,90 +103,16 @@ import {
  * @property {Boolean} playing
  */
 
-const DEFAULT_CARD = {
-  attacks: 0,
-  cost: 0,
-  power: 10,
-  rarity: "legendary",
-  spell: null,
-  title: "Minion",
-  toughness: 10,
-};
-
 /**
  * @type {Player}
  */
 const DEFAULT_PLAYER = {
-  drawPile: [
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-  ],
-  hand: [
-    {
-      ability: {
-        destroyMinion: null,
-        drawnCards: null,
-        minionPower: 1,
-        minionToughness: null,
-        powerAdded: 1,
-        randomMinionsNumber: null,
-        summonNumber: null,
-        switchStats: false,
-        toughnessAdded: null,
-        trigger: "appear",
-        type: "addMinionToHand",
-      },
-      attacks: 0,
-      cost: 0,
-      power: 10,
-      rarity: "common",
-      spell: null,
-      title: "addMinionToHand",
-      toughness: 10,
-    },
-    {
-      ability: {
-        destroyMinion: null,
-        drawnCards: 2,
-        minionPower: null,
-        minionToughness: null,
-        powerAdded: null,
-        randomMinionsNumber: null,
-        summonNumber: null,
-        switchStats: false,
-        toughnessAdded: null,
-        trigger: null,
-        type: "drawCards",
-      },
-      attacks: 0,
-      cost: 0,
-      power: 10,
-      rarity: "common",
-      spell: null,
-      title: "drawCards",
-      toughness: 10,
-    },
-  ],
+  drawPile: [],
+  hand: [],
   health: 30,
-  id: 2,
+  id: null,
   mana: 1,
-  minions: [
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-    { ...DEFAULT_CARD },
-  ],
+  minions: [],
   name: null,
   playing: false,
 };
@@ -185,11 +121,16 @@ const MAX_MANA = 10;
 const MAX_MINIONS = 7;
 
 const effectFunctions = {
+  addMinionToHand,
   drawCards,
+  gainForEachAlly,
+  summon,
   targetAll,
+  targetAllAllies,
   targetAllAllyMinions,
   targetAllMinions,
   targetAllOpponentMinions,
+  targetAllOpponents,
   targetAllyMinion,
   targetAllyPlayer,
   targetAny,
@@ -197,6 +138,9 @@ const effectFunctions = {
   targetOpponentMinion,
   targetOpponentPlayer,
   targetMinion,
+  targetRandomAlly,
+  targetRandomAllyMinion,
+  targetRandomOpponent,
   targetRandomOpponentMinions,
 };
 
@@ -300,6 +244,37 @@ const startGame = async (team) => {
   };
 
   /**
+   * @param {Number} allyMinionIndex
+   * @param {Number} opponentMinionIndex
+   * @param {Player} socket
+   */
+  const minionsTrade = ({ allyMinionIndex, opponentMinionIndex }, socket) => {
+    const player = players[socket.id];
+
+    // Cancel if player is not allowed to play
+    if (!player.playing) {
+      return;
+    }
+
+    const allyMinion = player.minions[allyMinionIndex];
+
+    // Cancel if minion can't attack
+    if (allyMinion.attacks <= 0) {
+      return;
+    }
+
+    const opponent = findOpponent(player);
+    const opponentMinion = opponent.minions[opponentMinionIndex];
+
+    allyMinion.attacks -= 1;
+
+    allyMinion.toughness -= opponentMinion.power;
+    opponentMinion.toughness -= allyMinion.power;
+
+    removeDead();
+  };
+
+  /**
    * @param {Socket} socket
    * @param {number} cardIndex
    */
@@ -332,10 +307,10 @@ const startGame = async (team) => {
     player.mana -= card.cost;
 
     // Put card on board
-    player.minions[emptySlotIndex] = {
-      ...card,
-      turnPlayed: turn,
-    };
+    card.turnPlayed = turn;
+    player.minions[emptySlotIndex] = card;
+
+    removeDead();
 
     // Remove card from hand
     player.hand.splice(cardIndex, 1);
@@ -387,15 +362,21 @@ const startGame = async (team) => {
     removeDead();
 
     // Remove card from hand
-    // player.hand.splice(cardIndex, 1);
+    player.hand.splice(cardIndex, 1);
   };
 
   const removeDead = () => {
     for (const key in players) {
+      let deathTrigger = false;
       const player = players[key];
 
       for (const minion of player.minions) {
         if (minion?.toughness <= 0) {
+          if (minion.ability?.trigger === "death") {
+            deathTrigger = true;
+            effectFunctions[minion.ability.type]({ ...minion.ability, player });
+          }
+
           player.minions.splice(player.minions.indexOf(minion), 1);
         }
       }
@@ -404,6 +385,10 @@ const startGame = async (team) => {
 
       for (let i = 0; i < missingMinions; i++) {
         player.minions.push(null);
+      }
+
+      if (deathTrigger) {
+        removeDead();
       }
     }
   };
@@ -428,14 +413,24 @@ const startGame = async (team) => {
 
   let playing = true;
 
-  for (const { socket, user } of team) {
+  for (const { jwt, socket, user } of team) {
     /**
      * @type {Player}
      */
     const player = structuredClone(DEFAULT_PLAYER);
 
+    if (!user) {
+      return;
+    }
+
     player.id = socket.id;
     player.name = user.name;
+
+    const currentUser = await Users.find({ uuid: tokenLib.decode(jwt).uuid });
+    const deck = currentUser[0].decks[0];
+
+    // Set deck
+    player.drawPile = shuffle(deck);
 
     // Sets the first player as playing
     player.playing = playing;
@@ -444,6 +439,9 @@ const startGame = async (team) => {
     // Update player
     players[player.id] = player;
 
+    // Draw cards
+    drawCards({ drawnCards: 4, player: players[player.id] });
+
     socket.on("endTurn", () => {
       endTurn(socket);
       update();
@@ -451,6 +449,11 @@ const startGame = async (team) => {
 
     socket.on("minionAttackPlayer", (data) => {
       minionAttackPlayer(data, socket);
+      update();
+    });
+
+    socket.on("minionsTrade", (data) => {
+      minionsTrade(data, socket);
       update();
     });
 
