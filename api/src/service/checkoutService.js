@@ -36,6 +36,7 @@ export async function createStripeCheckoutSession(userUuid, quantity) {
   await db.Payment.create({
     user: user.id,
     stripeId: session.id,
+    packs: quantity,
   });
 
   return session;
