@@ -202,7 +202,6 @@ export const targetAllyMinion = ({
  * @param {Number} toughnessAdded
  */
 export const targetAllyPlayer = ({ player, toughnessAdded }) => {
-  console.log("targetAllyPlayer");
   player.health += toughnessAdded;
 };
 
