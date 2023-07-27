@@ -1,14 +1,38 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { app } from "../main.js";
 import request from "supertest";
 import * as deckService from "../service/deck.js";
 import jsonwebtoken from "jsonwebtoken";
 import crypto from "node:crypto";
+import { disconnectMongoDb, Users } from "../mongodb.js";
+import { defaultCards, defaultDecks } from "../fixtures/deckCardFixtures.js";
 
 describe("deck controller", () => {
   const uuid = crypto.randomUUID();
   const jwt = jsonwebtoken.sign({ uuid }, process.env.JWT_SECRET ?? "secret", {
     expiresIn: "1y",
+  });
+  let mongod;
+
+  beforeAll(async () => {
+    const user = new Users({
+      uuid,
+      decks: defaultDecks,
+      cards: defaultCards,
+    });
+    await user.save();
+  });
+
+  afterAll(async () => {
+    await disconnectMongoDb(mongod);
   });
 
   vi.mock("../service/deck.js", () => {

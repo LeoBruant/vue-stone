@@ -17,6 +17,9 @@ export async function getOwnedCards(uuid) {
 export async function createDeck(uuid, wantedCards) {
   const ownedCards = await getOwnedCards(uuid);
 
+  /**
+   * @type {number[]}
+   */
   const ownedCardIds = ownedCards.map(({ cardId }) => cardId);
 
   for (const id of wantedCards) {
