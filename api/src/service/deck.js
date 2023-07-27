@@ -9,10 +9,16 @@ export async function getOwnedCards(uuid) {
   return user.ownedCards;
 }
 
+export async function addOneDeck(uuid, deck) {
+  const user = await Users.findOne({ uuid });
+  user.decks.push(deck);
+  await user.save();
+}
+
 /**
  * @param {string} uuid
  * @param {number[]} wantedCards
- * @returns {Promise<void>}
+ * @returns {Promise<Object[]>}
  */
 export async function createDeck(uuid, wantedCards) {
   const ownedCards = await getOwnedCards(uuid);
@@ -33,9 +39,11 @@ export async function createDeck(uuid, wantedCards) {
     ownedCards.find(({ cardId }) => cardId === id),
   );
 
-  const user = await Users.findOne({ uuid: uuid });
-  user.decks.push(deck);
-  await user.save();
+  try {
+    await addOneDeck(uuid, deck);
+  } catch (e) {
+    console.error(e);
+  }
 
   return deck;
 }

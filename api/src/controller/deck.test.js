@@ -1,11 +1,9 @@
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { app } from "../main.js";
 import request from "supertest";
 import * as deckService from "../service/deck.js";
 import jsonwebtoken from "jsonwebtoken";
 import crypto from "node:crypto";
-import { Users } from "../mongodb.js";
-import { defaultCards, defaultDecks } from "../fixtures/deckCardFixtures.js";
 
 describe("deck controller", () => {
   const uuid = crypto.randomUUID();
@@ -13,19 +11,11 @@ describe("deck controller", () => {
     expiresIn: "1y",
   });
 
-  beforeAll(async () => {
-    const user = new Users({
-      uuid,
-      decks: defaultDecks,
-      cards: defaultCards,
-    });
-    await user.save();
-  });
-
   vi.mock("../service/deck.js", () => {
     return {
       createDeck: vi.fn(),
       getOwnedCards: vi.fn(),
+      addOneDeck: vi.fn(),
     };
   });
 
@@ -45,11 +35,7 @@ describe("deck controller", () => {
 
     const createDeckSpy = vi
       .spyOn(deckService, "createDeck")
-      .mockImplementation(() => {});
-
-    const ownedCardsSpy = vi
-      .spyOn(deckService, "getOwnedCards")
-      .mockImplementation(() => wantedCards.map((cardId) => ({ cardId })));
+      .mockImplementation(() => [{}]);
 
     const response = await request(app)
       .post("/api/deck")
@@ -57,16 +43,18 @@ describe("deck controller", () => {
       .send(wantedCards)
       .set("Content-Type", "application/json");
 
-    console.log(response.text);
-
     expect(response.status).toEqual(201);
 
     expect(createDeckSpy).toHaveBeenCalledWith(uuid, wantedCards);
-    expect(ownedCardsSpy).toHaveBeenCalledWith(uuid);
   });
 
   it("should return 400 when not owning a card", async () => {
     const wantedCards = [1, 42, 69];
+    const ownedCards = [42, 49].map((cardId) => ({ cardId }));
+
+    const createDeckSpy = vi
+      .spyOn(deckService, "createDeck")
+      .mockImplementation(() => null);
 
     const response = await request(app)
       .post("/api/deck")
@@ -75,5 +63,7 @@ describe("deck controller", () => {
       .set("Content-Type", "application/json");
 
     expect(response.status).toEqual(400);
+
+    expect(createDeckSpy).toHaveBeenCalledOnce();
   });
 });
