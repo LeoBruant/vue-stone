@@ -23,6 +23,20 @@ services:
       - "traefik.http.routers.vuestone.tls=true"
       - "traefik.http.services.vuestone.loadbalancer.server.port=8080"
 
+  fixtures:
+    build:
+      context: .
+      target: fixtures
+      args:
+        VITE_API_URI: ${VITE_API_URI}
+        VITE_STRIPE_PK: ${VITE_STRIPE_PK}
+        VITE_SOCKET_URL: ${VITE_SOCKET_URL}
+    restart: no
+    depends_on:
+      - mongo
+      - postgres
+    env_file: .env
+
   postgres:
     image: postgres:alpine
     environment:
