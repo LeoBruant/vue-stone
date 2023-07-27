@@ -17,7 +17,7 @@ export const addMinionToHand = ({ minionPower, minionToughness, player }) => {
       power: minionPower,
       rarity: "common",
       spell: null,
-      title: "Invocation",
+      title: "Summoned Minion",
       toughness: minionToughness,
     });
   }
@@ -62,7 +62,7 @@ export const summon = ({
   summonNumber,
 }) => {
   for (let i = 0; i < summonNumber; i++) {
-    if (player.minions.length < MAX_MINIONS) {
+    if (player.minions.filter((m) => m).length < MAX_MINIONS) {
       player.minions.push({
         ability: null,
         attacks: 0,
@@ -70,7 +70,7 @@ export const summon = ({
         power: minionPower,
         rarity: "common",
         spell: null,
-        title: "Invocation",
+        title: "Summoned Minion",
         toughness: minionToughness,
       });
     }
