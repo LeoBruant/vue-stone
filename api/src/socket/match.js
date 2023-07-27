@@ -1,4 +1,3 @@
-import tokenLib from "jsonwebtoken";
 import { Users } from "../mongodb.js";
 import {
   addMinionToHand,
@@ -413,7 +412,7 @@ const startGame = async (team) => {
 
   let playing = true;
 
-  for (const { jwt, socket, user } of team) {
+  for (const { socket, user } of team) {
     /**
      * @type {Player}
      */
@@ -426,8 +425,8 @@ const startGame = async (team) => {
     player.id = socket.id;
     player.name = user.name;
 
-    const currentUser = await Users.find({ uuid: tokenLib.decode(jwt).uuid });
-    const deck = currentUser[0].decks[currentUser.deckToUse];
+    const currentUser = await Users.find({ uuid: user.uuid });
+    const deck = currentUser.decks[currentUser.deckToUse];
 
     // Set deck
     player.drawPile = shuffle(deck);
