@@ -2,11 +2,7 @@ import express, { Router } from "express";
 import stripe from "../stripe.js";
 import authenticate from "../middleware/authenticate.js";
 import { findPaymentFromStripeId } from "../service/paymentService.js";
-import { getRandomCards } from "../service/cardService.js";
-import {
-  addOwnedCards,
-  createStripeCheckoutSession,
-} from "../service/checkoutService.js";
+import { createStripeCheckoutSession } from "../service/checkoutService.js";
 import db from "../model.mjs";
 
 const router = new Router();
@@ -74,6 +70,5 @@ router.post(
     res.send();
   },
 );
-
 
 export default router;
