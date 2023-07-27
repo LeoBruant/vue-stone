@@ -25,7 +25,7 @@ const io = new Server(server, {
   },
 });
 
-await db.connection.sync({ force: true });
+await db.connection.sync({});
 const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;

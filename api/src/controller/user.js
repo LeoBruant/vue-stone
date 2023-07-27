@@ -1,14 +1,27 @@
 import express, { Router } from "express";
 import { ValidationError } from "sequelize";
 import { createUser } from "../service/user.js";
-import { Users } from "../mongodb.js";
+import db from "../../../api/src/model.mjs";
 import authenticate from "../middleware/authenticate.js";
 
 const router = Router();
 
 router.get("/user", express.json(), authenticate, async (req, res) => {
+  console.log(req.user);
   if (req.user.isAdmin) {
-    const user = await Users.find({});
+    const user = await db.User.findAll();
+    res.send(user);
+  } else {
+    res.sendStatus(401);
+  }
+});
+
+router.delete("/user/:id", express.json(), authenticate, async (req, res) => {
+  console.log(req.user);
+  const { id } = req.params;
+  if (req.user.isAdmin) {
+    const user = await db.User.findOne({ where: { id } });
+    user.destroy();
     res.send(user);
   } else {
     res.sendStatus(401);

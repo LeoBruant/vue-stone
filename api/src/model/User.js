@@ -30,7 +30,7 @@ export default function (connection) {
     }
 
     generateToken() {
-      return jwt.sign({ uuid: this.uuid }, jwtSecret, {
+      return jwt.sign({ uuid: this.uuid, isAdmin: this.isAdmin }, jwtSecret, {
         expiresIn: "1y",
       });
     }
