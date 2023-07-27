@@ -7,6 +7,7 @@ import {
   addOwnedCards,
   createStripeCheckoutSession,
 } from "../service/checkoutService.js";
+import db from "../model.mjs";
 
 const router = new Router();
 
@@ -18,28 +19,33 @@ router.post("/checkout", authenticate, express.json(), async (req, res) => {
     return;
   }
 
-  const session = createStripeCheckoutSession(req.user.id, quantity);
+  try {
+    const session = await createStripeCheckoutSession(req.user.uuid, quantity);
 
-  res.send({
-    sessionUrl: session.url,
-  });
+    res.send({
+      sessionUrl: session.url,
+    });
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(400);
+  }
 });
 
 const endpointSecret = process.env.WEBHOOK_SECRET;
 
 router.post(
   "/webhook",
-  express.raw({ type: "*/*" }),
-  async (request, response) => {
-    const sig = request.headers["stripe-signature"];
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const sig = req.headers["stripe-signature"];
 
     let event;
 
     try {
-      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     } catch (err) {
       console.error(err.message);
-      response.status(400).send(`Webhook Error: ${err.message}`);
+      res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     }
 
@@ -49,9 +55,20 @@ router.post(
         const payment = await findPaymentFromStripeId(
           paymentIntentSucceeded.id,
         );
+        const user = await db.User.findOne({
+          where: { id: payment.user },
+        });
+        console.log(`UUID of User: ${user.uuid}`);
 
         const cards = await getRandomCards();
-        await addOwnedCards(payment.user, cards);
+        try {
+          await addOwnedCards(user.uuid, cards);
+        } catch (e) {
+          console.error(e);
+          res.status(500);
+          res.send(e);
+          return;
+        }
         break;
       }
       default:
@@ -59,7 +76,7 @@ router.post(
     }
 
     // Return a 200 response to acknowledge receipt of the event
-    response.send();
+    res.send();
   },
 );
 
