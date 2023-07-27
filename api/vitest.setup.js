@@ -4,10 +4,12 @@ import { afterAll, beforeAll, vi } from "vitest";
 vi.stubEnv("DATABASE_URL", "sqlite::memory:");
 vi.stubEnv("NODE_ENV", "test");
 
+let mongod;
+
 beforeAll(async () => {
-  await initMongoDb();
+  mongod = await initMongoDb();
 });
 
 afterAll(async () => {
-  await disconnectMongoDb();
+  await disconnectMongoDb(mongod);
 });
