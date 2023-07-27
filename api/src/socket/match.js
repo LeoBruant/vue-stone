@@ -1,4 +1,3 @@
-import tokenLib from "jsonwebtoken";
 import { Users } from "../mongodb.js";
 import {
   addMinionToHand,
@@ -112,7 +111,7 @@ const DEFAULT_PLAYER = {
   health: 30,
   id: null,
   mana: 1,
-  minions: [],
+  minions: [null, null, null, null, null, null, null],
   name: null,
   playing: false,
 };
@@ -173,6 +172,28 @@ const startGame = async (team) => {
 
   let turn = 1;
   let turnMaxMana = 1;
+
+  const checkEndGame = () => {
+    let winnerName;
+
+    for (const key in players) {
+      const player = players[key];
+
+      if (player.health <= 0) {
+        winnerName = findOpponent(player).name;
+      }
+    }
+
+    if (!winnerName) {
+      return;
+    }
+
+    for (const { socket } of team) {
+      socket.emit("end", {
+        winnerName,
+      });
+    }
+  };
 
   /**
    * @param {Player} socket
@@ -241,6 +262,8 @@ const startGame = async (team) => {
     opponent.health -= player.minions[attackingIndex].power;
 
     player.minions[attackingIndex].attacks -= 1;
+
+    checkEndGame();
   };
 
   /**
@@ -310,10 +333,18 @@ const startGame = async (team) => {
     card.turnPlayed = turn;
     player.minions[emptySlotIndex] = card;
 
-    removeDead();
-
     // Remove card from hand
     player.hand.splice(cardIndex, 1);
+
+    if (card.ability?.type === "appear") {
+      effectFunctions[card.ability.type]({
+        ...card.ability.toJSON(),
+        opponent: findOpponent(player),
+        player,
+      });
+
+      removeDead();
+    }
   };
 
   /**
@@ -359,6 +390,7 @@ const startGame = async (team) => {
     // Remove mana
     player.mana -= card.cost;
 
+    checkEndGame();
     removeDead();
 
     // Remove card from hand
@@ -374,7 +406,12 @@ const startGame = async (team) => {
         if (minion?.toughness <= 0) {
           if (minion.ability?.trigger === "death") {
             deathTrigger = true;
-            effectFunctions[minion.ability.type]({ ...minion.ability, player });
+
+            effectFunctions[minion.ability.type]({
+              ...minion.ability.toJSON(),
+              opponent: findOpponent(player),
+              player,
+            });
           }
 
           player.minions.splice(player.minions.indexOf(minion), 1);
@@ -413,7 +450,7 @@ const startGame = async (team) => {
 
   let playing = true;
 
-  for (const { jwt, socket, user } of team) {
+  for (const { socket, user } of team) {
     /**
      * @type {Player}
      */
@@ -426,8 +463,12 @@ const startGame = async (team) => {
     player.id = socket.id;
     player.name = user.name;
 
-    const currentUser = await Users.find({ uuid: tokenLib.decode(jwt).uuid });
-    const deck = currentUser[0].decks[currentUser.deckToUse];
+    const currentUser = await Users.findOne({ uuid: user.uuid });
+    const deck = currentUser.decks[currentUser.deckToUse];
+
+    if (!deck) {
+      return;
+    }
 
     // Set deck
     player.drawPile = shuffle(deck);

@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { DataTypes, Model } from "sequelize";
-import { Users } from "../mongodb.js";
 import { defaultCards, defaultDecks } from "../fixtures/deckCardFixtures.js";
+import { Users } from "../mongodb.js";
 
 export default function (connection) {
   const salt =
@@ -104,6 +104,7 @@ export default function (connection) {
      */
     async (user) => {
       const document = new Users({
+        name: user.name,
         uuid: user.uuid,
         ownedCards: defaultCards,
         decks: defaultDecks,
