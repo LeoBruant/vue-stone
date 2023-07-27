@@ -67,7 +67,7 @@ const effectSchema = new Schema({
 const cardSchema = new Schema({
   cardId: { type: Number },
   ability: abilitySchema,
-  attacks: { type: Number, default: 1 },
+  attacks: { type: Number, default: 0 },
   cost: { type: Number },
   description: { type: String },
   power: { type: Number },
@@ -79,6 +79,7 @@ const cardSchema = new Schema({
   spell: [effectSchema],
   title: { type: String, default: "" },
   toughness: { type: Number },
+  turnPlayed: { type: Number, default: 0 },
 });
 
 export const Users = mongoose.model(
