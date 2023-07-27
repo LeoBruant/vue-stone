@@ -21,6 +21,7 @@ export async function createDeck(uuid, wantedCards) {
 
   for (const id of wantedCards) {
     if (!ownedCardIds.includes(id)) {
+      console.log(`User does not owns the card ${id}`);
       return null;
     }
   }

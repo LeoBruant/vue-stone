@@ -7,14 +7,14 @@ import crypto from "node:crypto";
 
 describe("deck controller", () => {
   const uuid = crypto.randomUUID();
-  const jwt = jsonwebtoken.sign({ uuid }, "secret", {
+  const jwt = jsonwebtoken.sign({ uuid }, process.env.JWT_SECRET, {
     expiresIn: "1y",
   });
 
   vi.mock("../service/deck.js", () => {
     return {
-      createUser: vi.fn(),
-      findAllUsers: vi.fn(),
+      createDeck: vi.fn(),
+      getOwnedCards: vi.fn(),
     };
   });
 
@@ -23,7 +23,9 @@ describe("deck controller", () => {
   });
 
   it("should return bad request", async () => {
-    const response = await request(app).post("/api/deck");
+    const response = await request(app)
+      .post("/api/deck")
+      .set("authorization", `Bearer ${jwt}`);
     expect(response.status).toEqual(400);
   });
 
@@ -37,7 +39,7 @@ describe("deck controller", () => {
     const ownedCardsSpy = vi
       .spyOn(deckService, "getOwnedCards")
       .mockImplementation(() => {
-        return wantedCards;
+        return wantedCards.map((cardId) => ({ cardId }));
       });
 
     const response = await request(app)
@@ -45,6 +47,8 @@ describe("deck controller", () => {
       .set("authorization", `Bearer ${jwt}`)
       .send(wantedCards)
       .set("Content-Type", "application/json");
+
+    console.log(response.text);
 
     expect(response.status).toEqual(201);
 

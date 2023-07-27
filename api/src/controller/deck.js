@@ -20,13 +20,15 @@ router.post("/deck", authenticate, async (req, res) => {
     req.body.length > 30 ||
     req.body.length <= 0
   ) {
-    return res.sendStatus(400);
+    res.status(400);
+    return res.send("Invalid body");
   }
 
   try {
     const deck = await createDeck(req.user.uuid, req.body);
     if (!deck) {
-      res.sendStatus(400);
+      res.status(400);
+      res.send("Deck not created");
     } else {
       res.status(201);
       res.send(deck);
