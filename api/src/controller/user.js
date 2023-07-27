@@ -1,8 +1,14 @@
 import express, { Router } from "express";
 import { ValidationError } from "sequelize";
 import { createUser } from "../service/user.js";
+import { Users } from "../mongodb.js";
 
 const router = Router();
+
+router.get("/user", express.json(), async (req, res) => {
+  const user = await Users.find({});
+  res.send(user);
+});
 
 router.post("/user", express.json(), async (req, res) => {
   const { name, email, password } = req.body;
