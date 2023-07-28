@@ -3,7 +3,7 @@ import db from "../model.mjs";
 import { findOneUser } from "./user.js";
 import { Users } from "../mongodb.js";
 
-const YOUR_DOMAIN = "http://localhost:3000";
+const YOUR_DOMAIN = process.env.FRONT_URL ?? "https://vuestone.quozul.dev";
 const PRICE_ID = "price_1NXh1MBaDFkq1eT7WgjcvIkN";
 
 /**

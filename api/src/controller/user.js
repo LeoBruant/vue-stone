@@ -7,23 +7,27 @@ import authenticate from "../middleware/authenticate.js";
 const router = Router();
 
 router.get("/user", express.json(), authenticate, async (req, res) => {
-  if (req.user.isAdmin) {
-    const user = await db.User.findAll();
-    res.send(user);
-  } else {
-    res.sendStatus(401);
+  const user = await db.User.findOne({ where: { uuid: req.user.uuid } });
+
+  if (!user || !user.isAdmin) {
+    return res.sendStatus(403);
   }
+
+  const users = await db.User.findAll();
+  res.send(users);
 });
 
 router.delete("/user/:id", express.json(), authenticate, async (req, res) => {
-  const { id } = req.params;
-  if (req.user.isAdmin) {
-    const user = await db.User.findOne({ where: { id } });
-    user.destroy();
-    res.send(user);
-  } else {
-    res.sendStatus(401);
+  const user = await db.User.findOne({ where: { uuid: req.user.uuid } });
+
+  if (!user || !user.isAdmin) {
+    return res.sendStatus(403);
   }
+
+  const { id } = req.params;
+  const userToDelete = await db.User.findOne({ where: { id } });
+  await userToDelete.destroy();
+  res.sendStatus(204);
 });
 
 router.post("/user", express.json(), async (req, res) => {

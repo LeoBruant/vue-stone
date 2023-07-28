@@ -24,14 +24,8 @@ COPY api .
 
 CMD npm run fixtures
 
-FROM node:18-alpine AS prod
-WORKDIR /api
+FROM fixtures AS prod
 
-COPY api/package.json ./
-
-RUN npm install
-
-COPY api .
 COPY --from=app_builder /app/dist ./static
 
 ENV PORT 8080

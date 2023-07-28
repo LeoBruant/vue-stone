@@ -9,19 +9,13 @@ services:
         VITE_API_URI: ${VITE_API_URI}
         VITE_STRIPE_PK: ${VITE_STRIPE_PK}
         VITE_SOCKET_URL: ${VITE_SOCKET_URL}
-    expose:
-      - 8080
+    ports:
+      - "8080:8080"
     env_file: .env
     restart: always
     depends_on:
       - mongo
       - postgres
-    labels:
-      - "traefik.http.routers.vuestone.rule=Host(`vuestone.quozul.dev`)"
-      - "traefik.http.routers.vuestone.tls.certresolver=myresolver"
-      - "traefik.http.routers.vuestone.tls.domains[0].main=vuestone.quozul.dev"
-      - "traefik.http.routers.vuestone.tls=true"
-      - "traefik.http.services.vuestone.loadbalancer.server.port=8080"
 
   fixtures:
     build:
@@ -57,9 +51,3 @@ services:
 volumes:
   db:
   mongo:
-
-
-networks:
-  default:
-    external: true
-    name: traefik
