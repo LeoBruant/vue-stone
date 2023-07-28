@@ -18,11 +18,11 @@ try {
 
 try {
   try {
-    const count= await Users.countDocuments();
-    console.log(`Deleting ${count} users from mongo...`)
-    await Users.deleteMany({})
+    const count = await Users.countDocuments();
+    console.log(`Deleting ${count} users from mongo...`);
+    await Users.deleteMany({});
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 
   const email = process.env.INIT_EMAIL ?? "admin@vuestone.com";

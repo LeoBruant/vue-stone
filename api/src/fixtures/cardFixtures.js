@@ -1944,11 +1944,11 @@ export const cards = [
 
 export async function createCards() {
   try {
-    const count= await Cards.countDocuments();
-    console.log(`Deleting ${count} cards...`)
-    await Cards.deleteMany({})
+    const count = await Cards.countDocuments();
+    console.log(`Deleting ${count} cards...`);
+    await Cards.deleteMany({});
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 
   const inserts = cards.map((card) => {
