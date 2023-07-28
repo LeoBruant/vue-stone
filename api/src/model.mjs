@@ -29,6 +29,4 @@ for (const model of models) {
   db[modelInstance.name] = modelInstance;
 }
 
-await db.connection.sync();
-
 export default db;

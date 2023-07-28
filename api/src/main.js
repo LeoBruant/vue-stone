@@ -26,12 +26,12 @@ const io = new Server(server, {
   },
 });
 
-await db.connection.sync({ force: true });
+await db.connection.sync();
 const mongod = await initMongoDb();
 
 const port = process.env.PORT ?? 8080;
-app.use(cors());
 
+app.use(cors());
 app.use(express.static("static"));
 
 app.get("/api/health", (req, res) => {

@@ -58,7 +58,6 @@ volumes:
   db:
   mongo:
 
-
 networks:
   default:
     external: true
