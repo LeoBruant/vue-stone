@@ -1,6 +1,12 @@
 import express, { Router } from "express";
 import { ValidationError } from "sequelize";
-import { createUser, deleteUser, findAllUsers, findOneUserByEmail, isUserAdmin } from "../service/user.js";
+import {
+  createUser,
+  deleteUser,
+  findAllUsers,
+  findOneUserByEmail,
+  isUserAdmin,
+} from "../service/user.js";
 import authenticate from "../middleware/authenticate.js";
 
 const router = Router();
