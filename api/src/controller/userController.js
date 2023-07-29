@@ -45,7 +45,7 @@ router.post("/user", express.json(), async (req, res) => {
 
     const user = await createUser(name, email, password);
     res.status(201);
-    res.send(user);
+    res.send({ name: user.name, email: user.email, uuid: user.uuid });
   } catch (e) {
     if (e instanceof ValidationError) {
       console.warn(e);

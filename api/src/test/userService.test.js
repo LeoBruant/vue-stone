@@ -17,7 +17,6 @@ describe("userService", () => {
   });
 
   afterAll(async () => {
-    await db.connection.close();
     await disconnectMongoDb(mongod);
   });
 
@@ -30,12 +29,12 @@ describe("userService", () => {
 
     expect(createdUser).toBeDefined();
 
-    const emailUser = findOneUserByEmail(email);
+    const emailUser = await findOneUserByEmail(email);
 
     expect(emailUser).toBeDefined();
     expect(emailUser.name).toBe(name);
 
-    const uuidUser = findOneUserByUuid(createdUser.uuid);
+    const uuidUser = await findOneUserByUuid(createdUser.uuid);
 
     expect(uuidUser).toBeDefined();
     expect(uuidUser.email).toBe(email);
@@ -60,6 +59,6 @@ describe("userService", () => {
 
     const user = await createUser(name, email, password);
 
-    expect(isUserAdmin(user.uuid)).toBeFalsy();
+    expect(await isUserAdmin(user.uuid)).toBeFalsy();
   });
 });

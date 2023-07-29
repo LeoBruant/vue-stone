@@ -30,11 +30,16 @@ describe("user controller", () => {
   });
 
   it("should create a user", async () => {
-    const spy = vi.spyOn(userService, "createUser");
-
     const email = "foo@example.com";
     const password = "Test1234&";
     const name = "xX_d4rkn00b_Xx";
+
+    const spy = vi.spyOn(userService, "createUser").mockImplementation(() => ({
+      email,
+      password,
+      name,
+      uuid: crypto.randomUUID(),
+    }));
 
     const response = await request(app)
       .post("/api/user")

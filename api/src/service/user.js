@@ -11,14 +11,14 @@ import crypto from "node:crypto";
 export async function createUser(name, email, password) {
   const uuid = crypto.randomUUID();
 
-  await db.User.create({
+  const user = await db.User.create({
     name,
     email,
     password,
     uuid,
   });
 
-  return { name, email, uuid };
+  return user;
 }
 
 /**
