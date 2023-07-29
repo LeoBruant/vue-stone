@@ -58,5 +58,6 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 server.on("close", async () => {
+  await db.connection.close();
   await disconnectMongoDb(mongod);
 });

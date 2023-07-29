@@ -1,13 +1,27 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   createUser,
   findOneUserByEmail,
   findOneUserByUuid,
   isUserAdmin,
 } from "../service/user.js";
+import { disconnectMongoDb, initMongoDb } from "../mongodb.js";
+import db from "../model.mjs";
 
 describe("userService", () => {
-  it("should creates and find a user", async () => {
+  let mongod;
+
+  beforeAll(async () => {
+    await db.connection.sync();
+    mongod = await initMongoDb();
+  });
+
+  afterAll(async () => {
+    await db.connection.close();
+    await disconnectMongoDb(mongod);
+  });
+
+  it("should create and find a user", async () => {
     const email = "foo@example.com";
     const password = "Test1234&";
     const name = "foo";
