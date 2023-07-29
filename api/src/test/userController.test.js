@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { app } from "../main.js";
 import request from "supertest";
 import * as userService from "../service/user.js";
-import { deleteUser, isUserAdmin } from "../service/user.js";
 import crypto from "node:crypto";
 import jsonwebtoken from "jsonwebtoken";
 
@@ -52,7 +51,9 @@ describe("user controller", () => {
   });
 
   it("should not list users and return 403", async () => {
-    const isUserAdminSpy = vi.spyOn(userService, "isUserAdmin").mockImplementation(() => false);
+    const isUserAdminSpy = vi
+      .spyOn(userService, "isUserAdmin")
+      .mockImplementation(() => false);
     const listUserSpy = vi.spyOn(userService, "findAllUsers");
 
     const response = await request(app)
@@ -67,7 +68,9 @@ describe("user controller", () => {
   });
 
   it("should list users", async () => {
-    const isUserAdminSpy = vi.spyOn(userService, "isUserAdmin").mockImplementation(() => true);
+    const isUserAdminSpy = vi
+      .spyOn(userService, "isUserAdmin")
+      .mockImplementation(() => true);
     const listUserSpy = vi.spyOn(userService, "findAllUsers");
 
     const response = await request(app)
@@ -82,8 +85,12 @@ describe("user controller", () => {
   });
 
   it("should delete user", async () => {
-    const isUserAdminSpy = vi.spyOn(userService, "isUserAdmin").mockImplementation(() => true);
-    const deleteUserSpy = vi.spyOn(userService, "deleteUser").mockImplementation(() => true);
+    const isUserAdminSpy = vi
+      .spyOn(userService, "isUserAdmin")
+      .mockImplementation(() => true);
+    const deleteUserSpy = vi
+      .spyOn(userService, "deleteUser")
+      .mockImplementation(() => true);
 
     const response = await request(app)
       .delete("/api/user/1")

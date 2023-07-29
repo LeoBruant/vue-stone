@@ -70,7 +70,7 @@ export async function findOneUserByEmail(email, options = {}) {
  */
 export async function isUserAdmin(uuid) {
   const user = await db.User.findOne({ where: { uuid } });
-  return !!user && user.isAdmin
+  return !!user && user.isAdmin;
 }
 
 /**
@@ -81,8 +81,8 @@ export async function isUserAdmin(uuid) {
 export async function deleteUser(id) {
   const userToDelete = await db.User.findOne({ where: { id } });
   if (!userToDelete) {
-    return false
+    return false;
   }
   await userToDelete.destroy();
-  return true
+  return true;
 }
