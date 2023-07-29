@@ -1,12 +1,6 @@
 import express, { Router } from "express";
 import { ValidationError } from "sequelize";
-import {
-  createUser,
-  deleteUser,
-  findAllUsers,
-  findOneUserByEmail,
-  isUserAdmin,
-} from "../service/user.js";
+import { createUser, deleteUser, findAllUsers, findOneUserByEmail, isUserAdmin } from "../service/user.js";
 import authenticate from "../middleware/authenticate.js";
 
 const router = Router();
@@ -39,7 +33,7 @@ router.post("/user", express.json(), async (req, res) => {
   }
 
   try {
-    if ((await findOneUserByEmail(email)) !== undefined) {
+    if ((await findOneUserByEmail(email)) === undefined) {
       return res.sendStatus(406);
     }
 
