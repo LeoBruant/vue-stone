@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { app } from "../main.js";
 import request from "supertest";
-import * as deckService from "../service/deck.js";
+import * as deckService from "../service/deckService.js";
 import jsonwebtoken from "jsonwebtoken";
 import crypto from "node:crypto";
 
@@ -11,7 +11,7 @@ describe("deck controller", () => {
     expiresIn: "1y",
   });
 
-  vi.mock("../service/deck.js", () => {
+  vi.mock("../service/deckController.js", () => {
     return {
       createDeck: vi.fn(),
       getOwnedCards: vi.fn(),

@@ -1,6 +1,6 @@
 import stripe from "../stripe.js";
 import db from "../model.mjs";
-import { findOneUser } from "./user.js";
+import { findOneUserByUuid } from "./userService.js";
 import { Users } from "../mongodb.js";
 
 const YOUR_DOMAIN = process.env.FRONT_URL ?? "https://vuestone.quozul.dev";
@@ -13,7 +13,7 @@ const PRICE_ID = "price_1NXh1MBaDFkq1eT7WgjcvIkN";
  * @returns {Promise<Stripe.Checkout.Session & {lastResponse: {headers: {[p: string]: string}, requestId: string, statusCode: number, apiVersion?: string, idempotencyKey?: string, stripeAccount?: string}}>}
  */
 export async function createStripeCheckoutSession(userUuid, quantity) {
-  const user = await findOneUser(userUuid);
+  const user = await findOneUserByUuid(userUuid);
 
   const mongoUser = await Users.findOne({ uuid: user.uuid });
 
