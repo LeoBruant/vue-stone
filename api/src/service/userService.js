@@ -39,7 +39,7 @@ export async function findAllUsers(criteria = {}, options = {}) {
  * Finds user by uuid.
  * @param {string} uuid
  * @param options
- * @returns {Promise<User>}
+ * @returns {Promise<User | null>}
  */
 export async function findOneUserByUuid(uuid, options = {}) {
   return db.User.findOne({
@@ -53,7 +53,7 @@ export async function findOneUserByUuid(uuid, options = {}) {
  * Finds user by email.
  * @param {string} email
  * @param options
- * @returns {Promise<User>}
+ * @returns {Promise<User | null>}
  */
 export async function findOneUserByEmail(email, options = {}) {
   return db.User.findOne({

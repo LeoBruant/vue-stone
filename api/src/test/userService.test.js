@@ -73,6 +73,6 @@ describe("userService", () => {
 
     const deletedUser = await findOneUserByEmail(email);
 
-    expect(deletedUser).not.toBeDefined();
+    expect(deletedUser).toBe(null);
   });
 });
