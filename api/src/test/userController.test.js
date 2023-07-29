@@ -34,12 +34,18 @@ describe("user controller", () => {
     const password = "Test1234&";
     const name = "xX_d4rkn00b_Xx";
 
-    const spy = vi.spyOn(userService, "createUser").mockImplementation(() => ({
-      email,
-      password,
-      name,
-      uuid: crypto.randomUUID(),
-    }));
+    const createUserSpy = vi
+      .spyOn(userService, "createUser")
+      .mockImplementation(() => ({
+        email,
+        password,
+        name,
+        uuid: crypto.randomUUID(),
+      }));
+
+    const findOneUserByEmailSpy = vi
+      .spyOn(userService, "findOneUserByEmail")
+      .mockImplementation(() => null);
 
     const response = await request(app)
       .post("/api/user")
@@ -52,7 +58,8 @@ describe("user controller", () => {
 
     expect(response.status).toEqual(201);
 
-    expect(spy).toHaveBeenCalledWith(name, email, password);
+    expect(findOneUserByEmailSpy).toHaveBeenCalledWith(email);
+    expect(createUserSpy).toHaveBeenCalledWith(name, email, password);
   });
 
   it("should not list users and return 403", async () => {

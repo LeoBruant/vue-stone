@@ -39,7 +39,7 @@ router.post("/user", express.json(), async (req, res) => {
   }
 
   try {
-    if ((await findOneUserByEmail(email)) === null) {
+    if ((await findOneUserByEmail(email)) !== null) {
       return res.sendStatus(406);
     }
 
