@@ -1,4 +1,4 @@
-import { findOneUserByUuid } from "../service/user.js";
+import { findOneUserByUuid } from "../service/userService.js";
 import tokenLib from "jsonwebtoken";
 
 /**

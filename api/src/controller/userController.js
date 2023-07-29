@@ -6,7 +6,7 @@ import {
   findAllUsers,
   findOneUserByEmail,
   isUserAdmin,
-} from "../service/user.js";
+} from "../service/userService.js";
 import authenticate from "../middleware/authenticate.js";
 
 const router = Router();

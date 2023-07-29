@@ -1,6 +1,6 @@
 import stripe from "../stripe.js";
 import db from "../model.mjs";
-import { findOneUserByUuid } from "./user.js";
+import { findOneUserByUuid } from "./userService.js";
 import { Users } from "../mongodb.js";
 
 const YOUR_DOMAIN = process.env.FRONT_URL ?? "https://vuestone.quozul.dev";

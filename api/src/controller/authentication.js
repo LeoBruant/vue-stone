@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { findOneUserByEmail } from "../service/user.js";
+import { findOneUserByEmail } from "../service/userService.js";
 
 const router = Router();
 

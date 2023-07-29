@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { app } from "../main.js";
 import request from "supertest";
-import * as userService from "../service/user.js";
+import * as userService from "../service/userService.js";
 import crypto from "node:crypto";
 import jsonwebtoken from "jsonwebtoken";
 

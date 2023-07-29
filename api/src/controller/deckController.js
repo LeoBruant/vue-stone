@@ -1,6 +1,6 @@
 import authenticate from "../middleware/authenticate.js";
 import { Users } from "../mongodb.js";
-import { createDeck } from "../service/deck.js";
+import { createDeck } from "../service/deckService.js";
 import express, { Router } from "express";
 
 const router = new Router();

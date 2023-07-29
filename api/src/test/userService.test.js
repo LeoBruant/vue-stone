@@ -1,10 +1,11 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   createUser,
+  deleteUser,
   findOneUserByEmail,
   findOneUserByUuid,
   isUserAdmin,
-} from "../service/user.js";
+} from "../service/userService.js";
 import { disconnectMongoDb, initMongoDb } from "../mongodb.js";
 import db from "../model.mjs";
 
@@ -60,5 +61,18 @@ describe("userService", () => {
     const user = await createUser(name, email, password);
 
     expect(await isUserAdmin(user.uuid)).toBeFalsy();
+  });
+
+  it("should delete a user", async () => {
+    const email = "foobar@example.com";
+    const password = "Test1234&";
+    const name = "foobar";
+
+    const user = await createUser(name, email, password);
+    await deleteUser(user.id);
+
+    const deletedUser = await findOneUserByEmail(email);
+
+    expect(deletedUser).not.toBeDefined();
   });
 });
