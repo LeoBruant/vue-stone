@@ -1,4 +1,4 @@
-import { findOneUser } from "../service/user.js";
+import { findOneUserByUuid } from "../service/user.js";
 import tokenLib from "jsonwebtoken";
 
 /**
@@ -35,7 +35,7 @@ export default function matchmaking(io, emitter) {
             }
 
             console.log(`User ${decodedJwt?.uuid} is connected`);
-            const user = await findOneUser(decodedJwt.uuid);
+            const user = await findOneUserByUuid(decodedJwt.uuid);
 
             if (user === null) {
               throw Error("User is not found");

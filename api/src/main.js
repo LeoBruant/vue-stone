@@ -4,16 +4,16 @@ import express from "express";
 import { createServer } from "http";
 import { EventEmitter } from "node:events";
 import { Server } from "socket.io";
-import authenticationController from "./controller/authentication.js";
-import boosterPackController from "./controller/boosterPackController.js";
-import cardController from "./controller/cardController.js";
-import checkoutController from "./controller/checkoutController.js";
-import deckController from "./controller/deck.js";
-import userController from "./controller/user.js";
 import db from "./model.mjs";
 import { disconnectMongoDb, initMongoDb } from "./mongodb.js";
 import match from "./socket/match.js";
 import matchmaking from "./socket/matchmaking.js";
+import authenticationController from "./controller/authentication.js";
+import boosterPackController from "./controller/boosterPackController.js";
+import cardController from "./controller/cardController.js";
+import checkoutController from "./controller/checkoutController.js";
+import deckController from "./controller/deckController.js";
+import userController from "./controller/userController.js";
 
 config();
 
@@ -38,12 +38,12 @@ app.get("/api/health", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/api", userController);
 app.use("/api", authenticationController);
-app.use("/api", cardController);
-app.use("/api", deckController);
-app.use("/api", checkoutController);
 app.use("/api", boosterPackController);
+app.use("/api", cardController);
+app.use("/api", checkoutController);
+app.use("/api", deckController);
+app.use("/api", userController);
 
 class MatchEmitter extends EventEmitter {}
 const emitter = new MatchEmitter();

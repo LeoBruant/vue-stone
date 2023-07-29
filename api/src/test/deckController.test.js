@@ -11,7 +11,7 @@ describe("deck controller", () => {
     expiresIn: "1y",
   });
 
-  vi.mock("../service/deck.js", () => {
+  vi.mock("../service/deckController.js", () => {
     return {
       createDeck: vi.fn(),
       getOwnedCards: vi.fn(),

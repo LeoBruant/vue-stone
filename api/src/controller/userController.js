@@ -1,44 +1,42 @@
 import express, { Router } from "express";
 import { ValidationError } from "sequelize";
-import { createUser } from "../service/user.js";
-import db from "../../../api/src/model.mjs";
+import { createUser, deleteUser, findAllUsers, findOneUserByEmail, isUserAdmin } from "../service/user.js";
 import authenticate from "../middleware/authenticate.js";
 
 const router = Router();
 
 router.get("/user", express.json(), authenticate, async (req, res) => {
-  const user = await db.User.findOne({ where: { uuid: req.user.uuid } });
-
-  if (!user || !user.isAdmin) {
+  if (!isUserAdmin(req.user.uuid)) {
     return res.sendStatus(403);
   }
 
-  const users = await db.User.findAll();
-  res.send(users);
+  res.send(await findAllUsers());
 });
 
 router.delete("/user/:id", express.json(), authenticate, async (req, res) => {
-  const user = await db.User.findOne({ where: { uuid: req.user.uuid } });
-
-  if (!user || !user.isAdmin) {
+  if (!isUserAdmin(req.user.uuid)) {
     return res.sendStatus(403);
   }
 
-  const { id } = req.params;
-  const userToDelete = await db.User.findOne({ where: { id } });
-  await userToDelete.destroy();
-  res.sendStatus(204);
+  if (await deleteUser(parseInt(req.params.id))) {
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
+  }
 });
 
 router.post("/user", express.json(), async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!email || !password || !name) {
-    res.sendStatus(400);
-    return;
+    return res.sendStatus(400);
   }
 
   try {
+    if (!!(await findOneUserByEmail(email))) {
+      return res.sendStatus(406);
+    }
+
     const user = await createUser(name, email, password);
     res.status(201);
     res.send(user);

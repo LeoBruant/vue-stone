@@ -29,12 +29,10 @@ router.delete(
   async (req, res) => {
     const user = await Users.findOne({ uuid: req.user.uuid });
     if (!user) {
-      res.status(400);
-      return res.send("User not found");
+      return res.sendStatus(400);
     }
     if (user.decks.length <= 1) {
-      res.status(400);
-      return res.send("Cannot delete your last deck");
+      return res.sendStatus(400);
     }
     user.decks.splice(req.body.deckId, 1);
     user.deckToUse = Math.min(Math.max(0, user.deckToUse), user.decks.length);
@@ -60,15 +58,13 @@ router.post("/deck", authenticate, express.json(), async (req, res) => {
     req.body.length > 30 ||
     req.body.length <= 0
   ) {
-    res.status(400);
-    return res.send("Invalid body");
+    return res.sendStatus(400);
   }
 
   try {
     const deck = await createDeck(req.user.uuid, req.body);
     if (!deck) {
-      res.status(400);
-      res.send("Deck not created");
+      return res.sendStatus(400);
     } else {
       res.status(201);
       res.send(deck);

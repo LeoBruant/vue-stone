@@ -27,7 +27,7 @@ export async function createUser(name, email, password) {
  * @param options
  * @returns {Promise<User[]>}
  */
-export async function findAllUsers(criteria, options = {}) {
+export async function findAllUsers(criteria = {}, options = {}) {
   return db.User.findAll({
     where: criteria,
     ...options,
@@ -36,15 +36,53 @@ export async function findAllUsers(criteria, options = {}) {
 }
 
 /**
- * Finds user by id.
+ * Finds user by uuid.
  * @param {string} uuid
  * @param options
  * @returns {Promise<User>}
  */
-export async function findOneUser(uuid, options = {}) {
+export async function findOneUserByUuid(uuid, options = {}) {
   return db.User.findOne({
     where: { uuid },
     ...options,
     order: Object.entries(options.order || {}),
   });
+}
+
+/**
+ * Finds user by email.
+ * @param {string} email
+ * @param options
+ * @returns {Promise<User>}
+ */
+export async function findOneUserByEmail(email, options = {}) {
+  return db.User.findOne({
+    where: { email },
+    ...options,
+    order: Object.entries(options.order || {}),
+  });
+}
+
+/**
+ * Returns if a user is admin
+ * @param uuid
+ * @returns {Promise<boolean>}
+ */
+export async function isUserAdmin(uuid) {
+  const user = await db.User.findOne({ where: { uuid } });
+  return !!user && user.isAdmin
+}
+
+/**
+ * Deletes a user and
+ * @param {number} id
+ * @returns {Promise<boolean>} If the user is deleted
+ */
+export async function deleteUser(id) {
+  const userToDelete = await db.User.findOne({ where: { id } });
+  if (!userToDelete) {
+    return false
+  }
+  await userToDelete.destroy();
+  return true
 }
